@@ -19,7 +19,7 @@ public final class Constants {
   public final static double errormargin = 0.1;
 
   //Controller Type "xbox" or "ps4"
-  public final static String controllerType = "xbox";
+  public final static String controllerType = "ps4";
 
   //Ports
 
@@ -40,12 +40,11 @@ public final class Constants {
   public final static int PS4_RXStickAxisPort = 2;
   public final static int PS4_RYStickAxisPort = 5;
 
-  //DriveBase Motors - CAN Numbers
+  //DriveBase Motors
   public final static int leftTalonPort = 1;
-  public final static int leftFrontVicPort = 3;
-  public final static int leftBackVicPort = 5;
-  
-  public final static int rightTalonPort = 2;
-  public final static int rightFrontVicPort = 4;
+  public final static int leftFrontVicPort = 2;
+  public final static int leftBackVicPort = 3;
+  public final static int rightTalonPort = 4;
+  public final static int rightFrontVicPort = 5;
   public final static int rightBackVicPort = 6;
 }
