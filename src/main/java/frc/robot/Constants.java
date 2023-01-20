@@ -28,10 +28,10 @@ public final class Constants {
 
   //XBOX Controller Ports
   //Need to test these, ports may have changed with the removal of buttons.
-  public final static int XBOX_LXStickAxisPort = 0;
-  public final static int XBOX_LYStickAxisPort = 1;
-  public final static int XBOX_RXStickAxisPort = 4;
-  public final static int XBOX_RYStickAxisPort = 5;
+  //public final static int XBOX_LXStickAxisPort = 0;
+  public final static int XBOX_LYStickAxisPort = 4;
+  public final static int XBOX_RXStickAxisPort = 1; //4
+  //public final static int XBOX_RYStickAxisPort = 5;
 
   //PS4 Controller Ports
   //Need to test these. ports may have changed with the removal of buttons.

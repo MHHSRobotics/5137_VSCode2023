@@ -44,6 +44,8 @@ public class DriveBase_Subsystem extends SubsystemBase {
     leftBackVic = new WPI_VictorSPX(Constants.leftBackVicPort);
     leftDrive = new MotorControllerGroup(leftTalon, leftFrontVic, leftBackVic);
 
+    leftFrontVic.setInverted(true);
+
     //right motors
     rightTalon = new WPI_TalonSRX(Constants.rightTalonPort);
     rightFrontVic = new WPI_VictorSPX(Constants.rightFrontVicPort);
@@ -87,7 +89,7 @@ public class DriveBase_Subsystem extends SubsystemBase {
     double rotate = controller.getRawAxis(RXStickAxisPort);
     speed = adjust(speed);
     rotate = adjust(rotate);
-    testDrive.curvatureDrive(-speed/Constants.driveSensitivity, -rotate/Constants.turnSensitivity, true);
+    testDrive.curvatureDrive(speed/Constants.driveSensitivity, rotate/Constants.turnSensitivity, true);
   }
 
   //Also not required but stops drifiting and gurantees max speed
