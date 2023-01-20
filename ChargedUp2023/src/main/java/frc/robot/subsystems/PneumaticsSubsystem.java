@@ -5,10 +5,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class ExampleSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  public ExampleSubsystem() {}
+  public PneumaticsSubsystem() {
+    private final Compressor comp = new Compressor();
+    private final DoubleSolenoid solenoid1 = new DoubleSolenoid(sol1Valve1,sol1Valve2);
+  }
 
   @Override
   public void periodic() {
