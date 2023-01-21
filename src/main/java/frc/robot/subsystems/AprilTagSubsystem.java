@@ -18,7 +18,9 @@ public class AprilTagSubsystem extends SubsystemBase{
     
 //Creates the camera that will be used 
 PhotonCamera photonCamera = new PhotonCamera("grizzlycam");
- 
+private final AprilTagFieldLayout aprilTagFieldLayout;
+//Will be used in periodic to prevent inefficient scanning
+private double previousPipelineTimestamp = 0;
 
 
 public AprilTagSubsystem()
@@ -26,10 +28,18 @@ public AprilTagSubsystem()
   //Sets LED/"Lime" to off 
 photonCamera.setLED(VisionLEDMode.kOff);
 
-
+try {
+  layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+  var alliance = DriverStation.getAlliance();
+  layout.setOrigin(alliance == Alliance.Blue ?
+      OriginPosition.kBlueAllianceWallRightSide : OriginPosition.kRedAllianceWallRightSide);
+} catch(IOException e) {
+  DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
+  layout = null;
 }
-//Will be used in periodic to prevent inefficient scanning
-private double previousPipelineTimestamp = 0;
+
+this.aprilTagFieldLayout = layout;
+}
 
 @Override
   public void periodic() {
@@ -46,12 +56,39 @@ private double previousPipelineTimestamp = 0;
       var target = pipelineResult.getBestTarget();
       //Records the id of the best target
       var fiducialId = target.getFiducialId();
+      //get tag pose from layout, consider if the layout will be null if it failed to load
+      Optional<Pose3d> tagPose = aprilTagFieldLayout == null? Optional.empty() : aprilTagFieldLayout.getTagPose(fiducialId);
+      //positiion of April Tag, if it is null
+      if(target.getPoseAmbiguity() <= .2 && fiducialId != null && tagPose.isPresent()){
+        var targetPose = tagPose.get();
+        Transform3d camToTarget = target.getBestCameraToTarget();//gets position
+        Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
+
+        var visionMeasurement = camPose.transformBy(CAMERA_TO_ROBOT); //how high up/far back the camera is on the robot
+      }
     }
 }
+
+
 //Change for where our camera is on OUR robot: Cam mounted facing forward, half a meter forward of center, half a meter up from center.
 Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); 
 
+/* 
+public poseEstimator(PhotonCamera photonCamera){
+  this.photonCamera = photonCamera;
+  //sets the camera to the camera we're using
+  AprilTagFieldLayout layout;
+  //gets the field layout from saved pdf
+    try{
+      layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargerUp.m_resourceFile);
+      var alliance = DriverStation.getAlliance();
+      //idk if we need this tbh because the team that made this had swerve drive so idk if our team needs this
+      //but they did also use gyro to get position which we will have so idk ill just leave it for now and see
+      //if we need it later :)
+    }
+}
 
+*/
 
 
 
