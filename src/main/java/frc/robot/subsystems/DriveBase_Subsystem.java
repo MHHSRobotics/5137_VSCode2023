@@ -33,10 +33,6 @@ public class DriveBase_Subsystem extends SubsystemBase {
   //Controller
   Joystick controller;
 
-  //Joystick Ports
-  int LYStickAxisPort;
-  int RXStickAxisPort;
-
   public DriveBase_Subsystem() {
     //left motors
     leftTalon = new WPI_TalonSRX(Constants.leftTalonPort);
@@ -52,29 +48,15 @@ public class DriveBase_Subsystem extends SubsystemBase {
     rightBackVic = new WPI_VictorSPX(Constants.rightBackVicPort);
     rightDrive = new MotorControllerGroup(rightTalon, rightFrontVic, rightBackVic);
 
+    rightTalon.setInverted(true);
+    rightFrontVic.setInverted(true);
+    leftFrontVic.setInverted(true);
+
     //DriveTrain
     testDrive = new DifferentialDrive(leftDrive, rightDrive);
 
     //Controller
     controller = new Joystick(Constants.controllerPort);
-
-    //Controller Type (Not required just for ease)
-    switch (Constants.controllerType) {
-      case ("xbox"):
-        LYStickAxisPort = Constants.XBOX_LYStickAxisPort;
-        RXStickAxisPort = Constants.XBOX_RXStickAxisPort;
-        System.out.println("XBox Controller");
-        return;
-      case ("ps4"):
-        LYStickAxisPort = Constants.PS4_LYStickAxisPort;
-        RXStickAxisPort = Constants.PS4_RXStickAxisPort;
-        System.out.println("PS4 Controller");
-        return;
-      default:
-        LYStickAxisPort = Constants.XBOX_LYStickAxisPort;
-        RXStickAxisPort = Constants.XBOX_RXStickAxisPort;
-        System.out.println("Default Controller");
-    }
   }
 
   @Override
@@ -85,8 +67,8 @@ public class DriveBase_Subsystem extends SubsystemBase {
 
   public void arcadeDrive(Joystick controller) {
     //Gets controller values
-    double speed = controller.getRawAxis(LYStickAxisPort);
-    double rotate = controller.getRawAxis(RXStickAxisPort);
+    double speed = controller.getRawAxis(Constants.XBOX_LYStickAxisPort);
+    double rotate = controller.getRawAxis(Constants.XBOX_RXStickAxisPort);
     speed = adjust(speed);
     rotate = adjust(rotate);
     testDrive.curvatureDrive(speed/Constants.driveSensitivity, rotate/Constants.turnSensitivity, true);
