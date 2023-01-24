@@ -14,6 +14,8 @@ package frc.robot;
  */
 public final class Constants {
     //solenoids
-    public static final int sol1Valve1 = 0;
-    public static final int sol1Valve2 = 1;
+    public static final int intakeSolChannel = 0;
+    public static final int clampSolChannel = 1;
+    public static final int telscopeSolChannel = 2;
+    public static final int feetSolChannel = 3;
 }
