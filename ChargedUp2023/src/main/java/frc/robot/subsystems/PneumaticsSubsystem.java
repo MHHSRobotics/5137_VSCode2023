@@ -16,9 +16,9 @@ public class PneumaticsSubsystem extends SubsystemBase {
   public PneumaticsSubsystem() {
     final Compressor comp = new Compressor(PneumaticsModuleType.CTREPCM);
 
-    final Solenoid intakSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.intakeSolChannel);
+    final Solenoid intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.intakeSolChannel);
     final Solenoid clampSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.clampSolChannel);
-    final Solenoid telescopSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.telscopeSolChannel);
+    final Solenoid telescopeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.telscopeSolChannel);
     final Solenoid feetSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.feetSolChannel);
 
   }
