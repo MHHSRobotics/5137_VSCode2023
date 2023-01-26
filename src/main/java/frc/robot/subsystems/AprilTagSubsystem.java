@@ -20,7 +20,7 @@ public class AprilTagSubsystem extends SubsystemBase{
 PhotonCamera photonCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
 
 private double previousPipelineTimestamp = 0;
-
+private int currentId = 0;
 //Guys why wont this resolve
 //AprilTagFieldLayout aprilTagFieldLayout = new AprilTagFieldLayout(AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile));
 
@@ -42,12 +42,7 @@ photonCamera.setPipelineIndex(2);
 @Override
   public void periodic() {
   
-
-  
-
-    //Creates a new PhotonPoseEstimator that can give us an estimate pose  
-   // PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_LAST_POSE, photonCamera, robotToCam);
-// Rescans for the best target
+  // Rescans for the best target
     //Gathers latest result / "scan"
     var pipelineResult = photonCamera.getLatestResult();
     
@@ -61,19 +56,32 @@ photonCamera.setPipelineIndex(2);
     if (resultTimestamp != previousPipelineTimestamp && pipelineResult.hasTargets()) {
       //Sets current scan to previous to prevent rescanning
         previousPipelineTimestamp = resultTimestamp;
-        //Sets theh target used in AprilTag system to the best target in the "Scan"
+        //Sets the target used in AprilTag system to the best target in the "Scan"
       var target = pipelineResult.getBestTarget();
       //Records the id of the best target
-      System.out.println("Yaw: " + target.getYaw());
-      System.out.println("Pitch: " + target.getPitch());
-      
-      System.out.println("Ambiguity: " + target.getPoseAmbiguity());
-      
-
       var fiducialId = target.getFiducialId();
       
       
+      
+      
+      
+    //Print System for RioLog 
+      //Prints message and tag id when a new tag is found
+      if(fiducialId != currentId)
+      {
+      currentId = fiducialId;
+      System.out.println("New Best Target Detected!");
+      System.out.println("Tag ID: " + currentId);
       }
+      //Prints when a detected tag moves out of frame/no longer detected
+      }
+      else if(resultTimestamp != previousPipelineTimestamp  && currentId != 0 && pipelineResult.hasTargets() == false)
+      {
+        currentId = 0;
+        System.out.println("No more targets detected...");
+        
+      }
+      
     }
     
 
