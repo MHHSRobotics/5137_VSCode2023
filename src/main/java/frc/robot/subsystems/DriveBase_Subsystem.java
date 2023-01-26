@@ -90,6 +90,10 @@ public class DriveBase_Subsystem extends SubsystemBase {
     testDrive.curvatureDrive(-speed/Constants.driveSensitivity, -rotate/Constants.turnSensitivity, true);
   }
 
+  public void driveStraight(double speed){
+    testDrive.curvatureDrive(speed, 0, false);
+  }
+
   //Also not required but stops drifiting and gurantees max speed
   public double adjust(double x) {
     if (Math.abs(x)<Constants.errormargin) {return 0.0;}

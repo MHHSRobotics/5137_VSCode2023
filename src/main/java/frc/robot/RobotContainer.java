@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.DriveBase_Subsystem;
 
 /**
@@ -15,10 +16,12 @@ import frc.robot.subsystems.DriveBase_Subsystem;
 public class RobotContainer {
   //Subsystems
   public static DriveBase_Subsystem driveBase_Subsystem;
+  public static AprilTagSubsystem aprilTagSubsystem;
 
   public RobotContainer() {
     //Subsystems
     driveBase_Subsystem = new DriveBase_Subsystem();
+    aprilTagSubsystem = new AprilTagSubsystem();
 
     // Configure the trigger bindings
     configureBindings();
