@@ -1,13 +1,21 @@
 package frc.robot.subsystems;
 
+import java.io.IOException;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.common.hardware.VisionLEDMode;
+import java.util.Optional;
+
+
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -22,8 +30,8 @@ PhotonCamera photonCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
 
 private double previousPipelineTimestamp = 0;
 private int currentId = 0;
-//Guys why wont this resolve
-//AprilTagFieldLayout aprilTagFieldLayout = new AprilTagFieldLayout(AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile));
+private AprilTagFieldLayout aprilTagFieldLayout;
+
 
 
 //Where our Camera is on the robot 
@@ -37,6 +45,26 @@ public AprilTagSubsystem()
 photonCamera.setLED(VisionLEDMode.kOff);
 photonCamera.setDriverMode(false);
 photonCamera.setPipelineIndex(2);
+
+
+
+
+  
+  try {
+    aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+    System.out.println ("Set the field");
+    System.out.println(aprilTagFieldLayout);
+  } catch (IOException e) {
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+    System.out.println ("DIdntworklol");
+  }
+  
+  
+  
+
+
+
 
 }
 
@@ -59,13 +87,25 @@ photonCamera.setPipelineIndex(2);
       var target = pipelineResult.getBestTarget();
       //Records the id of the best target
       var fiducialId = target.getFiducialId();
-      
-      /* 
-      
-      Transform3d transform = target.getBestCameraToTarget();
-      System.out.println(transform);
 
-      */
+      
+      
+     
+
+    
+      
+     
+    
+      Pose3d aprilToField = aprilTagFieldLayout.getTagPose(fiducialId).get();
+      
+
+      // Calculate robot's field relative pose
+     Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),aprilToField , robotToCam);
+    System.out.println(robotPose);
+      
+      
+      
+     
       
       
       
