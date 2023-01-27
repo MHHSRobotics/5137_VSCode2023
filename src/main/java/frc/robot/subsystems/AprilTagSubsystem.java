@@ -9,6 +9,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -50,8 +51,6 @@ photonCamera.setPipelineIndex(2);
     var resultTimestamp = pipelineResult.getTimestampSeconds();
 
 
-  
-   
     //Makes sure that this result has not already been processed and confirms that the scan has targets present
     if (resultTimestamp != previousPipelineTimestamp && pipelineResult.hasTargets()) {
       //Sets current scan to previous to prevent rescanning
@@ -61,7 +60,12 @@ photonCamera.setPipelineIndex(2);
       //Records the id of the best target
       var fiducialId = target.getFiducialId();
       
+      /* 
       
+      Transform3d transform = target.getBestCameraToTarget();
+      System.out.println(transform);
+
+      */
       
       
       
@@ -94,5 +98,4 @@ photonCamera.setPipelineIndex(2);
 
 
 
- //Constructur for PhotonPoseEstimator
 }
