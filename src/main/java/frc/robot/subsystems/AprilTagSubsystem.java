@@ -88,7 +88,8 @@ photonCamera.setPipelineIndex(2);
       //Records the id of the best target
       var fiducialId = target.getFiducialId();
 
-      
+      //Transform3d transform = target.getBestCameraToTarget(); 
+      //System.out.println(transform);
       
      
 
@@ -97,11 +98,12 @@ photonCamera.setPipelineIndex(2);
      
     
       Pose3d aprilToField = aprilTagFieldLayout.getTagPose(fiducialId).get();
-      
+      //System.out.println(aprilToField);
+
 
       // Calculate robot's field relative pose
-     Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),aprilToField , robotToCam);
-    System.out.println(robotPose);
+     //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),aprilToField , robotToCam);
+   // System.out.println(robotPose);
       
       
       
@@ -118,14 +120,14 @@ photonCamera.setPipelineIndex(2);
       System.out.println("Tag ID: " + currentId);
       }
       //Prints when a detected tag moves out of frame/no longer detected
-      }
+    }
       else if(resultTimestamp != previousPipelineTimestamp  && currentId != 0 && pipelineResult.hasTargets() == false)
       {
         currentId = 0;
         System.out.println("No more targets detected...");
         
       }
-      
+    
     }
     
 
