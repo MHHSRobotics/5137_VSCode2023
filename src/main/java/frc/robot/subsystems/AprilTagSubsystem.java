@@ -96,17 +96,17 @@ photonCamera.setDriverMode(false);
       //Records the id of the best target
       var fiducialId = target.getFiducialId();
       
-      /*
+      
       EstimatedRobotPose estimatedRobotPose= photonPoseEstimator.update().get();
       Pose3d pose = estimatedRobotPose.estimatedPose;
       System.out.println(pose);
-      */
+      
 
 
 
-Transform3d bestCameraToTarget = target.getBestCameraToTarget();
+//Transform3d bestCameraToTarget = target.getBestCameraToTarget();
 //Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
-       System.out.println(bestCameraToTarget);
+       //System.out.println(bestCameraToTarget);
     
       
       
