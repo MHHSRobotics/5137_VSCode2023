@@ -2,11 +2,16 @@ package frc.robot.subsystems;
 
 import java.io.IOException;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.common.hardware.VisionLEDMode;
+
+import com.ctre.phoenixpro.signals.System_StateValue;
+
 import java.util.Optional;
 
 
@@ -14,6 +19,7 @@ import java.util.Optional;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -31,6 +37,7 @@ PhotonCamera photonCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
 private double previousPipelineTimestamp = 0;
 private int currentId = 0;
 private AprilTagFieldLayout aprilTagFieldLayout;
+private PhotonPoseEstimator photonPoseEstimator;
 
 
 
@@ -44,7 +51,7 @@ public AprilTagSubsystem()
   //Sets LED/"Lime" to off 
 photonCamera.setLED(VisionLEDMode.kOff);
 photonCamera.setDriverMode(false);
-photonCamera.setPipelineIndex(2);
+//photonCamera.setPipelineIndex(0);
 
 
 
@@ -61,7 +68,8 @@ photonCamera.setPipelineIndex(2);
   }
   
   
-  
+  photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.AVERAGE_BEST_TARGETS, photonCamera, robotToCam);
+
 
 
 
@@ -87,17 +95,27 @@ photonCamera.setPipelineIndex(2);
       var target = pipelineResult.getBestTarget();
       //Records the id of the best target
       var fiducialId = target.getFiducialId();
-
-      //Transform3d transform = target.getBestCameraToTarget(); 
-      //System.out.println(transform);
       
-     
+      /*
+      EstimatedRobotPose estimatedRobotPose= photonPoseEstimator.update().get();
+      Pose3d pose = estimatedRobotPose.estimatedPose;
+      System.out.println(pose);
+      */
+
+
+
+Transform3d bestCameraToTarget = target.getBestCameraToTarget();
+//Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
+       System.out.println(bestCameraToTarget);
+    
+      
+      
 
     
       
      
     
-      Pose3d aprilToField = aprilTagFieldLayout.getTagPose(fiducialId).get();
+      //Pose3d aprilToField = aprilTagFieldLayout.getTagPose(fiducialId).get();
       //System.out.println(aprilToField);
 
 
@@ -105,7 +123,10 @@ photonCamera.setPipelineIndex(2);
      //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),aprilToField , robotToCam);
    // System.out.println(robotPose);
       
-      
+   
+   
+   
+   
       
      
       
