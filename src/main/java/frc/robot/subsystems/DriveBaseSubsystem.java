@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
 
-public class DriveBase_Subsystem extends SubsystemBase {
+public class DriveBaseSubsystem extends SubsystemBase {
   //left motors
   public static WPI_TalonSRX leftTalon;
   public static WPI_VictorSPX leftFrontVic;
@@ -37,7 +37,7 @@ public class DriveBase_Subsystem extends SubsystemBase {
   int LYStickAxisPort;
   int RXStickAxisPort;
 
-  public DriveBase_Subsystem() {
+  public DriveBaseSubsystem() {
     //left motors
     leftTalon = new WPI_TalonSRX(Constants.leftTalonPort);
     leftFrontVic = new WPI_VictorSPX(Constants.leftFrontVicPort);

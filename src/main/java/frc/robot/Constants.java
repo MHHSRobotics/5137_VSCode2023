@@ -47,4 +47,11 @@ public final class Constants {
   public final static int rightTalonPort = 4;
   public final static int rightFrontVicPort = 5;
   public final static int rightBackVicPort = 6;
+
+  //april tags/vision
+  //change these later to put actual values when we know them
+  public final static int CAMERA_HEIGHT_METERS = 1;
+  public final static int TARGET_HEIGHT_METERS = 1;
+  public final static int CAMERA_PITCH_RADIANS = 0;
+  public final static double GOAL_RANGE_METERS = 0.5;//0.0254;//1 inch, can change later
 }
