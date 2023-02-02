@@ -54,4 +54,9 @@ public final class Constants {
   public final static int TARGET_HEIGHT_METERS = 1;
   public final static int CAMERA_PITCH_RADIANS = 0;
   public final static double GOAL_RANGE_METERS = 0.5;//0.0254;//1 inch, can change later
+
+  //pid for april tags/vision
+  public final static double kP = 0.5;
+  public final static int kD = 0;
+  public final static int kI = 0;
 }
