@@ -45,7 +45,7 @@ PhotonCamera photonCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
 
 private double previousPipelineTimestamp = 0;
 private int currentId = 0;
-private AprilTagFieldLayout aprilTagFieldLayout;
+public AprilTagFieldLayout aprilTagFieldLayout;
 private PhotonPoseEstimator photonPoseEstimator;
 public XboxController xboxc = new XboxController(0);
 //Calculates forward motor speed using distance to target
@@ -55,13 +55,16 @@ PIDController rotationController = new PIDController(Constants.rKP,Constants.rKI
 
 
 //Where our Camera is on the robot 
-Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); 
-
+Transform3d robotToCam = new Transform3d(new Translation3d(0.22, 0.0, 0.0), new Rotation3d(0,0,0)); 
+DifferentialDrivePoseEstimator poseEstimator;
+DriveBaseSubsystem driveBaseSubsystem;
 
 public AprilTagSubsystem()
 {
+
  
-  
+  poseEstimator = new DifferentialDrivePoseEstimator(Constants.trackWidth, Constants.initialGyro, Constants.initialLeftDistance,Constants.initialRightDistance, Constants.initialPose);
+  driveBaseSubsystem = RobotContainer.driveBase_Subsystem;
   //Sets LED/"Lime" to off 
 photonCamera.setLED(VisionLEDMode.kOff);
 photonCamera.setDriverMode(false);
@@ -136,7 +139,7 @@ photonCamera.setDriverMode(false);
   
             if (pipelineResult.hasTargets()) {
               double rotationSpeed = -rotationController.calculate(target.getYaw(), 0);
-              System.out.println(rotationSpeed);
+              //System.out.println(rotationSpeed);
             }
     
           }
@@ -160,8 +163,42 @@ photonCamera.setDriverMode(false);
         
       }
     
-    
+    updatePose(0, 0);
+    //System.out.println(poseEstimator.getEstimatedPosition());
+
+
   }
+
+
+  
+
+
+  public void updatePose(double leftDist, double rightDist) {
+ 
+    poseEstimator.update(driveBaseSubsystem.gyro.getRotation2d(), leftDist, rightDist);
+    
+    var result = photonCamera.getLatestResult();
+    if (result.hasTargets()) {
+      
+        var target = result.getBestTarget();
+       
+        var tagId = target.getFiducialId();
+        
+        var tagPose = aprilTagFieldLayout.getTagPose(tagId).get();
+        
+        var imageCaptureTime = result.getTimestampSeconds();
+       
+        var camToTargetTrans = target.getBestCameraToTarget();
+        System.out.println(camToTargetTrans);
+        
+        var camPose = tagPose.transformBy(camToTargetTrans.inverse());
+        
+        var robotPose = camPose.transformBy(robotToCam).toPose2d();
+
+        poseEstimator.addVisionMeasurement(robotPose, imageCaptureTime);
+    }
+}
+
 }
     
 
