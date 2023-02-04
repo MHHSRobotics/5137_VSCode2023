@@ -129,9 +129,10 @@ photonCamera.setDriverMode(false);
                 // -1.0 required to ensure positive PID controller effort _increases_ range
                 double forwardSpeed = -pid.calculate(range, Constants.GOAL_RANGE_METERS);
                 System.out.println(forwardSpeed);
+          
+            }
    
-   
-   
+          }
       
      
       
@@ -146,6 +147,7 @@ photonCamera.setDriverMode(false);
       System.out.println("Tag ID: " + currentId);
       }
       //Prints when a detected tag moves out of frame/no longer detected
+    
     }
       else if(resultTimestamp != previousPipelineTimestamp  && currentId != 0 && pipelineResult.hasTargets() == false)
       {
@@ -154,7 +156,7 @@ photonCamera.setDriverMode(false);
         
       }
     
-    }
+    
   }
 }
     
@@ -168,4 +170,4 @@ photonCamera.setDriverMode(false);
 
 
 
-}
+
