@@ -50,9 +50,9 @@ public final class Constants {
 
   //april tags/vision
   //change these later to put actual values when we know them
-  public final static int CAMERA_HEIGHT_METERS = 1;
-  public final static int TARGET_HEIGHT_METERS = 1;
-  public final static int CAMERA_PITCH_RADIANS = 0;
+  public final static double CAMERA_HEIGHT_METERS = 1.27;
+  public final static double TARGET_HEIGHT_METERS = 1.46;
+  public final static double CAMERA_PITCH_RADIANS = 0;
   public final static double GOAL_RANGE_METERS = 0.5;//0.0254;//1 inch, can change later
 
   //pid for april tags/vision

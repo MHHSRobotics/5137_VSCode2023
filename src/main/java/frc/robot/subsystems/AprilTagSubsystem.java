@@ -97,7 +97,8 @@ photonCamera.setDriverMode(false);
       
       EstimatedRobotPose estimatedRobotPose= photonPoseEstimator.update().get();
       Pose3d pose = estimatedRobotPose.estimatedPose;
-      System.out.println(pose);
+
+      //System.out.println(pose);
     
 //Transform3d bestCameraToTarget = target.getBestCameraToTarget();
 //Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
@@ -119,16 +120,19 @@ photonCamera.setDriverMode(false);
 
           if (pipelineResult.hasTargets()) {//might not need this line actually
               // First calculate range
+              
               double range = PhotonUtils.calculateDistanceToTargetMeters(
                                 Constants.CAMERA_HEIGHT_METERS,
                                 Constants.TARGET_HEIGHT_METERS,
                                 Constants.CAMERA_PITCH_RADIANS,
                                 Units.degreesToRadians(pipelineResult.getBestTarget().getPitch()));
-
+                        
+                        
+                      
                 // Use this range as the measurement we give to the PID controller.
                 // -1.0 required to ensure positive PID controller effort _increases_ range
                 double forwardSpeed = -pid.calculate(range, Constants.GOAL_RANGE_METERS);
-                System.out.println(forwardSpeed);
+              System.out.println(forwardSpeed);
           
             }
    
