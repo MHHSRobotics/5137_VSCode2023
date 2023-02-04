@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -38,6 +40,12 @@ public class DriveBaseSubsystem extends SubsystemBase {
   int RXStickAxisPort;
 
   public DriveBaseSubsystem() {
+
+
+
+    DifferentialDrivePoseEstimator poseEstimator = new DifferentialDrivePoseEstimator(Constants.trackWidth, Constants.initialGyro, Constants.initialLeftDistance,Constants.initialRightDistance, Constants.initialPose);
+
+
     //left motors
     leftTalon = new WPI_TalonSRX(Constants.leftTalonPort);
     leftFrontVic = new WPI_VictorSPX(Constants.leftFrontVicPort);
