@@ -10,7 +10,7 @@ import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.common.hardware.VisionLEDMode;
 
-import com.ctre.phoenixpro.signals.System_StateValue;
+
 
 import java.util.Optional;
 
@@ -43,8 +43,10 @@ private int currentId = 0;
 private AprilTagFieldLayout aprilTagFieldLayout;
 private PhotonPoseEstimator photonPoseEstimator;
 public XboxController xboxc = new XboxController(0);
-PIDController pid = new PIDController(Constants.kP,Constants.kI, Constants.kD); //pid controller
-
+//Calculates forward motor speed using distance to target
+PIDController distanceController = new PIDController(Constants.dKP,Constants.dKI, Constants.dKD); //pid controller
+//Calculates rotation speed using yaw 
+PIDController rotationController = new PIDController(Constants.rKP,Constants.rKI, Constants.rKD);
 
 
 //Where our Camera is on the robot 
@@ -94,26 +96,11 @@ photonCamera.setDriverMode(false);
       //Records the id of the best target
       var fiducialId = target.getFiducialId();
       
-      
+      //Pose3d of robot
       EstimatedRobotPose estimatedRobotPose= photonPoseEstimator.update().get();
       Pose3d pose = estimatedRobotPose.estimatedPose;
 
-      //System.out.println(pose);
-    
-//Transform3d bestCameraToTarget = target.getBestCameraToTarget();
-//Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
-       //System.out.println(bestCameraToTarget);
-    
-      //Pose3d aprilToField = aprilTagFieldLayout.getTagPose(fiducialId).get();
-      //System.out.println(aprilToField);
-
-      // Calculate robot's field relative pose
-     //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),aprilToField , robotToCam);
-   // System.out.println(robotPose);
-      
-
-   //following code is for getting distance to the target
-
+    //Moves towards target / controls forward speed
     if (xboxc.getAButton()) {
           // Vision-alignment mode
           // Query the latest result from PhotonVision
@@ -131,15 +118,22 @@ photonCamera.setDriverMode(false);
                       
                 // Use this range as the measurement we give to the PID controller.
                 // -1.0 required to ensure positive PID controller effort _increases_ range
-                double forwardSpeed = -pid.calculate(range, Constants.GOAL_RANGE_METERS);
-              System.out.println(forwardSpeed);
+                double forwardSpeed = -distanceController.calculate(range, Constants.GOAL_RANGE_METERS);
+              //System.out.println(forwardSpeed);
           
             }
    
           }
-      
-     
-      
+          //Controls rotation speed based upon yaw
+          if (xboxc.getXButton()) {
+           
+  
+            if (pipelineResult.hasTargets()) {
+              double rotationSpeed = -rotationController.calculate(target.getYaw(), 0);
+              System.out.println(rotationSpeed);
+            }
+    
+          }
       
       
     //Print System for RioLog 
