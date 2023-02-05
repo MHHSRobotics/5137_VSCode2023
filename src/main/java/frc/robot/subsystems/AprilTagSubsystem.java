@@ -2,12 +2,9 @@ package frc.robot.subsystems;
 
 import java.io.IOException;
 
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.common.hardware.VisionLEDMode;
 
 
@@ -19,11 +16,10 @@ import java.util.Optional;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
-import edu.wpi.first.math.MatBuilder;
-import edu.wpi.first.math.Nat;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -46,7 +42,7 @@ PhotonCamera photonCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
 private double previousPipelineTimestamp = 0;
 private int currentId = 0;
 public AprilTagFieldLayout aprilTagFieldLayout;
-private PhotonPoseEstimator photonPoseEstimator;
+
 public XboxController xboxc = new XboxController(0);
 //Calculates forward motor speed using distance to target
 PIDController distanceController = new PIDController(Constants.dKP,Constants.dKI, Constants.dKD); //pid controller
@@ -81,7 +77,6 @@ photonCamera.setDriverMode(false);
     System.out.println ("DIdntworklol");
   }
   
-  photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.AVERAGE_BEST_TARGETS, photonCamera, robotToCam);
 
 }
 
@@ -105,9 +100,7 @@ photonCamera.setDriverMode(false);
       //Records the id of the best target
       var fiducialId = target.getFiducialId();
       
-      //Pose3d of robot
-      EstimatedRobotPose estimatedRobotPose= photonPoseEstimator.update().get();
-      Pose3d pose = estimatedRobotPose.estimatedPose;
+     
 
     //Moves towards target / controls forward speed
     if (xboxc.getAButton()) {
