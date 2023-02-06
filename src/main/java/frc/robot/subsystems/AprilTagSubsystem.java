@@ -78,8 +78,6 @@ photonCamera.setDriverMode(false);
 @Override
   public void periodic() {
 
-    System.out.println(aprilTagFieldLayout.getTagPose(1).get().getTranslation().getY());
-    
     //Gets the estimated global position of the robot for use later
     robotPose = poseEstimator.getEstimatedPosition();
     
