@@ -21,13 +21,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -54,11 +50,11 @@ PIDController rotationController = new PIDController(Constants.rKP,Constants.rKI
 Transform3d robotToCam = new Transform3d(new Translation3d(0.22, 0.0, 0.0), new Rotation3d(0,0,0)); 
 DifferentialDrivePoseEstimator poseEstimator;
 DriveBaseSubsystem driveBaseSubsystem;
+Pose2d robotPose;
 
 public AprilTagSubsystem()
 {
 
- 
   poseEstimator = new DifferentialDrivePoseEstimator(Constants.trackWidth, Constants.initialGyro, Constants.initialLeftDistance,Constants.initialRightDistance, Constants.initialPose);
   driveBaseSubsystem = RobotContainer.driveBase_Subsystem;
   //Sets LED/"Lime" to off 
@@ -66,22 +62,23 @@ photonCamera.setLED(VisionLEDMode.kOff);
 photonCamera.setDriverMode(false);
 //photonCamera.setPipelineIndex(0); the number of the pipeline is on photon vision itself so choose from there I think
 
-  
+  //Sets the April Tag field to the 2023 field
   try {
     aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
     System.out.println ("Set the field");
     System.out.println(aprilTagFieldLayout);
   } catch (IOException e) {
-    // TODO Auto-generated catch block
+    
     e.printStackTrace();
-    System.out.println ("DIdntworklol");
+    System.out.println ("Field Load Didn't Work");
   }
-  
-
 }
+
 
 @Override
   public void periodic() {
+    //Gets the estimated global position of the robot for use later
+    robotPose = poseEstimator.getEstimatedPosition();
   
   // Rescans for the best target
     //Gathers latest result / "scan"
@@ -90,9 +87,9 @@ photonCamera.setDriverMode(false);
     //Records the Time of the latest scan
     var resultTimestamp = pipelineResult.getTimestampSeconds();
 
-
     //Makes sure that this result has not already been processed and confirms that the scan has targets present
-    if (resultTimestamp != previousPipelineTimestamp && pipelineResult.hasTargets()) {
+    if (resultTimestamp != previousPipelineTimestamp && pipelineResult.hasTargets()) 
+    {
       //Sets current scan to previous to prevent rescanning
         previousPipelineTimestamp = resultTimestamp;
         //Sets the target used in AprilTag system to the best target in the "Scan"
@@ -101,97 +98,93 @@ photonCamera.setDriverMode(false);
       var fiducialId = target.getFiducialId();
       
      
-
-    //Moves towards target / controls forward speed
-    if (xboxc.getAButton()) {
-          // Vision-alignment mode
-          // Query the latest result from PhotonVision
-
-          if (pipelineResult.hasTargets()) {//might not need this line actually
-              // First calculate range
-              
-              double range = PhotonUtils.calculateDistanceToTargetMeters(
-                                Constants.CAMERA_HEIGHT_METERS,
-                                Constants.TARGET_HEIGHT_METERS,
-                                Constants.CAMERA_PITCH_RADIANS,
-                                Units.degreesToRadians(pipelineResult.getBestTarget().getPitch()));
-                        
-                        
-                      
-                // Use this range as the measurement we give to the PID controller.
-                // -1.0 required to ensure positive PID controller effort _increases_ range
-                double forwardSpeed = -distanceController.calculate(range, Constants.GOAL_RANGE_METERS);
-              //System.out.println(forwardSpeed);
-          
-            }
-   
-          }
-          //Controls rotation speed based upon yaw
-          if (xboxc.getXButton()) {
-           
-  
-            if (pipelineResult.hasTargets()) {
-              double rotationSpeed = -rotationController.calculate(target.getYaw(), 0);
-              //System.out.println(rotationSpeed);
-            }
-    
-          }
-      
-      
     //Print System for RioLog 
       //Prints message and tag id when a new tag is found
       if(fiducialId != currentId)
       {
-      currentId = fiducialId;
-      System.out.println("New Best Target Detected!");
-      System.out.println("Tag ID: " + currentId);
+        currentId = fiducialId;
+        System.out.println("New Best Target Detected!");
+        System.out.println("Tag ID: " + currentId);
       }
-      //Prints when a detected tag moves out of frame/no longer detected
-    
+    //Prints when a detected tag moves out of frame/no longer detected
     }
-      else if(resultTimestamp != previousPipelineTimestamp  && currentId != 0 && pipelineResult.hasTargets() == false)
-      {
-        currentId = 0;
-        System.out.println("No more targets detected...");
+    else if(resultTimestamp != previousPipelineTimestamp  && currentId != 0 && pipelineResult.hasTargets() == false)
+    {
+      currentId = 0;
+      System.out.println("No more targets detected...");
         
-      }
+    }
     
+    //Updates the pose using vision measurements, gyro measurements, and encoders (when added)
     updatePose(0, 0);
-    //System.out.println(poseEstimator.getEstimatedPosition());
-
-
   }
 
 
+  public void autoMove(Pose2d targetPose)
+  {
+    autoRotate(targetPose);
+    autoDriveForward(targetPose);
+    autoRotate(targetPose);
+    autoDriveForward(targetPose);
+  }
+
+
+  public void autoRotate(Pose2d targetPose)
+  {
+    while(PhotonUtils.getYawToPose(robotPose, targetPose).getDegrees() != 0 )
+    {
+    double rotationSpeed = -rotationController.calculate(PhotonUtils.getYawToPose(robotPose, targetPose).getDegrees(), 0.0);
+    
+    driveBaseSubsystem.testDrive.tankDrive(-rotationSpeed,rotationSpeed);
+    if(rotationSpeed == 0)
+    {
+    break;
+    }
+    }
+  }
+
+
+  public void autoDriveForward(Pose2d targetPose)
+  {
+    while(PhotonUtils.getDistanceToPose(robotPose, targetPose) != 0 )
+    {
+    double forwardSpeed = -distanceController.calculate(PhotonUtils.getDistanceToPose(robotPose, targetPose), 0.0);
+    
+    driveBaseSubsystem.driveStraight(forwardSpeed);
+    if(forwardSpeed == 0)
+    {
+    break;
+    }
+    }
+  }
   
 
-
-  public void updatePose(double leftDist, double rightDist) {
+  public void updatePose(double leftDist, double rightDist) 
+  {
  
     poseEstimator.update(driveBaseSubsystem.gyro.getRotation2d(), leftDist, rightDist);
     
     var result = photonCamera.getLatestResult();
-    if (result.hasTargets()) {
+    if (result.hasTargets()) 
+    {
       
-        var target = result.getBestTarget();
+      var target = result.getBestTarget();
        
-        var tagId = target.getFiducialId();
+      var tagId = target.getFiducialId();
         
-        var tagPose = aprilTagFieldLayout.getTagPose(tagId).get();
+      var tagPose = aprilTagFieldLayout.getTagPose(tagId).get();
         
-        var imageCaptureTime = result.getTimestampSeconds();
+      var imageCaptureTime = result.getTimestampSeconds();
        
-        var camToTargetTrans = target.getBestCameraToTarget();
-        System.out.println(camToTargetTrans);
+      var camToTargetTrans = target.getBestCameraToTarget();
         
-        var camPose = tagPose.transformBy(camToTargetTrans.inverse());
+      var camPose = tagPose.transformBy(camToTargetTrans.inverse());
         
-        var robotPose = camPose.transformBy(robotToCam).toPose2d();
+      var robotPose = camPose.transformBy(robotToCam).toPose2d();
 
-        poseEstimator.addVisionMeasurement(robotPose, imageCaptureTime);
+      poseEstimator.addVisionMeasurement(robotPose, imageCaptureTime);
     }
-}
-
+  }
 }
     
 

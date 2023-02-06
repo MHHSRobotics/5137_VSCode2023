@@ -77,5 +77,15 @@ public final class Constants {
   public final static double initialRightDistance = 0;
   public final static DifferentialDriveKinematics trackWidth = new DifferentialDriveKinematics(Units.inchesToMeters(20.25));
 
+  //AlignPosesField 
+
+  
+  //Red Alliance
+
+
+
+  //Blue Alliance 
+
+
 
 }
