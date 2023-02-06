@@ -8,6 +8,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import java.lang.Math;
+
+
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -18,6 +21,9 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public final static double pi = Math.PI;
+  
   //Driving
   public final static double driveSensitivity = 1.0;
   public final static double turnSensitivity = 3.0;
@@ -77,15 +83,17 @@ public final class Constants {
   public final static double initialRightDistance = 0;
   public final static DifferentialDriveKinematics trackWidth = new DifferentialDriveKinematics(Units.inchesToMeters(20.25));
 
-  //AlignPosesField 
+  //AlignPosesField - pose4 & pose5 are the loading station targets
 
-  
   //Red Alliance
-
-
+  public final static Pose2d tag1 = new Pose2d(15.513558, 1.071626, new Rotation2d(pi));
+  public final static Pose2d tag2 = new Pose2d(15.513558, 2.748026, new Rotation2d(pi));
+  public final static Pose2d tag3 = new Pose2d(15.513558,4.424426, new Rotation2d(pi));
+  public final static Pose2d tag4 = new Pose2d(16.178784, 6.749796, new Rotation2d(pi));
 
   //Blue Alliance 
-
-
-
+  public final static Pose2d tag5 = new Pose2d(0.36195, 6.749796, new Rotation2d(0));
+  public final static Pose2d tag6 = new Pose2d(1.02743, 4.424426, new Rotation2d(0));
+  public final static Pose2d tag7 = new Pose2d(1.02743, 2.748026, new Rotation2d(0));
+  public final static Pose2d tag8 = new Pose2d(1.02743, 1.071626, new Rotation2d(0));
 }
