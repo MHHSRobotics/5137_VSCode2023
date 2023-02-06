@@ -23,6 +23,8 @@ import java.lang.Math;
 public final class Constants {
 
   public final static double pi = Math.PI;
+  public final static double nodeSpacing = Units.inchesToMeters(22);
+  public final static double scoreDistance = 0;
   
   //Driving
   public final static double driveSensitivity = 1.0;
@@ -83,7 +85,7 @@ public final class Constants {
   public final static double initialRightDistance = 0;
   public final static DifferentialDriveKinematics trackWidth = new DifferentialDriveKinematics(Units.inchesToMeters(20.25));
 
-  //AlignPosesField - tag4 & tag5 are the loading station targets
+  //TagField - tag4 & tag5 are the loading station targets
 
   //Red Alliance
   public final static Pose2d tag1 = new Pose2d(15.513558, 1.071626, new Rotation2d(pi));
@@ -96,4 +98,29 @@ public final class Constants {
   public final static Pose2d tag6 = new Pose2d(1.02743, 4.424426, new Rotation2d(0));
   public final static Pose2d tag7 = new Pose2d(1.02743, 2.748026, new Rotation2d(0));
   public final static Pose2d tag8 = new Pose2d(1.02743, 1.071626, new Rotation2d(0));
+
+  //AlignField 
+  
+  //Red Alliance Align Spots
+  public final static Pose2d pose1a = new Pose2d(15.513558 - scoreDistance, 1.071626 - nodeSpacing, new Rotation2d(pi));
+  public final static Pose2d pose1b = new Pose2d(15.513558 - scoreDistance, 1.071626, new Rotation2d(pi));
+  public final static Pose2d pose1c = new Pose2d(15.513558 - scoreDistance, 1.071626 + nodeSpacing, new Rotation2d(pi));
+  public final static Pose2d pose2a = new Pose2d(15.513558 - scoreDistance, 2.748026 - nodeSpacing, new Rotation2d(pi));
+  public final static Pose2d pose2b = new Pose2d(15.513558 - scoreDistance, 2.748026, new Rotation2d(pi));
+  public final static Pose2d pose2c = new Pose2d(15.513558 - scoreDistance, 2.748026 + nodeSpacing, new Rotation2d(pi));
+  public final static Pose2d pose3a = new Pose2d(15.513558 - scoreDistance,4.424426 - nodeSpacing, new Rotation2d(pi));
+  public final static Pose2d pose3b = new Pose2d(15.513558 - scoreDistance,4.424426, new Rotation2d(pi));
+  public final static Pose2d pose3c = new Pose2d(15.513558 - scoreDistance,4.424426 + nodeSpacing, new Rotation2d(pi));
+   
+  //Blue Alliance align spots
+  public final static Pose2d pose6a = new Pose2d(1.02743 + scoreDistance, 4.424426 + nodeSpacing, new Rotation2d(0));
+  public final static Pose2d pose6b = new Pose2d(1.02743 + scoreDistance, 4.424426, new Rotation2d(0));
+  public final static Pose2d pose6c = new Pose2d(1.02743 + scoreDistance, 4.424426 - nodeSpacing, new Rotation2d(0));
+  public final static Pose2d pose7a = new Pose2d(1.02743 + scoreDistance, 2.748026 + nodeSpacing, new Rotation2d(0));
+  public final static Pose2d pose7b = new Pose2d(1.02743 + scoreDistance, 2.748026, new Rotation2d(0));
+  public final static Pose2d pose7c = new Pose2d(1.02743 + scoreDistance, 2.748026 - nodeSpacing, new Rotation2d(0));
+  public final static Pose2d pose8a = new Pose2d(1.02743 + scoreDistance, 1.071626 + nodeSpacing, new Rotation2d(0));
+  public final static Pose2d pose8b = new Pose2d(1.02743 + scoreDistance, 1.071626, new Rotation2d(0));
+  public final static Pose2d pose8c = new Pose2d(1.02743 + scoreDistance, 1.071626 - nodeSpacing, new Rotation2d(0));
+
 }
