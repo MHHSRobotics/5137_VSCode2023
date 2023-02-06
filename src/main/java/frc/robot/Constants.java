@@ -83,7 +83,7 @@ public final class Constants {
   public final static double initialRightDistance = 0;
   public final static DifferentialDriveKinematics trackWidth = new DifferentialDriveKinematics(Units.inchesToMeters(20.25));
 
-  //AlignPosesField - pose4 & pose5 are the loading station targets
+  //AlignPosesField - tag4 & tag5 are the loading station targets
 
   //Red Alliance
   public final static Pose2d tag1 = new Pose2d(15.513558, 1.071626, new Rotation2d(pi));
