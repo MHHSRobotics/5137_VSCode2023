@@ -118,15 +118,24 @@ photonCamera.setDriverMode(false);
     
     //Updates the pose using vision measurements, gyro measurements, and encoders (when added)
     updatePose(0, 0);
+
+
+    if(xboxc.getLeftBumper())
+    {
+     autoAlign(Constants.pose2b);
+    }
   }
 
 
-  public void autoMove(Pose2d targetPose)
+
+  
+
+  public void autoAlign(Pose2d targetPose)
   {
     autoRotate(targetPose);
     autoDriveForward(targetPose);
     autoRotate(targetPose);
-    autoDriveForward(targetPose);
+   
   }
 
 

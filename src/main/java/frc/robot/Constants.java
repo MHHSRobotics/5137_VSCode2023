@@ -24,7 +24,7 @@ public final class Constants {
 
   public final static double pi = Math.PI;
   public final static double nodeSpacing = Units.inchesToMeters(22);
-  public final static double scoreDistance = 0;
+  public final static double scoreDistance = Units.inchesToMeters(36);
   
   //Driving
   public final static double driveSensitivity = 1.0;
