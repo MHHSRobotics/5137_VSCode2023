@@ -78,6 +78,18 @@ photonCamera.setDriverMode(false);
 @Override
   public void periodic() {
 
+
+    //Test as an encoder??? Also make sure this uses the right motor/controller
+ /* 
+    double wheelDiameter = .12; //Meters
+    double distancePerPulse = (wheelDiameter * Math.PI) / 4096.0;
+    double leftDist = DriveBaseSubsystem.leftTalon.getSelectedSensorPosition() * distancePerPulse;
+    
+    double wheelDiameter = .12; //Meters
+    double distancePerPulse = (wheelDiameter * Math.PI) / 4096.0;
+    double rightDist = DriveBaseSubsystem.rightTalon.getSelectedSensorPosition() * distancePerPulse;
+*/
+
     //Gets the estimated global position of the robot for use later
     robotPose = poseEstimator.getEstimatedPosition();
     
