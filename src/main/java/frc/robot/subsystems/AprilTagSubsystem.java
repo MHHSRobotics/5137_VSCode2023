@@ -154,6 +154,7 @@ photonCamera.setDriverMode(false);
 
   }
 
+  //Gets the nearest right cone, cube, or left cone column. DO not call when halfway or farther across the field! 
   public Pose2d getNearestAlign(String targetName, Pose2d robotPose)
   {
     int alignIndex = -1;
