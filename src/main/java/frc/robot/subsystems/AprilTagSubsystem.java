@@ -129,16 +129,19 @@ photonCamera.setDriverMode(false);
       {
         if(xboxc.getXButtonPressed())
         {
+        System.out.println("Aligning to nearest left cone column");
         Pose2d align = getNearestAlign("left", robotPose);
        autoAlign(align);
       }
       if(xboxc.getYButtonPressed())
       {
+        System.out.println("Aligning to nearest cube column");
         Pose2d align = getNearestAlign("middle", robotPose);
         autoAlign(align);
       }
       if(xboxc.getBButtonPressed())
       {
+        System.out.println("Aligning to nearest right cone column");
         Pose2d align = getNearestAlign("right", robotPose);
         autoAlign(align);
       }
@@ -206,7 +209,7 @@ photonCamera.setDriverMode(false);
         alignIndex = i;
        }
       }
-      return array[alignIndex][1];
+      return array[alignIndex][2];
       }
       
 
@@ -251,7 +254,7 @@ photonCamera.setDriverMode(false);
           alignIndex = i;
          }
         }
-        return array[alignIndex][1];
+        return array[alignIndex][2];
       }
     }
     return array[3][0];
@@ -263,7 +266,6 @@ photonCamera.setDriverMode(false);
     autoRotate(targetPose);
     autoDriveForward(targetPose);
     autoRotate(targetPose);
-   
   }
 
 
