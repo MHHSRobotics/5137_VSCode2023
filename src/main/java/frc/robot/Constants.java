@@ -48,7 +48,7 @@ public final class Constants {
 
   //PS4 Controller Ports
   //Need to test these. ports may have changed with the removal of buttons.
-  public final static int PS4_LXStickAxisPort = 0;
+  public final static int PS4_LXSFtickAxisPort = 0;
   public final static int PS4_LYStickAxisPort = 1;
   public final static int PS4_RXStickAxisPort = 2;
   public final static int PS4_RYStickAxisPort = 5;

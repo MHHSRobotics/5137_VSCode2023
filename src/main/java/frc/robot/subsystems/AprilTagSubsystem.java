@@ -118,6 +118,12 @@ photonCamera.setDriverMode(false);
         currentId = fiducialId;
         System.out.println("New Best Target Detected!");
         System.out.println("Tag ID: " + currentId);
+
+        if(xboxc.getLeftBumper())
+      {
+       updatePose(previousPipelineTimestamp, currentId);
+       autoAlign(Constants.pose2b);
+      }
       }
     //Prints when a detected tag moves out of frame/no longer detected
     }
@@ -125,17 +131,14 @@ photonCamera.setDriverMode(false);
     {
       currentId = 0;
       System.out.println("No more targets detected...");
-        
+      
     }
     
     //Updates the pose using vision measurements, gyro measurements, and encoders (when added)
     updatePose(0, 0);
 
 
-    if(xboxc.getLeftBumper())
-    {
-     autoAlign(Constants.pose2b);
-    }
+
   }
 
 
@@ -158,6 +161,7 @@ photonCamera.setDriverMode(false);
     double rotationSpeed = -rotationController.calculate(PhotonUtils.getYawToPose(robotPose, targetPose).getDegrees(), 0.0);
     
     driveBaseSubsystem.testDrive.tankDrive(-rotationSpeed,rotationSpeed);
+    System.out.println("Rotation speed: " + rotationSpeed);
     if(rotationSpeed == 0)
     {
     break;
@@ -171,7 +175,7 @@ photonCamera.setDriverMode(false);
     while(PhotonUtils.getDistanceToPose(robotPose, targetPose) != 0 )
     {
     double forwardSpeed = -distanceController.calculate(PhotonUtils.getDistanceToPose(robotPose, targetPose), 0.0);
-    
+    System.out.println("Forward speed: " + forwardSpeed);
     driveBaseSubsystem.driveStraight(forwardSpeed);
     if(forwardSpeed == 0)
     {
