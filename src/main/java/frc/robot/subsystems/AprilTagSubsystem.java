@@ -12,7 +12,6 @@ import org.photonvision.common.hardware.VisionLEDMode;
 import java.util.Optional;
 
 
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
@@ -118,13 +117,27 @@ photonCamera.setDriverMode(false);
         currentId = fiducialId;
         System.out.println("New Best Target Detected!");
         System.out.println("Tag ID: " + currentId);
-
-        if(xboxc.getLeftBumper())
+      }
+        
+      if(xboxc.getLeftBumper())
       {
-       updatePose(previousPipelineTimestamp, currentId);
-       autoAlign(Constants.pose2b);
+        if(xboxc.getXButtonPressed())
+        {
+        Pose2d align = getNearestAlign("left", robotPose);
+       autoAlign(align);
+      }
+      if(xboxc.getYButtonPressed())
+      {
+        Pose2d align = getNearestAlign("middle", robotPose);
+        autoAlign(align);
+      }
+      if(xboxc.getBButtonPressed())
+      {
+        Pose2d align = getNearestAlign("right", robotPose);
+        autoAlign(align);
       }
       }
+      
     //Prints when a detected tag moves out of frame/no longer detected
     }
     else if(resultTimestamp != previousPipelineTimestamp  && currentId != 0 && pipelineResult.hasTargets() == false)
@@ -136,13 +149,106 @@ photonCamera.setDriverMode(false);
     
     //Updates the pose using vision measurements, gyro measurements, and encoders (when added)
     updatePose(0, 0);
-
+   
 
 
   }
 
+  public Pose2d getNearestAlign(String targetName, Pose2d robotPose)
+  {
+    int alignIndex = -1;
+    double minDiff = Double.MAX_VALUE;
+    double currentDiff;
+    Pose2d[][] array = Constants.alignArray;
+    if(robotPose.getX() <= 8.27)
+    {
+      if(targetName.equals("right"))
+      {
+      for(int i = 5; i < 8; i++)
+      {
+      currentDiff = Math.abs(array[i][0].getY() - robotPose.getY());
+       if(currentDiff < minDiff)
+       {
+        minDiff = currentDiff;
+        alignIndex = i;
+       }
+      }
+      return array[alignIndex][0];
+      }
+      if(targetName.equals("middle"))
+      {
+      for(int i = 5; i < 8; i++)
+      {
+      currentDiff = Math.abs(array[i][1].getY() - robotPose.getY());
+       if(currentDiff < minDiff)
+       {
+        minDiff = currentDiff;
+        alignIndex = i;
+       }
+      }
+      return array[alignIndex][1];
+      }
+      if(targetName.equals("left"))
+      {
+      for(int i = 5; i < 8; i++)
+      {
+      currentDiff = Math.abs(array[i][2].getY() - robotPose.getY());
+       if(currentDiff < minDiff)
+       {
+        minDiff = currentDiff;
+        alignIndex = i;
+       }
+      }
+      return array[alignIndex][1];
+      }
+      
 
-
+    
+  }
+  else if(robotPose.getX() > 8.27)
+      {
+        if(targetName.equals("right"))
+        {
+        for(int i = 0; i < 3; i++)
+        {
+        currentDiff = Math.abs(array[i][0].getY() - robotPose.getY());
+         if(currentDiff < minDiff)
+         {
+          minDiff = currentDiff;
+          alignIndex = i;
+         }
+        }
+        return array[alignIndex][0];
+        }
+        if(targetName.equals("middle"))
+        {
+        for(int i = 0; i < 3; i++)
+        {
+        currentDiff = Math.abs(array[i][1].getY() - robotPose.getY());
+         if(currentDiff < minDiff)
+         {
+          minDiff = currentDiff;
+          alignIndex = i;
+         }
+        }
+        return array[alignIndex][1];
+        }
+        if(targetName.equals("left"))
+        {
+        for(int i = 0; i < 3; i++)
+        {
+        currentDiff = Math.abs(array[i][2].getY() - robotPose.getY());
+         if(currentDiff < minDiff)
+         {
+          minDiff = currentDiff;
+          alignIndex = i;
+         }
+        }
+        return array[alignIndex][1];
+      }
+    }
+    return array[3][0];
+  }
   
 
   public void autoAlign(Pose2d targetPose)

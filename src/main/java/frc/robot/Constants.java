@@ -112,6 +112,11 @@ public final class Constants {
   public final static Pose2d pose3b = new Pose2d(15.513558 - scoreDistance,4.424426, new Rotation2d(pi));
   public final static Pose2d pose3c = new Pose2d(15.513558 - scoreDistance,4.424426 + nodeSpacing, new Rotation2d(pi));
    
+
+  //Loading stations
+  public final static Pose2d pose4 = new Pose2d(16.178784 - scoreDistance, 6.749796, new Rotation2d(pi));
+  public final static Pose2d pose5 = new Pose2d(0.36195 + scoreDistance, 6.749796, new Rotation2d(0));
+
   //Blue Alliance align spots
   public final static Pose2d pose6a = new Pose2d(1.02743 + scoreDistance, 4.424426 + nodeSpacing, new Rotation2d(0));
   public final static Pose2d pose6b = new Pose2d(1.02743 + scoreDistance, 4.424426, new Rotation2d(0));
@@ -123,4 +128,14 @@ public final class Constants {
   public final static Pose2d pose8b = new Pose2d(1.02743 + scoreDistance, 1.071626, new Rotation2d(0));
   public final static Pose2d pose8c = new Pose2d(1.02743 + scoreDistance, 1.071626 - nodeSpacing, new Rotation2d(0));
 
+
+  public final static Pose2d[][] alignArray= 
+  {{pose1a, pose1b, pose1c},
+   {pose2a, pose2b, pose2c},
+   {pose3a, pose3b, pose3c},
+   {pose4 , pose4 , pose4 },
+   {pose5 , pose5, pose5  }, 
+   {pose6a, pose6b, pose6c},
+   {pose7a, pose7b, pose7c},
+   {pose8a, pose8b, pose8c}};
 }
