@@ -48,9 +48,9 @@ public class DriveBase_Subsystem extends SubsystemBase {
     rightBackVic = new WPI_VictorSPX(Constants.rightBackVicPort);
     rightDrive = new MotorControllerGroup(rightTalon, rightFrontVic, rightBackVic);
 
-    rightTalon.setInverted(true);
-    rightFrontVic.setInverted(true);
-    leftFrontVic.setInverted(true);
+    //rightTalon.setInverted(true);
+    //rightFrontVic.setInverted(true);
+    //leftFrontVic.setInverted(true);
 
     //DriveTrain
     testDrive = new DifferentialDrive(leftDrive, rightDrive);

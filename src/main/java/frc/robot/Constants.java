@@ -14,8 +14,8 @@ package frc.robot;
  */
 public final class Constants {
   //Driving
-  public final static double driveSensitivity = 1.0;
-  public final static double turnSensitivity = 3.0;
+  public final static double driveSensitivity = 3.0;
+  public final static double turnSensitivity = 1.0;
   public final static double errormargin = 0.1;
 
   //Controller Type "xbox" or "ps4"
