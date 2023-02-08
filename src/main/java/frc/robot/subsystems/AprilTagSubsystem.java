@@ -41,6 +41,7 @@ public AprilTagFieldLayout aprilTagFieldLayout;
 public XboxController xboxc = new XboxController(0);
 //Calculates forward motor speed using distance to target
 PIDController distanceController = new PIDController(Constants.dKP,Constants.dKI, Constants.dKD); //pid controller
+
 //Calculates rotation speed using yaw 
 PIDController rotationController = new PIDController(Constants.rKP,Constants.rKI, Constants.rKD);
 
@@ -53,8 +54,13 @@ Pose2d robotPose;
 
 public AprilTagSubsystem()
 {
-
-  poseEstimator = new DifferentialDrivePoseEstimator(Constants.trackWidth, Constants.initialGyro, Constants.initialLeftDistance,Constants.initialRightDistance, Constants.initialPose);
+  //Sets tolerance of PID controllers so they dont have to be on 0.0000
+distanceController.setTolerance(.05);
+rotationController.setTolerance(1);
+  
+//Pose estimator system for global pose estimation
+poseEstimator = new DifferentialDrivePoseEstimator(Constants.trackWidth, Constants.initialGyro, Constants.initialLeftDistance,Constants.initialRightDistance, Constants.initialPose);
+//Used to call from driveBase subsystem non statically 
   driveBaseSubsystem = RobotContainer.driveBase_Subsystem;
   //Sets LED/"Lime" to off 
 photonCamera.setLED(VisionLEDMode.kOff);
