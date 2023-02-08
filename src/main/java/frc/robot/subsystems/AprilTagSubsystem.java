@@ -126,7 +126,7 @@ photonCamera.setDriverMode(false);
       }
         
      System.out.println(robotPose);
-        if(xboxc.getXButtonPressed())
+        if(xboxc.getXButton())
         {
         System.out.println("Aligning to nearest left cone column");
         Pose2d align = getNearestAlign("left", robotPose);
@@ -138,7 +138,7 @@ photonCamera.setDriverMode(false);
         Pose2d align = getNearestAlign("middle", robotPose);
         autoAlign(align);
       }
-      if(xboxc.getBButtonPressed())
+      if(xboxc.getBButton())
       {
         System.out.println("Aligning to nearest right cone column");
         Pose2d align = getNearestAlign("right", robotPose);
