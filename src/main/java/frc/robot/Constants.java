@@ -69,12 +69,12 @@ public final class Constants {
   public final static double GOAL_RANGE_METERS = 0.5;//0.0254;//1 inch, can change later
 
   //pid for forward speed/vision
-  public final static double dKP = 0.05;
+  public final static double dKP = 0.02;
   public final static double dKD = 0;
   public final static double dKI = 0;
 
   //pid for rotation speed/vision
-  public final static double rKP = 0.05;
+  public final static double rKP = 0.01;
   public final static double rKD = 0;
   public final static double rKI = 0;
 

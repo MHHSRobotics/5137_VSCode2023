@@ -55,7 +55,7 @@ Pose2d robotPose;
 public AprilTagSubsystem()
 {
   //Sets tolerance of PID controllers so they dont have to be on 0.0000
-distanceController.setTolerance(.05);
+distanceController.setTolerance(.1);
 rotationController.setTolerance(1);
   
 //Pose estimator system for global pose estimation
@@ -125,15 +125,14 @@ photonCamera.setDriverMode(false);
         System.out.println("Tag ID: " + currentId);
       }
         
-      if(xboxc.getLeftBumper())
-      {
+     System.out.println(robotPose);
         if(xboxc.getXButtonPressed())
         {
         System.out.println("Aligning to nearest left cone column");
         Pose2d align = getNearestAlign("left", robotPose);
        autoAlign(align);
       }
-      if(xboxc.getYButtonPressed())
+      if(xboxc.getYButton())
       {
         System.out.println("Aligning to nearest cube column");
         Pose2d align = getNearestAlign("middle", robotPose);
@@ -145,7 +144,7 @@ photonCamera.setDriverMode(false);
         Pose2d align = getNearestAlign("right", robotPose);
         autoAlign(align);
       }
-      }
+      
       
     //Prints when a detected tag moves out of frame/no longer detected
     }
