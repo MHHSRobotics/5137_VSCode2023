@@ -70,13 +70,11 @@ public class DriveBaseSubsystem extends SubsystemBase {
     rightBackVic = new WPI_VictorSPX(Constants.rightBackVicPort);
     rightDrive = new MotorControllerGroup(rightTalon, rightFrontVic, rightBackVic);
 
-    rightDrive.setInverted(true);
 
     leftFrontVic.setInverted(true);
-
     //DriveTrain
     testDrive = new DifferentialDrive(leftDrive, rightDrive);
-
+    rightDrive.setInverted(true);
     
     //Controller
     controller = new Joystick(Constants.controllerPort);
@@ -119,7 +117,7 @@ public class DriveBaseSubsystem extends SubsystemBase {
     double rotate = controller.getRawAxis(RXStickAxisPort);
     speed = adjust(speed);
     rotate = adjust(rotate);
-    testDrive.curvatureDrive(speed/Constants.driveSensitivity, rotate/Constants.turnSensitivity, true);
+    testDrive.curvatureDrive(-speed/Constants.driveSensitivity, rotate/Constants.turnSensitivity, true);
   }
 
   public void driveStraight(double speed){

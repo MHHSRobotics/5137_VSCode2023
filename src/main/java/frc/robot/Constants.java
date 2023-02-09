@@ -55,10 +55,10 @@ public final class Constants {
 
   //DriveBase Motors
   public final static int leftTalonPort = 1;
-  public final static int leftFrontVicPort = 2;
-  public final static int leftBackVicPort = 3;
-  public final static int rightTalonPort = 4;
-  public final static int rightFrontVicPort = 5;
+  public final static int leftFrontVicPort = 3;
+  public final static int leftBackVicPort = 5;
+  public final static int rightTalonPort = 2;
+  public final static int rightFrontVicPort = 4;
   public final static int rightBackVicPort = 6;
 
   //april tags/vision
