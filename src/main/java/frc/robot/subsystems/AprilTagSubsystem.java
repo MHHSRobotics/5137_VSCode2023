@@ -55,8 +55,8 @@ Pose2d robotPose;
 public AprilTagSubsystem()
 {
   //Sets tolerance of PID controllers so they dont have to be on 0.0000
-distanceController.setTolerance(.1);
-rotationController.setTolerance(1);
+//distanceController.setTolerance(.1);
+//rotationController.setTolerance(1);
   
 //Pose estimator system for global pose estimation
 poseEstimator = new DifferentialDrivePoseEstimator(Constants.trackWidth, Constants.initialGyro, Constants.initialLeftDistance,Constants.initialRightDistance, Constants.initialPose);

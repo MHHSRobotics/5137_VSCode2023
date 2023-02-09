@@ -70,6 +70,10 @@ public class DriveBaseSubsystem extends SubsystemBase {
     rightBackVic = new WPI_VictorSPX(Constants.rightBackVicPort);
     rightDrive = new MotorControllerGroup(rightTalon, rightFrontVic, rightBackVic);
 
+    rightDrive.setInverted(true);
+
+    leftFrontVic.setInverted(true);
+
     //DriveTrain
     testDrive = new DifferentialDrive(leftDrive, rightDrive);
 
@@ -77,6 +81,10 @@ public class DriveBaseSubsystem extends SubsystemBase {
     //Controller
     controller = new Joystick(Constants.controllerPort);
 
+    LYStickAxisPort = Constants.XBOX_LYStickAxisPort;
+    RXStickAxisPort = Constants.XBOX_RXStickAxisPort;
+
+    /*
     //Controller Type (Not required just for ease)
     switch (Constants.controllerType) {
       case ("xbox"):
@@ -94,6 +102,7 @@ public class DriveBaseSubsystem extends SubsystemBase {
         RXStickAxisPort = Constants.XBOX_RXStickAxisPort;
         System.out.println("Default Controller");
     }
+    */
   }
 
   
@@ -110,7 +119,7 @@ public class DriveBaseSubsystem extends SubsystemBase {
     double rotate = controller.getRawAxis(RXStickAxisPort);
     speed = adjust(speed);
     rotate = adjust(rotate);
-    testDrive.curvatureDrive(-speed/Constants.driveSensitivity, -rotate/Constants.turnSensitivity, true);
+    testDrive.curvatureDrive(speed/Constants.driveSensitivity, rotate/Constants.turnSensitivity, true);
   }
 
   public void driveStraight(double speed){
