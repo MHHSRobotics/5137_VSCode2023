@@ -38,7 +38,7 @@ public class DriveBaseSubsystem extends SubsystemBase {
 
 
   //Gyro 
-  ADXRS450_Gyro gyro;
+  public static ADXRS450_Gyro gyro;
 
   //Controller
   Joystick controller;
@@ -56,6 +56,7 @@ public class DriveBaseSubsystem extends SubsystemBase {
     
     //Gyro
     gyro = new ADXRS450_Gyro();
+    gyro.calibrate();
 
 
     //left motors
@@ -74,7 +75,7 @@ public class DriveBaseSubsystem extends SubsystemBase {
     leftFrontVic.setInverted(true);
     //DriveTrain
     testDrive = new DifferentialDrive(leftDrive, rightDrive);
-    rightDrive.setInverted(true);
+    leftDrive.setInverted(true);
     
     //Controller
     controller = new Joystick(Constants.controllerPort);
@@ -109,6 +110,7 @@ public class DriveBaseSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     arcadeDrive(controller);
+    //System.out.println(gyro.getAngle());
   }
 
   public void arcadeDrive(Joystick controller) {
@@ -117,7 +119,7 @@ public class DriveBaseSubsystem extends SubsystemBase {
     double rotate = controller.getRawAxis(RXStickAxisPort);
     speed = adjust(speed);
     rotate = adjust(rotate);
-    testDrive.curvatureDrive(-speed/Constants.driveSensitivity, rotate/Constants.turnSensitivity, true);
+    testDrive.curvatureDrive(speed/Constants.driveSensitivity, rotate/Constants.turnSensitivity, true);
   }
 
   public void driveStraight(double speed){

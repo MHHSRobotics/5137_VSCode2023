@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -50,14 +51,18 @@ PIDController rotationController = new PIDController(Constants.rKP,Constants.rKI
 Transform3d robotToCam = new Transform3d(new Translation3d(0.22, 0.0, 0.0), new Rotation3d(0,0,0)); 
 DifferentialDrivePoseEstimator poseEstimator;
 DriveBaseSubsystem driveBaseSubsystem;
-Pose2d robotPose;
+public static Pose2d robotPose;
+
+public boolean firstRotated = false;
+public boolean secondRotated = false;
+public boolean drivedTo = false;
 
 public AprilTagSubsystem()
 {
   //Sets tolerance of PID controllers so they dont have to be on 0.0000
 //distanceController.setTolerance(.1);
-//rotationController.setTolerance(1);
-  
+rotationController.setTolerance(3);
+//rotationController.enableContinuousInput(-360.0, 360.0);
 //Pose estimator system for global pose estimation
 poseEstimator = new DifferentialDrivePoseEstimator(Constants.trackWidth, Constants.initialGyro, Constants.initialLeftDistance,Constants.initialRightDistance, Constants.initialPose);
 //Used to call from driveBase subsystem non statically 
@@ -77,6 +82,7 @@ photonCamera.setDriverMode(false);
     e.printStackTrace();
     System.out.println ("Field Load Didn't Work");
   }
+  
 }
 
 
@@ -85,18 +91,18 @@ photonCamera.setDriverMode(false);
 
 
     //Test as an encoder??? Also make sure this uses the right motor/controller
- /* 
-    double wheelDiameter = .12; //Meters
-    double distancePerPulse = (wheelDiameter * Math.PI) / 4096.0;
-    double leftDist = DriveBaseSubsystem.leftTalon.getSelectedSensorPosition() * distancePerPulse;
+ 
+    double wheelDiameter = Units.inchesToMeters(6); //Meters
+    double distancePerPulseL = (wheelDiameter * Math.PI) / 4096.0;
+    double leftDist = -DriveBaseSubsystem.leftTalon.getSelectedSensorPosition() * distancePerPulseL;
     
-    double wheelDiameter = .12; //Meters
-    double distancePerPulse = (wheelDiameter * Math.PI) / 4096.0;
-    double rightDist = DriveBaseSubsystem.rightTalon.getSelectedSensorPosition() * distancePerPulse;
-*/
+    
+    double distancePerPulseR = (wheelDiameter * Math.PI) / 4096.0;
+    double rightDist = DriveBaseSubsystem.rightTalon.getSelectedSensorPosition() * distancePerPulseR;
 
+   
     //Gets the estimated global position of the robot for use later
-    robotPose = poseEstimator.getEstimatedPosition();
+    
     
   // Rescans for the best target
     //Gathers latest result / "scan"
@@ -125,18 +131,26 @@ photonCamera.setDriverMode(false);
         System.out.println("Tag ID: " + currentId);
       }
         
-     System.out.println(robotPose);
         if(xboxc.getXButton())
         {
         System.out.println("Aligning to nearest left cone column");
         Pose2d align = getNearestAlign("left", robotPose);
-       autoAlign(align);
+        autoAlign(align);
+      }
+      if(xboxc.getXButtonReleased())
+      {
+        resetAlign();
       }
       if(xboxc.getYButton())
       {
         System.out.println("Aligning to nearest cube column");
         Pose2d align = getNearestAlign("middle", robotPose);
+        System.out.println("alignPose" + align);
         autoAlign(align);
+      }
+      if(xboxc.getYButtonReleased())
+      {
+        resetAlign();
       }
       if(xboxc.getBButton())
       {
@@ -144,7 +158,10 @@ photonCamera.setDriverMode(false);
         Pose2d align = getNearestAlign("right", robotPose);
         autoAlign(align);
       }
-      
+      if(xboxc.getBButtonReleased())
+      {
+        resetAlign();
+      }
       
     //Prints when a detected tag moves out of frame/no longer detected
     }
@@ -154,10 +171,12 @@ photonCamera.setDriverMode(false);
       System.out.println("No more targets detected...");
       
     }
-    
+    updatePose(leftDist, rightDist);
+    robotPose = poseEstimator.getEstimatedPosition();
+    System.out.println(robotPose);
     //Updates the pose using vision measurements, gyro measurements, and encoders (when added)
-    updatePose(0, 0);
-   
+    
+
 
 
   }
@@ -260,41 +279,68 @@ photonCamera.setDriverMode(false);
   }
   
 
+  public void resetAlign()
+  {
+  firstRotated = false;
+  secondRotated = false;
+  drivedTo = false;
+  }
+
   public void autoAlign(Pose2d targetPose)
   {
-    autoRotate(targetPose);
-    autoDriveForward(targetPose);
-    autoRotate(targetPose);
+    if (firstRotated == false)
+    {
+      firstRotated = autoRotate(targetPose);
+    }
+    else if(drivedTo == false)
+    {
+      drivedTo = autoDriveForward(targetPose);
+
+    }
+    else if(secondRotated == false)
+    {
+      secondRotated = autoRotate(targetPose);
+    }
   }
 
-
-  public void autoRotate(Pose2d targetPose)
+//Only supply the variables first and second rotated
+  public boolean autoRotate(Pose2d targetPose)
   {
-    while(PhotonUtils.getYawToPose(robotPose, targetPose).getDegrees() != 0 )
+    if(PhotonUtils.getYawToPose(robotPose, targetPose).getDegrees() != 0 )
     {
-    double rotationSpeed = -rotationController.calculate(PhotonUtils.getYawToPose(robotPose, targetPose).getDegrees(), 0.0);
+      double rotationSpeed = -rotationController.calculate(PhotonUtils.getYawToPose(robotPose, targetPose).getDegrees(), 0.0);
+      System.out.println("Rotation speed: " + rotationSpeed);
+      driveBaseSubsystem.testDrive.tankDrive(rotationSpeed,-rotationSpeed);
+      if (PhotonUtils.getYawToPose(robotPose, targetPose).getDegrees() == 0 || rotationSpeed == 0)
+      {
+        return true;
+      }
+      return false;
+    }
+    else
+    {
+      return true;
+    }
     
-    driveBaseSubsystem.testDrive.tankDrive(-rotationSpeed,rotationSpeed);
-    System.out.println("Rotation speed: " + rotationSpeed);
-    if(rotationSpeed == 0)
-    {
-    break;
-    }
-    }
   }
 
 
-  public void autoDriveForward(Pose2d targetPose)
+  public boolean autoDriveForward(Pose2d targetPose)
   {
-    while(PhotonUtils.getDistanceToPose(robotPose, targetPose) != 0 )
+    if(PhotonUtils.getDistanceToPose(robotPose, targetPose) != 0 )
     {
-    double forwardSpeed = -distanceController.calculate(PhotonUtils.getDistanceToPose(robotPose, targetPose), 0.0);
-    System.out.println("Forward speed: " + forwardSpeed);
-    driveBaseSubsystem.driveStraight(forwardSpeed);
-    if(forwardSpeed == 0)
-    {
-    break;
+      double forwardSpeed = distanceController.calculate(PhotonUtils.getDistanceToPose(robotPose, targetPose), 0.0);
+      System.out.println("Forward speed: " + forwardSpeed);
+      driveBaseSubsystem.driveStraight(forwardSpeed);
+      if (PhotonUtils.getDistanceToPose(robotPose, targetPose) == 0 || forwardSpeed == 0)
+      {
+        return true;
+      }
+      return false;
     }
+    else
+    {
+      return true;
     }
   }
   
@@ -302,7 +348,7 @@ photonCamera.setDriverMode(false);
   public void updatePose(double leftDist, double rightDist) 
   {
  
-    poseEstimator.update(driveBaseSubsystem.gyro.getRotation2d(), leftDist, rightDist);
+    poseEstimator.update(DriveBaseSubsystem.gyro.getRotation2d(), leftDist, rightDist);
     
     var result = photonCamera.getLatestResult();
     if (result.hasTargets()) 
