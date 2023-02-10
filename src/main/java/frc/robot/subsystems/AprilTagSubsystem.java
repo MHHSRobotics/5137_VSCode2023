@@ -131,37 +131,7 @@ photonCamera.setDriverMode(false);
         System.out.println("Tag ID: " + currentId);
       }
         
-        if(xboxc.getXButton())
-        {
-        System.out.println("Aligning to nearest left cone column");
-        Pose2d align = getNearestAlign("left", robotPose);
-        autoAlign(align);
-      }
-      if(xboxc.getXButtonReleased())
-      {
-        resetAlign();
-      }
-      if(xboxc.getYButton())
-      {
-        System.out.println("Aligning to nearest cube column");
-        Pose2d align = getNearestAlign("middle", robotPose);
-        System.out.println("alignPose" + align);
-        autoAlign(align);
-      }
-      if(xboxc.getYButtonReleased())
-      {
-        resetAlign();
-      }
-      if(xboxc.getBButton())
-      {
-        System.out.println("Aligning to nearest right cone column");
-        Pose2d align = getNearestAlign("right", robotPose);
-        autoAlign(align);
-      }
-      if(xboxc.getBButtonReleased())
-      {
-        resetAlign();
-      }
+       
       
     //Prints when a detected tag moves out of frame/no longer detected
     }
@@ -173,10 +143,40 @@ photonCamera.setDriverMode(false);
     }
     updatePose(leftDist, rightDist);
     robotPose = poseEstimator.getEstimatedPosition();
-    System.out.println(robotPose);
+    //System.out.println(robotPose);
     //Updates the pose using vision measurements, gyro measurements, and encoders (when added)
     
-
+    if(xboxc.getXButton())
+    {
+    System.out.println("Aligning to nearest left cone column");
+    Pose2d align = getNearestAlign("left", robotPose);
+    autoAlign(align);
+  }
+  if(xboxc.getXButtonReleased())
+  {
+    resetAlign();
+  }
+  
+  if(xboxc.getYButton())
+  {
+    System.out.println("Aligning to nearest cube column");
+    Pose2d align = getNearestAlign("middle", robotPose);
+    autoAlign(align);
+  }
+  if(xboxc.getYButtonReleased())
+  {
+    resetAlign();
+  }
+  if(xboxc.getBButton())
+  {
+    System.out.println("Aligning to nearest right cone column");
+    Pose2d align = getNearestAlign("right", robotPose);
+    autoAlign(align);
+  }
+  if(xboxc.getBButtonReleased())
+  {
+    resetAlign();
+  }
 
 
   }
