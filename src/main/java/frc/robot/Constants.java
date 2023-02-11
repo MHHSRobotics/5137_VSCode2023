@@ -6,6 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import java.lang.Math;
@@ -22,9 +25,7 @@ import java.lang.Math;
  */
 public final class Constants {
 
-  public final static double pi = Math.PI;
-  public final static double nodeSpacing = Units.inchesToMeters(22);
-  public final static double scoreDistance = Units.inchesToMeters(36);
+  
   
   //Driving
   public final static double driveSensitivity = 1.0;
@@ -61,29 +62,33 @@ public final class Constants {
   public final static int rightFrontVicPort = 4;
   public final static int rightBackVicPort = 6;
 
+  
+
   //april tags/vision
-  //change these later to put actual values when we know them
-  public final static double CAMERA_HEIGHT_METERS = 1.27;
-  public final static double TARGET_HEIGHT_METERS = 1.46;
-  public final static double CAMERA_PITCH_RADIANS = 0;
-  public final static double GOAL_RANGE_METERS = 0.5;//0.0254;//1 inch, can change later
-
+  //Change values to match 2023 bot
+  public final static Transform3d robotToCam = new Transform3d(new Translation3d(0.22, 0.0, 0.0), new Rotation3d(0,0,0));
+  public final static double pi = Math.PI;
+  public final static double nodeSpacing = Units.inchesToMeters(22);
+  public final static double scoreDistance = Units.inchesToMeters(36); 
+  //Encoder values
+    public final static double wheelDiameter = Units.inchesToMeters(6); //Wheel diamter - used in encoder
+    public static final double distancePerPulse = (wheelDiameter * Math.PI) / 4096.0; //Used for encoder
   //pid for forward speed/vision
-  public final static double dKP = 0.005;
-  public final static double dKD = 0.0;
-  public final static double dKI = 0.0;
-
+    public final static double dKP = 0.005;
+    public final static double dKD = 0.0;
+    public final static double dKI = 0.0;
   //pid for rotation speed/vision
-  public final static double rKP = 0.004;
-  public final static double rKD = 0.;
-  public final static double rKI = 0.;
-
+    public final static double rKP = 0.004;
+    public final static double rKD = 0.;
+    public final static double rKI = 0.;
   //Initial robot values
-  public final static Rotation2d initialGyro = new Rotation2d();
-  public final static Pose2d initialPose = new Pose2d();
-  public final static double initialLeftDistance = 0;
-  public final static double initialRightDistance = 0;
-  public final static DifferentialDriveKinematics trackWidth = new DifferentialDriveKinematics(Units.inchesToMeters(20.25));
+    public final static Rotation2d initialGyro = new Rotation2d();
+    public final static Pose2d initialPose = new Pose2d();
+    public final static double initialLeftDistance = 0;
+    public final static double initialRightDistance = 0;
+    public final static DifferentialDriveKinematics trackWidth = new DifferentialDriveKinematics(Units.inchesToMeters(20.25));
+
+    
 
   //TagField - tag4 & tag5 are the loading station targets
 

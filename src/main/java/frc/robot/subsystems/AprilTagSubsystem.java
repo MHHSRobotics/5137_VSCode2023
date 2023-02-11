@@ -1,291 +1,146 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Constants;
+import frc.robot.RobotContainer;
+
 import java.io.IOException;
+import java.util.Optional;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
-
 import org.photonvision.common.hardware.VisionLEDMode;
-
-
-
-import java.util.Optional;
-
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
-import edu.wpi.first.wpilibj.XboxController;
-//import edu.wpi.first.math.controller;
-
-public class AprilTagSubsystem extends SubsystemBase{
-    
-//Creates the camera that will be used 
-PhotonCamera photonCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
-
-private double previousPipelineTimestamp = 0;
-private int currentId = 0;
-public AprilTagFieldLayout aprilTagFieldLayout;
-
-public XboxController xboxc = new XboxController(0);
-//Calculates forward motor speed using distance to target
-PIDController distanceController = new PIDController(Constants.dKP,Constants.dKI, Constants.dKD); //pid controller
-
-//Calculates rotation speed using yaw 
-PIDController rotationController = new PIDController(Constants.rKP,Constants.rKI, Constants.rKD);
 
 
-//Where our Camera is on the robot 
-Transform3d robotToCam = new Transform3d(new Translation3d(0.22, 0.0, 0.0), new Rotation3d(0,0,0)); 
-DifferentialDrivePoseEstimator poseEstimator;
-DriveBaseSubsystem driveBaseSubsystem;
-public static Pose2d robotPose;
-
-public boolean firstRotated = false;
-public boolean secondRotated = false;
-public boolean drivedTo = false;
-
-public AprilTagSubsystem()
+public class AprilTagSubsystem extends SubsystemBase
 {
-  //Sets tolerance of PID controllers so they dont have to be on 0.0000
-//distanceController.setTolerance(.1);
-rotationController.setTolerance(3);
-//rotationController.enableContinuousInput(-360.0, 360.0);
-//Pose estimator system for global pose estimation
-poseEstimator = new DifferentialDrivePoseEstimator(Constants.trackWidth, Constants.initialGyro, Constants.initialLeftDistance,Constants.initialRightDistance, Constants.initialPose);
-//Used to call from driveBase subsystem non statically 
-  driveBaseSubsystem = RobotContainer.driveBase_Subsystem;
-  //Sets LED/"Lime" to off 
-photonCamera.setLED(VisionLEDMode.kOff);
-photonCamera.setDriverMode(false);
-//photonCamera.setPipelineIndex(0); the number of the pipeline is on photon vision itself so choose from there I think
-
-  //Sets the April Tag field to the 2023 field
-  try {
-    aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
-    System.out.println ("Set the field");
-    System.out.println(aprilTagFieldLayout);
-  } catch (IOException e) {
     
-    e.printStackTrace();
-    System.out.println ("Field Load Didn't Work");
-  }
+  //public instance variables, may be used elswhere in robot
+  public PhotonCamera photonCamera;
+  public AprilTagFieldLayout aprilTagFieldLayout;
+  public XboxController xboxc = new XboxController(0); //xbox controller to be called with methods
+  public PIDController distanceController;
+  public PIDController rotationController;
+  public Pose2d robotPose;
+
+  //private instance variables, will only be used locally
+  private double previousPipelineTimestamp = 0;
+  private int currentId = 0; //Holds the current april tag ID (when detected)
+  private boolean firstRotated = false; //Determines if the first rotation is finished when autoAlign() is running
+  private boolean secondRotated = false; //Determines if the second rotation is finished when autoAlign() is running
+  private boolean drivedTo = false; //Determines if the driving is finished when autoAlign() is running
+
+  //Will be used to reference the DriveBaseSubsystem
+  private DriveBaseSubsystem driveBaseSubsystem = RobotContainer.driveBase_Subsystem;
   
-}
+  //Creates a new global position estimator, intializes it with track width of robot, initial sensor values, and an initial position. 
+  private DifferentialDrivePoseEstimator poseEstimator = new DifferentialDrivePoseEstimator(Constants.trackWidth, Constants.initialGyro, Constants.initialLeftDistance,Constants.initialRightDistance, Constants.initialPose);
+
+  
+  public AprilTagSubsystem()
+  {
+    //PID Controller for moving forward and backwards, with specified gains
+    distanceController = new PIDController(Constants.dKP,Constants.dKI, Constants.dKD);
+    distanceController.setTolerance(.1); //Sets PID tolerance range
+
+    //PID Controller for rotating, with specified gains 
+    rotationController = new PIDController(Constants.rKP,Constants.rKI, Constants.rKD);
+    rotationController.setTolerance(3); //Sets PID tolerance range
+
+    //Initializes the camera being run with photonVision, using the proper camera name 
+    photonCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+    photonCamera.setLED(VisionLEDMode.kOff); //Sets LED/"Lime" to off 
+    photonCamera.setDriverMode(false); //Turns off driverMode in Photonvision
+    
+    //Sets the April Tag field to the 2023 field. Uses try and catch to make sure field loading doesn't crash program. 
+    try 
+    {
+      aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+      System.out.println ("Set the field");
+      System.out.println(aprilTagFieldLayout);
+    } 
+    catch (IOException e) 
+    {
+      e.printStackTrace();
+      System.out.println ("The field Load Didn't Work");
+    }
+  }
 
 
 @Override
   public void periodic() {
 
-
-    //Test as an encoder??? Also make sure this uses the right motor/controller
- 
-    double wheelDiameter = Units.inchesToMeters(6); //Meters
-    double distancePerPulseL = (wheelDiameter * Math.PI) / 4096.0;
-    double leftDist = -DriveBaseSubsystem.leftTalon.getSelectedSensorPosition() * distancePerPulseL;
+    var pipelineResult = photonCamera.getLatestResult(); //Gathers latest result from Camera
+    var resultTimestamp = pipelineResult.getTimestampSeconds(); //Records the Time of the latest result
     
-    
-    double distancePerPulseR = (wheelDiameter * Math.PI) / 4096.0;
-    double rightDist = DriveBaseSubsystem.rightTalon.getSelectedSensorPosition() * distancePerPulseR;
-
-   
-    //Gets the estimated global position of the robot for use later
-    
-    
-  // Rescans for the best target
-    //Gathers latest result / "scan"
-    var pipelineResult = photonCamera.getLatestResult();
-    
-    //Records the Time of the latest scan
-    var resultTimestamp = pipelineResult.getTimestampSeconds();
-
-    //Makes sure that this result has not already been processed and confirms that the scan has targets present
+    //Makes sure that the latest result has not already been checked and that vision targets are present
     if (resultTimestamp != previousPipelineTimestamp && pipelineResult.hasTargets()) 
     {
-      //Sets current scan to previous to prevent rescanning
-        previousPipelineTimestamp = resultTimestamp;
-        //Sets the target used in AprilTag system to the best target in the "Scan"
-      var target = pipelineResult.getBestTarget();
-      //Records the id of the best target
-      var fiducialId = target.getFiducialId();
+      previousPipelineTimestamp = resultTimestamp; //Sets result time to "previous" time to prevent rechecking
+      var target = pipelineResult.getBestTarget(); //Gets the best vision target to be used from result
+      var fiducialId = target.getFiducialId(); //Records the id of the best target
       
-     
-    //Print System for RioLog 
-      //Prints message and tag id when a new tag is found
+      //Prints information when a new tag is found, including Tag ID
       if(fiducialId != currentId)
       {
         currentId = fiducialId;
         System.out.println("New Best Target Detected!");
         System.out.println("Tag ID: " + currentId);
       }
-        
-       
-      
-    //Prints when a detected tag moves out of frame/no longer detected
     }
+    //Prints when a tag moves out of frame - when targets are no longer detected
     else if(resultTimestamp != previousPipelineTimestamp  && currentId != 0 && pipelineResult.hasTargets() == false)
     {
-      currentId = 0;
+      currentId = 0; //Sets current ID to 0 - null 
       System.out.println("No more targets detected...");
-      
     }
-    updatePose(leftDist, rightDist);
-    robotPose = poseEstimator.getEstimatedPosition();
-    //System.out.println(robotPose);
-    //Updates the pose using vision measurements, gyro measurements, and encoders (when added)
+
+    updatePose(DriveBaseSubsystem.leftDist, DriveBaseSubsystem.rightDist); //Updates the Pose estimator - passes encoder distances as paramaters
+    robotPose = poseEstimator.getEstimatedPosition(); //Sets Pose2d robotPose to updated position from poseEstimator
     
+    //TESTING ONLY: Runs autoAlign towards leftCone, cube, or rightCone depending on button input
     if(xboxc.getXButton())
     {
-    System.out.println("Aligning to nearest left cone column");
-    Pose2d align = getNearestAlign("left", robotPose);
-    autoAlign(align);
-  }
-  if(xboxc.getXButtonReleased())
-  {
-    resetAlign();
-  }
-  
-  if(xboxc.getYButton())
-  {
-    System.out.println("Aligning to nearest cube column");
-    Pose2d align = getNearestAlign("middle", robotPose);
-    autoAlign(align);
-  }
-  if(xboxc.getYButtonReleased())
-  {
-    resetAlign();
-  }
-  if(xboxc.getBButton())
-  {
-    System.out.println("Aligning to nearest right cone column");
-    Pose2d align = getNearestAlign("right", robotPose);
-    autoAlign(align);
-  }
-  if(xboxc.getBButtonReleased())
-  {
-    resetAlign();
-  }
-
-
-  }
-
-  //Gets the nearest right cone, cube, or left cone column. DO not call when halfway or farther across the field! 
-  public Pose2d getNearestAlign(String targetName, Pose2d robotPose)
-  {
-    int alignIndex = -1;
-    double minDiff = Double.MAX_VALUE;
-    double currentDiff;
-    Pose2d[][] array = Constants.alignArray;
-    if(robotPose.getX() <= 8.27)
-    {
-      if(targetName.equals("right"))
-      {
-      for(int i = 5; i < 8; i++)
-      {
-      currentDiff = Math.abs(array[i][0].getY() - robotPose.getY());
-       if(currentDiff < minDiff)
-       {
-        minDiff = currentDiff;
-        alignIndex = i;
-       }
-      }
-      return array[alignIndex][0];
-      }
-      if(targetName.equals("middle"))
-      {
-      for(int i = 5; i < 8; i++)
-      {
-      currentDiff = Math.abs(array[i][1].getY() - robotPose.getY());
-       if(currentDiff < minDiff)
-       {
-        minDiff = currentDiff;
-        alignIndex = i;
-       }
-      }
-      return array[alignIndex][1];
-      }
-      if(targetName.equals("left"))
-      {
-      for(int i = 5; i < 8; i++)
-      {
-      currentDiff = Math.abs(array[i][2].getY() - robotPose.getY());
-       if(currentDiff < minDiff)
-       {
-        minDiff = currentDiff;
-        alignIndex = i;
-       }
-      }
-      return array[alignIndex][2];
-      }
-      
-
-    
-  }
-  else if(robotPose.getX() > 8.27)
-      {
-        if(targetName.equals("right"))
-        {
-        for(int i = 0; i < 3; i++)
-        {
-        currentDiff = Math.abs(array[i][0].getY() - robotPose.getY());
-         if(currentDiff < minDiff)
-         {
-          minDiff = currentDiff;
-          alignIndex = i;
-         }
-        }
-        return array[alignIndex][0];
-        }
-        if(targetName.equals("middle"))
-        {
-        for(int i = 0; i < 3; i++)
-        {
-        currentDiff = Math.abs(array[i][1].getY() - robotPose.getY());
-         if(currentDiff < minDiff)
-         {
-          minDiff = currentDiff;
-          alignIndex = i;
-         }
-        }
-        return array[alignIndex][1];
-        }
-        if(targetName.equals("left"))
-        {
-        for(int i = 0; i < 3; i++)
-        {
-        currentDiff = Math.abs(array[i][2].getY() - robotPose.getY());
-         if(currentDiff < minDiff)
-         {
-          minDiff = currentDiff;
-          alignIndex = i;
-         }
-        }
-        return array[alignIndex][2];
-      }
+      Pose2d align = getNearestAlign("left", robotPose); //Gets nearest left cone alignPose
+      autoAlign(align);
     }
-    return array[3][0];
+    //Used to reset the autoAlign function if button is no longer held - gets ready for next use
+    if(xboxc.getXButtonReleased())
+    {
+      resetAlign(); 
+    }
+
+    if(xboxc.getYButton())
+    {
+      Pose2d align = getNearestAlign("middle", robotPose); //Gets nearest cube alignPose
+      autoAlign(align);
+    }
+    if(xboxc.getYButtonReleased())
+    {
+      resetAlign();
+    }
+
+    if(xboxc.getBButton())
+    {
+      Pose2d align = getNearestAlign("right", robotPose); //Gets nearest right cone alignPose
+      autoAlign(align);
+    }
+    if(xboxc.getBButtonReleased())
+    {
+      resetAlign();
+    }
   }
+
   
-
-  public void resetAlign()
-  {
-  firstRotated = false;
-  secondRotated = false;
-  drivedTo = false;
-  }
-
+  //Automatically algins to an alignPose to score using a rotate/drive/rotate and booleans for sequencing
   public void autoAlign(Pose2d targetPose)
   {
     if (firstRotated == false)
@@ -303,15 +158,27 @@ photonCamera.setDriverMode(false);
     }
   }
 
-//Only supply the variables first and second rotated
+
+  //Reset align booleans used in autoAlign
+  public void resetAlign()
+  {
+    firstRotated = false;
+    secondRotated = false;
+    drivedTo = false;
+  }
+
+
+  //Sets the rotate speed of the robot using a PID and the robotPose angle, returns a boolean wether it has rotated completely or not
   public boolean autoRotate(Pose2d targetPose)
   {
     if(PhotonUtils.getYawToPose(robotPose, targetPose).getDegrees() != 0 )
     {
-      double rotationSpeed = -rotationController.calculate(PhotonUtils.getYawToPose(robotPose, targetPose).getDegrees(), 0.0);
-      System.out.println("Rotation speed: " + rotationSpeed);
-      driveBaseSubsystem.testDrive.tankDrive(rotationSpeed,-rotationSpeed);
-      if (PhotonUtils.getYawToPose(robotPose, targetPose).getDegrees() == 0 || rotationSpeed == 0)
+      double rotationSpeed = -rotationController.calculate(PhotonUtils.getYawToPose(robotPose, targetPose).getDegrees(), 0.0); //Calculates rotation speed using PID
+      System.out.println("Rotation speed: " + rotationSpeed); //Prints the rotation speed
+      driveBaseSubsystem.testDrive.tankDrive(rotationSpeed,-rotationSpeed); //Sets the drivetrain to rotate using PID speed
+      
+      //If the rotation is completete either by PID speed being 0 or Yaw
+      if (PhotonUtils.getYawToPose(robotPose, targetPose).getDegrees() == 0 || rotationSpeed == 0) 
       {
         return true;
       }
@@ -325,13 +192,16 @@ photonCamera.setDriverMode(false);
   }
 
 
+  //Sets the forward speed of the robot using a PID and the robotPose distance, returns a boolean wether it has reached target or not
   public boolean autoDriveForward(Pose2d targetPose)
   {
     if(PhotonUtils.getDistanceToPose(robotPose, targetPose) != 0 )
     {
-      double forwardSpeed = distanceController.calculate(PhotonUtils.getDistanceToPose(robotPose, targetPose), 0.0);
-      System.out.println("Forward speed: " + forwardSpeed);
-      driveBaseSubsystem.driveStraight(forwardSpeed);
+      double forwardSpeed = distanceController.calculate(PhotonUtils.getDistanceToPose(robotPose, targetPose), 0.0); //Calculates forward speed using PID
+      System.out.println("Forward speed: " + forwardSpeed); //Prints the forward speed
+      driveBaseSubsystem.driveStraight(forwardSpeed); //Sets the drivetraub to drive forward/backwards using PID speed
+  
+      //If the drive is completete either by PID speed being 0 or distance
       if (PhotonUtils.getDistanceToPose(robotPose, targetPose) == 0 || forwardSpeed == 0)
       {
         return true;
@@ -345,11 +215,13 @@ photonCamera.setDriverMode(false);
   }
   
 
+  //Updates the global pose estimator with vision, encoder, and gyro values
   public void updatePose(double leftDist, double rightDist) 
   {
  
-    poseEstimator.update(DriveBaseSubsystem.gyro.getRotation2d(), leftDist, rightDist);
+    poseEstimator.update(DriveBaseSubsystem.gyro.getRotation2d(), leftDist, rightDist); //gives sensor inputs to global pose estimator
     
+    //If there is a vision target, update the global pose estimator with that
     var result = photonCamera.getLatestResult();
     if (result.hasTargets()) 
     {
@@ -366,11 +238,114 @@ photonCamera.setDriverMode(false);
         
       var camPose = tagPose.transformBy(camToTargetTrans.inverse());
         
-      var robotPose = camPose.transformBy(robotToCam).toPose2d();
+      var robotPose = camPose.transformBy(Constants.robotToCam).toPose2d();
 
       poseEstimator.addVisionMeasurement(robotPose, imageCaptureTime);
     }
   }
+  
+  //Gets the nearest right cone, cube, or left cone column. DO not call when halfway or farther across the field!
+  public Pose2d getNearestAlign(String targetName, Pose2d robotPose)
+  {
+    int alignIndex = -1;
+    double minDiff = Double.MAX_VALUE;
+    double currentDiff;
+    Pose2d[][] array = Constants.alignArray;
+    //If on the left half of the field/blue alliance
+    if(robotPose.getX() <= 8.27)
+    {
+      //Checks which right cone alignPose is closest on the y axis
+      if(targetName.equals("right"))
+      {
+        
+        for(int i = 5; i < 8; i++)
+        {
+          currentDiff = Math.abs(array[i][0].getY() - robotPose.getY());
+          if(currentDiff < minDiff)
+          {
+            minDiff = currentDiff;
+            alignIndex = i;
+          }
+        }
+        return array[alignIndex][0];
+      }
+      //Checks which cube alignPose is closest on the y axis
+      else if(targetName.equals("middle"))
+      {
+        for(int i = 5; i < 8; i++)
+        {
+          currentDiff = Math.abs(array[i][1].getY() - robotPose.getY());
+          if(currentDiff < minDiff)
+          {
+            minDiff = currentDiff;
+            alignIndex = i;
+          }
+        }
+        return array[alignIndex][1];
+      }
+      //Checks which left cone alignPose is closest on the y axis
+      else if(targetName.equals("left"))
+      {
+        for(int i = 5; i < 8; i++)
+        {
+          currentDiff = Math.abs(array[i][2].getY() - robotPose.getY());
+          if(currentDiff < minDiff)
+          {
+            minDiff = currentDiff;
+            alignIndex = i;
+          }
+        }
+        return array[alignIndex][2];
+      } 
+    }
+    //If on the right half of field / red alliance
+    else if(robotPose.getX() > 8.27)
+      {
+        //Checks which right cone alignPose is closest on the y axis
+        if(targetName.equals("right"))
+        {
+          for(int i = 0; i < 3; i++)
+          {
+            currentDiff = Math.abs(array[i][0].getY() - robotPose.getY());
+            if(currentDiff < minDiff)
+            {
+              minDiff = currentDiff;
+              alignIndex = i;
+            }
+          }
+          return array[alignIndex][0];
+        }
+        //Checks which cube alignPose is closest on the y axis
+        else if(targetName.equals("middle"))
+        {
+          for(int i = 0; i < 3; i++)
+          {
+            currentDiff = Math.abs(array[i][1].getY() - robotPose.getY());
+            if(currentDiff < minDiff)
+            {
+              minDiff = currentDiff;
+              alignIndex = i;
+            }
+          }
+          return array[alignIndex][1];
+        }
+        //Checks which left cone alignPose is closest on the y axis
+        else if(targetName.equals("left"))
+        {
+          for(int i = 0; i < 3; i++)
+          {
+            currentDiff = Math.abs(array[i][2].getY() - robotPose.getY());
+            if(currentDiff < minDiff)
+            {
+              minDiff = currentDiff;
+              alignIndex = i;
+            }
+          }
+          return array[alignIndex][2];
+        }
+      }
+      return array[3][0];
+    }
 }
     
 

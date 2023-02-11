@@ -34,7 +34,8 @@ public class DriveBaseSubsystem extends SubsystemBase {
 
   //Systems
 
-  
+  public static double rightDist;
+  public static double leftDist;
 
 
   //Gyro 
@@ -111,7 +112,12 @@ public class DriveBaseSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     arcadeDrive(controller);
     //System.out.println(gyro.getAngle());
+    
+    //Encoders
+    rightDist = DriveBaseSubsystem.rightTalon.getSelectedSensorPosition() * Constants.distancePerPulse;
+    leftDist = -DriveBaseSubsystem.leftTalon.getSelectedSensorPosition() * Constants.distancePerPulse;
   }
+   
 
   public void arcadeDrive(Joystick controller) {
     //Gets controller values

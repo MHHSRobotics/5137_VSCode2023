@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.DriveBaseSubsystem;
+import frc.robot.subsystems.ShuffleboardSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,11 +18,13 @@ public class RobotContainer {
   //Subsystems
   public static DriveBaseSubsystem driveBase_Subsystem;
   public static AprilTagSubsystem aprilTagSubsystem;
+  public static ShuffleboardSubsystem shuffleboardSubsystem;
 
   public RobotContainer() {
     //Subsystems
     driveBase_Subsystem = new DriveBaseSubsystem();
     aprilTagSubsystem = new AprilTagSubsystem();
+    shuffleboardSubsystem = new ShuffleboardSubsystem();
 
     // Configure the trigger bindings
     configureBindings();
