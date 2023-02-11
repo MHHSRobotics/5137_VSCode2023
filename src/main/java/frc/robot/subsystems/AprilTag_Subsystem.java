@@ -7,11 +7,7 @@ import org.photonvision.PhotonUtils;
 
 import org.photonvision.common.hardware.VisionLEDMode;
 
-
-
 import java.util.Optional;
-
-
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -37,7 +33,7 @@ PhotonCamera photonCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
 
 private double previousPipelineTimestamp = 0;
 private int currentId = 0;
-public AprilTagFieldLayout aprilTagFieldLayout;
+public static AprilTagFieldLayout aprilTagFieldLayout;
 
 //Calculates forward motor speed using distance to target
 PIDController distanceController = new PIDController(Constants.dKP,Constants.dKI, Constants.dKD); //pid controller

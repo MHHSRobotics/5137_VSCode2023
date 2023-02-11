@@ -28,7 +28,7 @@ public class DriveBase_Subsystem extends SubsystemBase {
 
 
   //DriveTrain
-  DifferentialDrive jMoney_Drive;
+  public static DifferentialDrive jMoney_Drive;
 
   //Controller
   Joystick controller;
@@ -41,8 +41,6 @@ public class DriveBase_Subsystem extends SubsystemBase {
     leftFrontTalon = new WPI_TalonSRX(Constants.leftFrontTalonPort);
     leftBackTalon = new WPI_TalonSRX(Constants.leftBackTalonPort);
     leftDrive = new MotorControllerGroup(leftFrontTalon, leftBackTalon);
-
-
 
     //right motors
     rightFrontTalon = new WPI_TalonSRX(Constants.rightFrontTalonPort);

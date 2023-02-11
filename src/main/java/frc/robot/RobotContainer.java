@@ -31,7 +31,8 @@ public class RobotContainer {
   public static Pneumatics_Subsystem pneumatics_Subsystem;
   public static Clamp_Subsystem clamp_Subsystem;
   public static Arm_Subsystem arm_Subsystem;
-  public AprilTag_Subsystem aprilTag_Subsystem;
+  public static AprilTag_Subsystem aprilTag_Subsystem;
+  public static SmartDashboard_Subsystem smartDashboard_Subsystem;
 
   //Controllers
   public static Joystick driverController;
@@ -62,6 +63,7 @@ public class RobotContainer {
     clamp_Subsystem = new Clamp_Subsystem();
     arm_Subsystem = new Arm_Subsystem();
     aprilTag_Subsystem = new AprilTag_Subsystem();
+    smartDashboard_Subsystem = new SmartDashboard_Subsystem();
 
     //Controllers
     driverController = Robot.driverController;
