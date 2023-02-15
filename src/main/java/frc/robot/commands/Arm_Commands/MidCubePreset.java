@@ -23,6 +23,7 @@ public class MidCubePreset extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.arm_Subsystem.moveArm(Constants.middleCubeRotation, Constants.middleCubeExtension);
+    RobotContainer.arm_Subsystem.activePreset = "Middle Cube";
   }
 
   // Called once the command ends or is interrupted.

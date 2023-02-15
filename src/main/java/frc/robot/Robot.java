@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import frc.robot.subsystems.SmartDashboard_Subsystem;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,16 +21,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
  * project.
  */
 public class Robot extends TimedRobot {
-
-  private RobotContainer m_robotContainer;
-
   public static Joystick driverController;
   public static Joystick assistController;
   public static String driverControllerType;
   public static String assistControllerType;
-
-  SendableChooser<String> driverControlChooser = new SendableChooser<>();
-  SendableChooser<String> assistControlChooser = new SendableChooser<>();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -40,18 +36,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     driverController = new Joystick(Constants.driverControllerPort);
     assistController = new Joystick(Constants.assistControllerPort);
-    m_robotContainer = new RobotContainer();
-
-    driverControlChooser.setDefaultOption("XBOX", "xbox");
-    driverControlChooser.addOption("XBOX", "xbox");
-    driverControlChooser.addOption("PLAY_STATION", "ps4");
-
-    assistControlChooser.setDefaultOption("XBOX", "xbox");
-    assistControlChooser.addOption("XBOX", "xbox");
-    assistControlChooser.addOption("PLAY_STATION", "ps4");
-    
-    SmartDashboard.putData("Driver Controller Type", driverControlChooser);
-    SmartDashboard.putData("Assist Controller Type", assistControlChooser);
+    new RobotContainer();
   }
 
   /**
@@ -68,7 +53,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    m_robotContainer.aprilTag_Subsystem.periodic();
+    RobotContainer.aprilTag_Subsystem.periodic();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -90,8 +75,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    driverControllerType = driverControlChooser.getSelected();
-    assistControllerType = assistControlChooser.getSelected();
+    driverControllerType = RobotContainer.smartDashboard_Subsystem.selectDriverController();
+    assistControllerType = RobotContainer.smartDashboard_Subsystem.selectAssistController();
     Constants.updateDepConstants();
     RobotContainer.configureBindings();
   }

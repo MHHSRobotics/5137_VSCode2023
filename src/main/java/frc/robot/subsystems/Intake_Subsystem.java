@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 //import frc.robot.RobotContainer;
 
-public class Intake_Subystem extends SubsystemBase {
+public class Intake_Subsystem extends SubsystemBase {
     public boolean intakeActive = false;
 
     public static CANSparkMax intakeMotor;
     //public static SparkMaxWrapper intakeMotor;
 
-    public Intake_Subystem() {
+    public Intake_Subsystem() {
         intakeMotor = new CANSparkMax(Constants.intakePort, MotorType.kBrushless);
         //intakeMotor = new SparkMaxWrapper(Constants.intakePort, MotorType.kBrushless);
     }

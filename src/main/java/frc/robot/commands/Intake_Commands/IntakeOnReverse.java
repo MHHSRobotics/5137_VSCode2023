@@ -5,15 +5,15 @@ import frc.robot.RobotContainer;
 
 public class IntakeOnReverse extends CommandBase {
     public IntakeOnReverse() {
-        addRequirements(RobotContainer.intake_Subystem);
+        addRequirements(RobotContainer.intake_Subsystem);
      }
  
      @Override
      public void execute() {
-        if (!RobotContainer.intake_Subystem.intakeActive) {
-            RobotContainer.intake_Subystem.extendIntake();
+        if (!RobotContainer.intake_Subsystem.intakeActive) {
+            RobotContainer.intake_Subsystem.extendIntake();
            }
-        RobotContainer.intake_Subystem.runIntake(false);
+        RobotContainer.intake_Subsystem.runIntake(false);
      }
  
      @Override

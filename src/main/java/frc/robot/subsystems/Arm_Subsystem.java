@@ -8,22 +8,28 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.simulation.SparkMaxWrapper;
+import frc.robot.simulation.JMoneyEncoder;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-public class Arm_Subsystem extends SubsystemBase {
-  //CANSparkMax armRotateMotor = new CANSparkMax(Constants.armRotatePort, MotorType.kBrushless);
-  //CANSparkMax armExtendMotor = new CANSparkMax(Constants.armExtendPort, MotorType.kBrushless);
-  SparkMaxWrapper armRotateMotor = new SparkMaxWrapper(Constants.armRotatePort, MotorType.kBrushless);
-  SparkMaxWrapper armExtendMotor = new SparkMaxWrapper(Constants.armExtendPort, MotorType.kBrushless);
-  
-  RelativeEncoder rotateEncoder = armRotateMotor.getEncoder();
-  RelativeEncoder extendEncoder = armExtendMotor.getEncoder();
 
+public class Arm_Subsystem extends SubsystemBase {
+  public static CANSparkMax armRotateMotor = new CANSparkMax(Constants.armRotatePort, MotorType.kBrushless);
+  public static CANSparkMax armExtendMotor = new CANSparkMax(Constants.armExtendPort, MotorType.kBrushless);
+  //public static SparkMaxWrapper armRotateMotor = new SparkMaxWrapper(Constants.armRotatePort, MotorType.kBrushless);
+  //public static SparkMaxWrapper armExtendMotor = new SparkMaxWrapper(Constants.armExtendPort, MotorType.kBrushless);
+
+  //public static RelativeEncoder rotateEncoder = armRotateMotor.getEncoder();
+  //public static RelativeEncoder extendEncoder = armExtendMotor.getEncoder();
+  public static JMoneyEncoder rotateEncoder = new JMoneyEncoder(armRotateMotor, 3.0);
+  public static JMoneyEncoder extendEncoder = new JMoneyEncoder(armExtendMotor, 3.0);
+  
   public static double desiredRotation = 0.0;
   public static double desiredExtension = 0.0;
+
+  public static String activePreset = "None";
 
   //int pulse = rotateEncoder.getCountsPerRevolution() / 4;         //converts counts into pulses 
   //int pulsePerDegree = pulse / 360;    
@@ -38,11 +44,11 @@ public class Arm_Subsystem extends SubsystemBase {
     //delete these if it creates issues
     armRotateMotor.restoreFactoryDefaults();
     armExtendMotor.restoreFactoryDefaults();
-
-    rotateEncoder.setPositionConversionFactor(0.0);          //sets origin 
-
-    int pulse = rotateEncoder.getCountsPerRevolution() / 4;         //converts counts into pulses 
-    int pulsePerDegree = pulse / 360;                               //figures out how many pulses per degree, so we can use that
+    /**
+    rotateEncoder.setPositionConversionFactor(0.0); /sets origin 
+    int pulse = rotateEncoder.getCountsPerRevolution() / 4; //converts counts into pulses 
+    int pulsePerDegree = pulse / 360; //figures out how many pulses per degree, so we can use that
+    */
     }
 
   @Override
@@ -54,12 +60,13 @@ public class Arm_Subsystem extends SubsystemBase {
   private void arcadeArm() {
     armRotate();
     armExtend();
+    rotateEncoder.update();
+    extendEncoder.update();
   }
 
   private void armRotate() {
     double rotatePosition = rotateEncoder.getPosition() * Constants.rotationToDegreeConversion; //gear ratio TT
-    //System.out.println("Desired Rotation:"+desiredRotation+"Current Rotation:"+rotatePosition);
-    if (Math.abs(rotatePosition-desiredRotation) < 1) {
+    if (Math.abs(rotatePosition-desiredRotation) < 0.3) {
       armRotateMotor.set(0.0);
     }
     else if (rotatePosition < desiredRotation) {
@@ -71,9 +78,8 @@ public class Arm_Subsystem extends SubsystemBase {
   }
 
   private void armExtend() {
-    double extendPosition = rotateEncoder.getPosition() * Constants.rotationToDegreeConversion; //gear ratio TT
-    //System.out.println("Desired Extension:"+desiredExtension+"Current Extension:"+extendPosition);
-    if (Math.abs(extendPosition-desiredExtension) < 1){
+    double extendPosition = extendEncoder.getPosition() * Constants.rotationToDegreeConversion; //gear ratio TT
+    if (Math.abs(extendPosition-desiredExtension) < 0.3){
       armExtendMotor.set(0.0);
     }
     else if (extendPosition < desiredExtension){

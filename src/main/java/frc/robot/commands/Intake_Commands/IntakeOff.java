@@ -5,17 +5,17 @@ import frc.robot.RobotContainer;
 
 public class IntakeOff extends CommandBase {
     public IntakeOff() {
-        addRequirements(RobotContainer.intake_Subystem);
+        addRequirements(RobotContainer.intake_Subsystem);
      }
  
      @Override
      public void execute() {
         //doesn't toggle intake off unless intake is currently on
         //technically unnecessary but we're keeping it 
-        if (RobotContainer.intake_Subystem.intakeActive) {
-            RobotContainer.intake_Subystem.retractIntake();
+        if (RobotContainer.intake_Subsystem.intakeActive) {
+            RobotContainer.intake_Subsystem.retractIntake();
         }
-        RobotContainer.intake_Subystem.stopIntake();
+        RobotContainer.intake_Subsystem.stopIntake();
      }
  
      @Override

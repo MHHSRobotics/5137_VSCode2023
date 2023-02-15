@@ -10,7 +10,7 @@ import frc.robot.RobotContainer;
 public class ArmResetToIntake extends CommandBase {
   /** Creates a new ArmResetToIntake. */
   public ArmResetToIntake() {
-    // Use addRequirements() here to declare subsystem dependencies.
+    
   }
 
   // Called when the command is initially scheduled.
@@ -21,7 +21,7 @@ public class ArmResetToIntake extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.arm_Subsystem.moveArm(0.0, 0.0);
-    System.out.println("Reset");
+    RobotContainer.arm_Subsystem.activePreset = "None";
   }
 
   // Called once the command ends or is interrupted.
