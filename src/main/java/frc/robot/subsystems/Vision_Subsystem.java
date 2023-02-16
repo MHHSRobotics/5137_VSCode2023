@@ -21,13 +21,17 @@ public class Vision_Subsystem extends SubsystemBase
 {
   AprilTagFieldLayout aprilTagFieldLayout;
   PhotonPoseEstimator lifeCamPoseEstimator;
+  PhotonPoseEstimator arCamPoseEstimator;
   
   public Vision_Subsystem()
   {
   
     //Initializes the camera being run with photonVision, using the proper camera name 
     PhotonCamera lifeCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+    PhotonCamera arCamera = new PhotonCamera("AR0144");
     lifeCamPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, lifeCamera, Constants.robotToLifeCam);
+    arCamPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, arCamera, Constants.robotToLifeCam);
+
 
     
     //Sets the April Tag field to the 2023 field. Uses try and catch to make sure field loading doesn't crash program. 
@@ -51,6 +55,11 @@ public class Vision_Subsystem extends SubsystemBase
   {
     lifeCamPoseEstimator.setReferencePose(referencePose);
     return lifeCamPoseEstimator.update();
+  }
+  public Optional<EstimatedRobotPose> getPoseFromARCamCamera(Pose2d referencePose) 
+  {
+    arCamPoseEstimator.setReferencePose(referencePose);
+    return arCamPoseEstimator.update();
   }
   
   
