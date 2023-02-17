@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.simulation.SparkMaxWrapper;
 import frc.robot.simulation.JMoneyEncoder;
 
@@ -55,6 +56,14 @@ public class Arm_Subsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     arcadeArm();
+    if (RobotContainer.smartDashboard_Subsystem.manualArmEnabled) {
+      manualUpdate();
+    }
+  }
+
+  private void manualUpdate() {
+    desiredRotation = RobotContainer.smartDashboard_Subsystem.getArmRotate();
+    desiredExtension = RobotContainer.smartDashboard_Subsystem.getArmExtension();
   }
 
   private void arcadeArm() {
