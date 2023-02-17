@@ -66,6 +66,11 @@ public class Arm_Subsystem extends SubsystemBase {
     desiredExtension = RobotContainer.smartDashboard_Subsystem.getArmExtension();
   }
 
+  public void moveArm(double rotation, double extension) {
+      desiredRotation = rotation;
+      desiredExtension = extension;
+  }
+
   private void arcadeArm() {
     armRotate();
     armExtend();
@@ -73,34 +78,31 @@ public class Arm_Subsystem extends SubsystemBase {
     extendEncoder.update();
   }
 
-  private void armRotate() {
-    double rotatePosition = rotateEncoder.getPosition() * Constants.rotationToDegreeConversion; //gear ratio TT
-    if (Math.abs(rotatePosition-desiredRotation) < 0.3) {
-      armRotateMotor.set(0.0);
+    private void armRotate() {
+      double rotatePosition = rotateEncoder.getPosition()*Constants.rotationToDegreeConversion;
+      //System.out.println("Desired Rotation:"+desiredRotation+"Current Rotation:"+rotatePosition);
+      if (Math.abs(rotatePosition-desiredRotation) < 0.3) {
+        armRotateMotor.stopMotor();
+      }
+      else if (rotatePosition < desiredRotation) {
+        armRotateMotor.set(Constants.armRotateSpeed);
+      } 
+      else if (rotatePosition > desiredRotation) {
+        armRotateMotor.set(-Constants.armRotateSpeed);
+      }
     }
-    else if (rotatePosition < desiredRotation) {
-      armRotateMotor.set(Constants.armRotateSpeed);
-    } 
-    else if (rotatePosition > desiredRotation) {
-      armRotateMotor.set(-Constants.armRotateSpeed);
-    }
-  }
 
-  private void armExtend() {
-    double extendPosition = extendEncoder.getPosition() * Constants.rotationToDegreeConversion; //gear ratio TT
-    if (Math.abs(extendPosition-desiredExtension) < 0.3){
-      armExtendMotor.set(0.0);
+    private void armExtend() {
+      double extendPosition = extendEncoder.getPosition()*Constants.rotationToDegreeConversion;
+      //System.out.println("Desired Extension:"+desiredExtension+"Current Extension:"+extendPosition);
+      if (Math.abs(extendPosition-desiredExtension) < 0.3){
+        armExtendMotor.stopMotor();
+      }
+      else if (extendPosition < desiredExtension){
+        armExtendMotor.set(Constants.armExtendSpeed);
+      } 
+      else if (extendPosition > desiredExtension) {
+        armExtendMotor.set(-Constants.armExtendSpeed);
+      }
     }
-    else if (extendPosition < desiredExtension){
-      armExtendMotor.set(Constants.armExtendSpeed);
-    } 
-    else if (extendPosition > desiredExtension) {
-      armExtendMotor.set(-Constants.armExtendSpeed);
-    }
-  }
-
-  public void moveArm(double rotation, double extension) {
-    desiredRotation = rotation;
-    desiredExtension = extension;
-  }
 }

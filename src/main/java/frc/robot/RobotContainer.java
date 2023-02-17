@@ -14,7 +14,11 @@ import frc.robot.subsystems.*;
 
 //Commands
 import frc.robot.commands.Intake_Commands.*;
+import frc.robot.commands.Vision_Commands.AddVisionMeasurement;
 import frc.robot.commands.Compressor_Commands.*;
+import frc.robot.commands.Drive_Commands.AutoBalance;
+import frc.robot.commands.Drive_Commands.AutoDrive;
+import frc.robot.commands.Drive_Commands.AutoRotate;
 import frc.robot.commands.Clamp_Commands.*;
 import frc.robot.commands.Arm_Commands.*;
 
@@ -31,8 +35,8 @@ public class RobotContainer {
   public static Pneumatics_Subsystem pneumatics_Subsystem;
   public static Clamp_Subsystem clamp_Subsystem;
   public static Arm_Subsystem arm_Subsystem;
-  public static AprilTag_Subsystem aprilTag_Subsystem;
   public static SmartDashboard_Subsystem smartDashboard_Subsystem;
+  public Vision_Subsystem vision_Subsystem;
 
   //Controllers
   public static Joystick driverController;
@@ -48,6 +52,9 @@ public class RobotContainer {
   //Buttons
   public static JoystickButton driver_StartButton; //Maybe switch these to assist
   public static JoystickButton driver_BackButton;
+  public static JoystickButton driver_XButton;
+  public static JoystickButton driver_AButton;
+  public static JoystickButton driver_BButton;
   public static JoystickButton assist_XButton;
   public static JoystickButton assist_AButton;
   public static JoystickButton assist_YButton;
@@ -62,15 +69,27 @@ public class RobotContainer {
     intake_Subsystem = new Intake_Subsystem(); 
     clamp_Subsystem = new Clamp_Subsystem();
     arm_Subsystem = new Arm_Subsystem();
-    aprilTag_Subsystem = new AprilTag_Subsystem();
     smartDashboard_Subsystem = new SmartDashboard_Subsystem();
 
+    vision_Subsystem = new Vision_Subsystem();
     //Controllers
     driverController = Robot.driverController;
     assistController = Robot.assistController;
+    vision_Subsystem.setDefaultCommand(new AddVisionMeasurement(driveBase_Subsystem, vision_Subsystem));
   }
 
   public static void configureBindings() {
+
+    //Align Testing 
+    driver_XButton = new JoystickButton(driverController, Constants.d_XSquaredPort);
+    driver_XButton.whileTrue(new AutoRotate(driveBase_Subsystem, Constants.pose2b));
+
+    driver_BButton = new JoystickButton(driverController, Constants.d_BirclePort);
+    driver_BButton.whileTrue(new AutoDrive(driveBase_Subsystem, Constants.pose2b));
+    
+    driver_AButton = new JoystickButton(driverController, Constants.d_AxePort);
+    driver_AButton.whileTrue(new AutoBalance(driveBase_Subsystem));
+
     //Intake 
     driver_LTrigger = new Trigger(Supplier.createBooleanSupplier(driverController, Constants.d_LTriggerPort, Constants.d_RTriggerPort));
     driver_LTrigger.whileTrue(new IntakeOnReverse());
