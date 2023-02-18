@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class SmartDashboard_Subsystem extends SubsystemBase {
   public Boolean manualArmEnabled = false;
@@ -11,6 +13,10 @@ public class SmartDashboard_Subsystem extends SubsystemBase {
   SendableChooser<String> assistControlChooser = new SendableChooser<>();
   SendableChooser<String> armPreset = new SendableChooser<>();
   SendableChooser<Boolean> manualArm = new SendableChooser<>();
+
+  Mechanism2d armSim = new Mechanism2d(4, 4, new Color8Bit(Color.kBlack));
+  MechanismRoot2d armSimRoot = armSim.getRoot("ArmBase", 2, 0);
+  MechanismLigament2d armSimPart = armSimRoot.append(new MechanismLigament2d("Arm", 2, 90));
 
   public SmartDashboard_Subsystem() {
     driverControlChooser.setDefaultOption("XBOX", "xbox");
@@ -38,6 +44,7 @@ public class SmartDashboard_Subsystem extends SubsystemBase {
     SmartDashboard.putData("Manual Arm Preset", armPreset);
     SmartDashboard.putData("Manual Arm", manualArm);
     SmartDashboard.putData("jMoney's DriveBase", DriveBase_Subsystem.jMoney_Drive);
+    SmartDashboard.putData("ArmSim", armSim);
 
     update();
   }
@@ -79,6 +86,11 @@ public class SmartDashboard_Subsystem extends SubsystemBase {
     }
   }
 
+  private void updateArmSim() {
+    armSimPart.setLength(2 + (Arm_Subsystem.extendEncoder.getDegrees()/50));
+    armSimPart.setAngle(90 + Arm_Subsystem.rotateEncoder.getDegrees());
+  }
+
   private void update() {
     SmartDashboard.putNumber("IntakeMotor", Intake_Subsystem.intakeMotor.get());
     SmartDashboard.putNumber("RotateMotor", Arm_Subsystem.armRotateMotor.get());
@@ -89,6 +101,7 @@ public class SmartDashboard_Subsystem extends SubsystemBase {
     SmartDashboard.putBoolean("IntakeSolenoid", Pneumatics_Subsystem.intakeSolenoid.get());
     SmartDashboard.putBoolean("ClampSolenoid", Pneumatics_Subsystem.clampSolenoid.get());
     SmartDashboard.putBoolean("Compressor", Pneumatics_Subsystem.comp.isEnabled());
+    updateArmSim();
     manualArmEnabled = manualArm.getSelected();
   }
 }

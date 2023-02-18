@@ -41,6 +41,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/ArmSim": "Mechanism2d",
       "/SmartDashboard/Assist Controller Type": "String Chooser",
       "/SmartDashboard/Driver Controller Type": "String Chooser",
       "/SmartDashboard/Manual Arm": "String Chooser",
@@ -49,6 +50,11 @@
       "/SmartDashboard/jMoney's DriveBase": "DifferentialDrive"
     },
     "windows": {
+      "/SmartDashboard/ArmSim": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Assist Controller Type": {
         "window": {
           "visible": true

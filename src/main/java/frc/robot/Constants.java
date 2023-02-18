@@ -89,11 +89,11 @@ public final class Constants {
   public final static double hybridRotation = 20;
 
   public final static double armIntakeExtention = 0;
-  public final static double topCubeExtension = 50;
-  public final static double middleCubeExtension = 40;
-  public final static double topConeExtension = 55;
-  public final static double middleConeExtension = 45;
-  public final static double hybridExtension = 30;
+  public final static double topCubeExtension = 40;
+  public final static double middleCubeExtension = 30;
+  public final static double topConeExtension = 45;
+  public final static double middleConeExtension = 35;
+  public final static double hybridExtension = 20;
 
 
 
