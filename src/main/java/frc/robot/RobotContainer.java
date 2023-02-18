@@ -139,7 +139,8 @@ public class RobotContainer {
     assist_RTrigger.onTrue(new ClampCone());
     assist_RTrigger.onFalse(new ClampOpen());
   }
-  public Command getAutoCommand(String autoChose){
+
+  public static Command getAutoCommand(String autoChose){
     if (autoChose == "score_chargeEngage"){
       return driveBase_Subsystem.autoBuilder.fullAuto(driveBase_Subsystem.score_chargeEngage);
     } 

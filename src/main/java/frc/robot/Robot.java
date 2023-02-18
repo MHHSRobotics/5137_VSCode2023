@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import frc.robot.subsystems.SmartDashboard_Subsystem;
+import frc.robot.RobotContainer;
 
 
 /**
@@ -31,7 +32,6 @@ import frc.robot.subsystems.SmartDashboard_Subsystem;
  */
 public class Robot extends TimedRobot {
 
-  private RobotContainer m_robotContainer;
   private Command m_autonomousCommand;
 
   public static Joystick driverController;
@@ -52,7 +52,6 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     driverController = new Joystick(Constants.driverControllerPort);
     assistController = new Joystick(Constants.assistControllerPort);
-    m_robotContainer = new RobotContainer();
 
     //loads in paths from PathWeaver
     try {
@@ -92,7 +91,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit()
   {
 
-    m_autonomousCommand = m_robotContainer.getAutoCommand(RobotContainer.smartDashboard_Subsystem.selectAutoRoutine());
+    m_autonomousCommand = RobotContainer.getAutoCommand(RobotContainer.smartDashboard_Subsystem.selectAutoRoutine());
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }

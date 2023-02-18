@@ -11,7 +11,8 @@ import frc.robot.RobotContainer;
 public class ArmResetToIntake extends CommandBase {
   /** Creates a new ArmResetToIntake. */
   public ArmResetToIntake() {
-    
+    addRequirements(RobotContainer.arm_Subsystem);
+    addRequirements(RobotContainer.pneumatics_Subsystem);
   }
 
   // Called when the command is initially scheduled.

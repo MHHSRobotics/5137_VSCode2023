@@ -17,9 +17,10 @@ public class AddVisionMeasurement extends CommandBase {
   double timestamp;
 
   public AddVisionMeasurement(DriveBase_Subsystem driveBase_Subsystem, Vision_Subsystem vision_Subsystem) {
+    addRequirements(vision_Subsystem);
+
     this.driveBase_Subsystem = driveBase_Subsystem;
     this.vision_Subsystem = vision_Subsystem;
-    addRequirements(vision_Subsystem);
   }
 
   @Override
