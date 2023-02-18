@@ -12,7 +12,7 @@ public class SmartDashboard_Subsystem extends SubsystemBase {
   SendableChooser<String> assistControlChooser = new SendableChooser<>();
   SendableChooser<String> armPreset = new SendableChooser<>();
   SendableChooser<Boolean> manualArm = new SendableChooser<>();
-  SendableChooser<String> autoChooser = new SendableChooser<>();
+  static SendableChooser<String> autoChooser = new SendableChooser<>();
 
   public SmartDashboard_Subsystem() {
     driverControlChooser.setDefaultOption("XBOX", "xbox");
@@ -65,7 +65,7 @@ public class SmartDashboard_Subsystem extends SubsystemBase {
     return assistControlChooser.getSelected();
   }
 
-  public String selectAutoRoutine(){
+  public static String selectAutoRoutine(){
     return autoChosen = autoChooser.getSelected();
   }
 

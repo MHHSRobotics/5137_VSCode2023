@@ -91,7 +91,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit()
   {
 
-    m_autonomousCommand = RobotContainer.getAutoCommand(RobotContainer.smartDashboard_Subsystem.selectAutoRoutine());
+    m_autonomousCommand = RobotContainer.getAutoCommand(SmartDashboard_Subsystem.selectAutoRoutine());
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }

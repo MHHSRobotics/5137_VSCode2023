@@ -140,17 +140,17 @@ public class RobotContainer {
     assist_RTrigger.onFalse(new ClampOpen());
   }
 
-  public static Command getAutoCommand(String autoChose){
-    if (autoChose == "score_chargeEngage"){
+  public static Command getAutoCommand(String autoChosen){
+    if (autoChosen == "score_chargeEngage"){
       return driveBase_Subsystem.autoBuilder.fullAuto(driveBase_Subsystem.score_chargeEngage);
     } 
-    else if (autoChose == "score_mobility_chargeEngage"){
+    else if (autoChosen == "score_mobility_chargeEngage"){
       return driveBase_Subsystem.autoBuilder.fullAuto(driveBase_Subsystem.score_mobility_chargeEngage);
     } 
-    else if (autoChose == "score_mobility_intake_score"){
+    else if (autoChosen == "score_mobility_intake_score"){
       return driveBase_Subsystem.autoBuilder.fullAuto(driveBase_Subsystem.score_mobility_intake_score);
     } 
-    else if (autoChose == "Goal_Path"){
+    else if (autoChosen == "Goal_Path"){
       return driveBase_Subsystem.autoBuilder.fullAuto(driveBase_Subsystem.Goal_Path);
     }
     return null;
