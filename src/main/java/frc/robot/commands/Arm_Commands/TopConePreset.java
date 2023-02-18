@@ -23,6 +23,7 @@ public class TopConePreset extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.arm_Subsystem.moveArm(Constants.topConeRotation, Constants.topConeExtension);
+    RobotContainer.arm_Subsystem.activePreset = "Top Cone";
   }
 
   // Called once the command ends or is interrupted.
@@ -34,6 +35,6 @@ public class TopConePreset extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return RobotContainer.arm_Subsystem.armFinished(Constants.topConeRotation, Constants.topConeExtension);
+    return true;
   }
 }

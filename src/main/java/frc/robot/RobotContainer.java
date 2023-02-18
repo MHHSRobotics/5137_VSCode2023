@@ -36,10 +36,11 @@ import frc.robot.commands.Arm_Commands.*;
 public class RobotContainer {
   //Subsystems
   public static DriveBase_Subsystem driveBase_Subsystem;
-  public static Intake_Subystem intake_Subystem;
+  public static Intake_Subsystem intake_Subsystem;
   public static Pneumatics_Subsystem pneumatics_Subsystem;
   public static Clamp_Subsystem clamp_Subsystem;
   public static Arm_Subsystem arm_Subsystem;
+  public static SmartDashboard_Subsystem smartDashboard_Subsystem;
   public Vision_Subsystem vision_Subsystem;
 
   //Controllers
@@ -70,9 +71,11 @@ public class RobotContainer {
     //Subsystems
     pneumatics_Subsystem = new Pneumatics_Subsystem();
     driveBase_Subsystem = new DriveBase_Subsystem();
-    intake_Subystem = new Intake_Subystem(); 
+    intake_Subsystem = new Intake_Subsystem(); 
     clamp_Subsystem = new Clamp_Subsystem();
     arm_Subsystem = new Arm_Subsystem();
+    smartDashboard_Subsystem = new SmartDashboard_Subsystem();
+
     vision_Subsystem = new Vision_Subsystem();
     //Controllers
     driverController = Robot.driverController;
@@ -102,10 +105,10 @@ public class RobotContainer {
     driver_RTrigger.onFalse(new IntakeOff());
 
     //Compressor 
-    driver_StartButton = new JoystickButton(driverController, 9);
+    driver_StartButton = new JoystickButton(driverController, Constants.d_StoptionsPort);
     driver_StartButton.onTrue(new CompressorOn());
 
-    driver_BackButton = new JoystickButton(driverController, 10);
+    driver_BackButton = new JoystickButton(driverController, Constants.d_ShackPort);
     driver_BackButton.onTrue(new CompressorOff());
 
     //Arm
@@ -136,7 +139,6 @@ public class RobotContainer {
     assist_RTrigger.onTrue(new ClampCone());
     assist_RTrigger.onFalse(new ClampOpen());
   }
-
   public Command getAutoCommand(String autoChose){
     if (autoChose == "score_chargeEngage"){
       return driveBase_Subsystem.autoBuilder.fullAuto(driveBase_Subsystem.score_chargeEngage);
@@ -152,4 +154,5 @@ public class RobotContainer {
     }
     return null;
   }
+  
 }

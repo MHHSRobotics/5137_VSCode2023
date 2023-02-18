@@ -23,6 +23,7 @@ public class MidConePreset extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.arm_Subsystem.moveArm(Constants.middleConeRotation, Constants.middleConeExtension);
+    RobotContainer.arm_Subsystem.activePreset = "Middle Cone";
   }
 
   // Called once the command ends or is interrupted.
@@ -34,6 +35,6 @@ public class MidConePreset extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return RobotContainer.arm_Subsystem.armFinished(Constants.middleConeRotation, Constants.middleConeExtension);
+    return true;
   }
 }

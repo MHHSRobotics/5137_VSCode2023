@@ -59,7 +59,7 @@ public class DriveBase_Subsystem extends SubsystemBase {
   public static MotorControllerGroup rightDrive;
 
   //DriveTrain
-  DifferentialDrive jMoney_Drive;
+  public static DifferentialDrive jMoney_Drive;
 
   //Position Estimator
   private DifferentialDrivePoseEstimator poseEstimator = new DifferentialDrivePoseEstimator(Constants.trackWidth, new Rotation2d(0),Constants.initialLeftDistance ,Constants.initialRightDistance, new Pose2d());
@@ -118,6 +118,13 @@ public class DriveBase_Subsystem extends SubsystemBase {
     rightBackTalon = new WPI_TalonSRX(Constants.leftBackTalonPort);
     rightDrive = new MotorControllerGroup(rightFrontTalon, rightBackTalon);
 
+    //Gyros
+    gyro = new PigeonIMU(0);
+
+    //position estimator 
+    poseEstimator = new DifferentialDrivePoseEstimator(Constants.trackWidth, new Rotation2d(gyro.getRoll()),Constants.initialLeftDistance ,Constants.initialRightDistance, new Pose2d());
+
+
     //Encoders 
     leftFrontTalon.setSelectedSensorPosition(0);
 
@@ -127,9 +134,7 @@ public class DriveBase_Subsystem extends SubsystemBase {
     //Controller
     controller = Robot.driverController;
 
-    //Gyros
     
-    gyro = new PigeonIMU(0);
 
     //PID
     distanceController = new PIDController(Constants.dKP,Constants.dKI, Constants.dKD);
@@ -148,12 +153,6 @@ public class DriveBase_Subsystem extends SubsystemBase {
 
   }
 
-
-  public void drive(double leftSpeed, double rightSpeed)
-  {
-    jMoney_Drive.tankDrive(leftSpeed, rightSpeed);
-  }
-
   public void arcadeDrive(Joystick controller) {
     //Gets controller values
     double speed = controller.getRawAxis(Constants.g_LYStickAxisPort);
@@ -161,6 +160,10 @@ public class DriveBase_Subsystem extends SubsystemBase {
     speed = adjust(speed);
     rotate = adjust(rotate);
     jMoney_Drive.curvatureDrive(speed/Constants.driveSensitivity, rotate/Constants.turnSensitivity, true);
+  }
+
+  public void drive(double speed, double rotate) {
+    jMoney_Drive.curvatureDrive(speed, rotate, true);
   }
 
   //Also not required but stops drifiting and gurantees max speed

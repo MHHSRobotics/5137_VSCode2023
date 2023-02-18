@@ -23,6 +23,7 @@ public class TopCubePreset extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.arm_Subsystem.moveArm(Constants.topCubeRotation, Constants.topCubeExtension);
+    RobotContainer.arm_Subsystem.activePreset = "Top Cube";
   }
 
   // Called once the command ends or is interrupted.
@@ -34,6 +35,6 @@ public class TopCubePreset extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return RobotContainer.arm_Subsystem.armFinished(Constants.topCubeRotation, Constants.topCubeExtension);
+    return true;
   }
 }

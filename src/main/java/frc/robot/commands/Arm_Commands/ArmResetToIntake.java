@@ -11,7 +11,7 @@ import frc.robot.RobotContainer;
 public class ArmResetToIntake extends CommandBase {
   /** Creates a new ArmResetToIntake. */
   public ArmResetToIntake() {
-    // Use addRequirements() here to declare subsystem dependencies.
+    
   }
 
   // Called when the command is initially scheduled.
@@ -21,8 +21,11 @@ public class ArmResetToIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.arm_Subsystem.moveArm(Constants.armIntakeRotation, Constants.armIntakeExtention);
-    System.out.println("Reset");
+    
+    if (RobotContainer.pneumatics_Subsystem.intakeSolenoid.get()){   //ensures intake is extended before moving arm  
+      RobotContainer.arm_Subsystem.moveArm(Constants.armIntakeRotation, Constants.armIntakeExtention);
+      RobotContainer.arm_Subsystem.activePreset = "None";
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -32,6 +35,6 @@ public class ArmResetToIntake extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return RobotContainer.arm_Subsystem.armFinished(Constants.armIntakeRotation, Constants.armIntakeExtention);
+    return true;
   }
 }

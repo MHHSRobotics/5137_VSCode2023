@@ -21,16 +21,6 @@
           "open": true
         }
       },
-      "SparkMax[8]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SparkMax[9]": {
-        "header": {
-          "open": true
-        }
-      },
       "intakeMotor[5]": {
         "header": {
           "open": true
@@ -52,7 +42,11 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Assist Controller Type": "String Chooser",
-      "/SmartDashboard/Driver Controller Type": "String Chooser"
+      "/SmartDashboard/Driver Controller Type": "String Chooser",
+      "/SmartDashboard/Manual Arm": "String Chooser",
+      "/SmartDashboard/Manual Arm Preset": "String Chooser",
+      "/SmartDashboard/Tab Select": "String Chooser",
+      "/SmartDashboard/jMoney's DriveBase": "DifferentialDrive"
     },
     "windows": {
       "/SmartDashboard/Assist Controller Type": {

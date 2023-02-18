@@ -23,7 +23,7 @@ public class HybridPreset extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.arm_Subsystem.moveArm(Constants.hybridRotation, Constants.hybridExtension);
-    System.out.println("Hybrid");
+    RobotContainer.arm_Subsystem.activePreset = "Hybrid";
   }
 
   // Called once the command ends or is interrupted.
@@ -35,6 +35,6 @@ public class HybridPreset extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return RobotContainer.arm_Subsystem.armFinished(Constants.hybridRotation, Constants.hybridExtension);
+    return true;
   }
 }

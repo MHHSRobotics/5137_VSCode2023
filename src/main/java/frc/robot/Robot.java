@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import frc.robot.subsystems.SmartDashboard_Subsystem;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -36,11 +38,6 @@ public class Robot extends TimedRobot {
   public static Joystick assistController;
   public static String driverControllerType;
   public static String assistControllerType;
-  public static String autoChosen;
-
-  SendableChooser<String> driverControlChooser = new SendableChooser<>();
-  SendableChooser<String> assistControlChooser = new SendableChooser<>();
-  SendableChooser<String> autoChooser = new SendableChooser<>();
 
   String trajectoryJSON = "paths/YourPath.wpilib.json"; //change to path name later
   Trajectory trajectory = new Trajectory();
@@ -56,24 +53,6 @@ public class Robot extends TimedRobot {
     driverController = new Joystick(Constants.driverControllerPort);
     assistController = new Joystick(Constants.assistControllerPort);
     m_robotContainer = new RobotContainer();
-
-    driverControlChooser.setDefaultOption("XBOX", "xbox");
-    driverControlChooser.addOption("XBOX", "xbox");
-    driverControlChooser.addOption("PLAY_STATION", "ps4");
-
-    assistControlChooser.setDefaultOption("XBOX", "xbox");
-    assistControlChooser.addOption("XBOX", "xbox");
-    assistControlChooser.addOption("PLAY_STATION", "ps4");
-
-    autoChooser.addOption("score_chargeEngage", "score_chargeEngage");
-    autoChooser.addOption("score_mobility_chargeEngage", "score_mobility_chargeEngage");
-    autoChooser.addOption("score_mobility_intake_score", "score_mobility_intake_score");
-    autoChooser.addOption("Goal_Path", "Goal_Path");
-    
-    SmartDashboard.putData("Driver Controller Type", driverControlChooser);
-    SmartDashboard.putData("Assist Controller Type", assistControlChooser);
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-
 
     //loads in paths from PathWeaver
     try {
@@ -112,8 +91,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit()
   {
-    autoChosen = autoChooser.getSelected();
-    m_autonomousCommand = m_robotContainer.getAutoCommand(autoChosen);
+
+    m_autonomousCommand = m_robotContainer.getAutoCommand(RobotContainer.smartDashboard_Subsystem.selectAutoRoutine());
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
@@ -131,8 +110,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    driverControllerType = driverControlChooser.getSelected();
-    assistControllerType = assistControlChooser.getSelected();
+    driverControllerType = RobotContainer.smartDashboard_Subsystem.selectDriverController();
+    assistControllerType = RobotContainer.smartDashboard_Subsystem.selectAssistController();
     Constants.updateDepConstants();
     RobotContainer.configureBindings();
   }

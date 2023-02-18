@@ -75,7 +75,7 @@ public final class Constants {
   //Arm
   public final static int armRotatePort = 8; //filler number, change later
   public final static int armExtendPort = 9; //filler number, change later
-  public final static double rotationToDegreeConversion = 100; //gear ratio for rotation moter
+  public final static double rotationToDegreeConversion = 360; //gear ratio for rotation motor CHANGE TO 275 LATER
   public final static double armExtendSpeed = 0.2; //needs testing
   public final static double armRotateSpeed = 0.2; //needs testing
 

@@ -7,14 +7,14 @@ import frc.robot.RobotContainer;
 public class IntakeExtend extends CommandBase {
     double timestamp;
     public IntakeExtend() {
-        addRequirements(RobotContainer.intake_Subystem);
+        addRequirements(RobotContainer.intake_Subsystem);
         
      }
  
      @Override
      public void execute() {
         //doesn't toggle intake on unless intake is currently off  
-         RobotContainer.intake_Subystem.extendIntake();
+         RobotContainer.intake_Subsystem.extendIntake();
          timestamp = Timer.getFPGATimestamp();
      }
  
