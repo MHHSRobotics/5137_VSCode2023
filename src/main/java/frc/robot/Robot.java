@@ -20,9 +20,8 @@ import frc.robot.commands.ControlCommands.UpdateControllerPorts;
  */
 public class Robot extends TimedRobot {
 
-  private RobotContainer m_robotContainer; 
   private Command m_autonomousCommand; //Will be used to run auto
-
+  private RobotContainer m_robotContainer;
  
   
 
@@ -36,7 +35,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    
   }
 
   /**

@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import frc.robot.simulation.SparkMaxWrapper;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -10,12 +11,12 @@ import frc.robot.Constants;
 public class Intake_Subystem extends SubsystemBase {
     private boolean intakeActive;
 
-    public static CANSparkMax intakeMotor;
-   private boolean intakeExtended;
+    public static SparkMaxWrapper intakeMotor;
+    private boolean intakeExtended;
 
     public Intake_Subystem() {
-        intakeMotor = new CANSparkMax(Constants.intakePort, MotorType.kBrushless);
-        //intakeMotor = new SparkMaxWrapper(Constants.intakePort, MotorType.kBrushless);
+        //intakeMotor = new CANSparkMax(Constants.intakePort, MotorType.kBrushless);
+        intakeMotor = new SparkMaxWrapper(Constants.intakePort, MotorType.kBrushless);
         intakeActive = false;
     }
 
@@ -37,6 +38,7 @@ public class Intake_Subystem extends SubsystemBase {
 
     public void stopIntake() {
         intakeMotor.set(0.0);
+        intakeActive = false;
     }
 
     public void extendIntake() {

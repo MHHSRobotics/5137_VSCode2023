@@ -1,24 +1,17 @@
 package frc.robot.commands.Intake_Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake_Subystem;
+import frc.robot.RobotContainer;
 
 public class IntakeOff extends CommandBase {
-     Intake_Subystem intake_Subystem;
-
-    public IntakeOff(Intake_Subystem intake_Subystem) {
-
-        this.intake_Subystem = intake_Subystem;
-        addRequirements(intake_Subystem);
+    public IntakeOff() {
+        addRequirements(RobotContainer.intake_Subystem);
      }
  
      @Override
      public void execute() {
-        if (intake_Subystem.getIntakeActive()) {
-            intake_Subystem.stopIntake(); // Turns off intake
-        }
-        intake_Subystem.retractIntake(); //Pulls intake in
-
+        RobotContainer.intake_Subystem.stopIntake(); // Turns off intake
+        RobotContainer.intake_Subystem.retractIntake(); //Pulls intake in
      }
  
      @Override

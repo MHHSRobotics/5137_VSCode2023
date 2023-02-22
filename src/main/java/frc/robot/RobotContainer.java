@@ -43,12 +43,12 @@ import frc.robot.commands.Arm_Commands.*;
 public class RobotContainer {
 
   //All subsystems - WPILIB examples say they should be private final?
-  private final  Pneumatics_Subsystem pneumatics_Subsystem = new Pneumatics_Subsystem();
-  private final  DriveBase_Subsystem driveBase_Subsystem = new DriveBase_Subsystem();
-  private final  Intake_Subystem intake_Subystem = new Intake_Subystem(); 
-  private final  Clamp_Subsystem clamp_Subsystem = new Clamp_Subsystem();
-  private final  Arm_Subsystem arm_Subsystem = new Arm_Subsystem();
-  private final  Vision_Subsystem vision_Subsystem = new Vision_Subsystem();
+  public static Pneumatics_Subsystem pneumatics_Subsystem = new Pneumatics_Subsystem();
+  public static DriveBase_Subsystem driveBase_Subsystem = new DriveBase_Subsystem();
+  public static Intake_Subystem intake_Subystem = new Intake_Subystem(); 
+  public static Clamp_Subsystem clamp_Subsystem = new Clamp_Subsystem();
+  public static Arm_Subsystem arm_Subsystem = new Arm_Subsystem();
+  public static Vision_Subsystem vision_Subsystem = new Vision_Subsystem();
 
   //Controllers
   public static Joystick driverController;
@@ -114,13 +114,13 @@ public class RobotContainer {
     //Command group for scoring, relies on the isFinished of each command
     
     
-    SequentialCommandGroup score = new SequentialCommandGroup(new IntakeExtend(intake_Subystem),new ClampCone(clamp_Subsystem), new TopConePreset(arm_Subsystem) ,  new ClampOpen(clamp_Subsystem), new PrintCommand("Score Finished"));
+    SequentialCommandGroup score = new SequentialCommandGroup(new IntakeExtend(),new ClampCone(clamp_Subsystem), new TopConePreset(arm_Subsystem) ,  new ClampOpen(clamp_Subsystem), new PrintCommand("Score Finished"));
     //SIMULATION ONLY 
     //SequentialCommandGroup score = new SequentialCommandGroup(new IntakeExtend(intake_Subystem),new ClampCone(clamp_Subsystem), new PrintCommand("Arm rotated") ,  new PrintCommand("ClampOpened"), new PrintCommand("Score Finished"));
 
 
     //Adds commands to be used at event markers during auto path. Used as a parameter in autoBuilder
-    eventMap.put("Intake1", new IntakeOn(intake_Subystem));
+    eventMap.put("Intake1", new IntakeOn());
     eventMap.put("Score1", score);
     //SIMULATION ONLY
     //eventMap.put("Balance1", new PrintCommand("Balanced"));
@@ -156,26 +156,15 @@ public class RobotContainer {
     
     driver_AButton = new JoystickButton(driverController, Constants.d_AxePort);
     driver_AButton.whileTrue(new AutoBalance(driveBase_Subsystem));
-
-    //Intake 
-    driver_LButton = new JoystickButton(driverController, Constants.d_RTriggerPort);
-    driver_LButton.whileTrue(new IntakeOnReverse(intake_Subystem));
-    driver_LButton.whileFalse(new IntakeOff(intake_Subystem));
     
-    driver_RButton = new JoystickButton(driverController, Constants.d_RTriggerPort);
-    driver_RButton.whileTrue(new IntakeOn(intake_Subystem));
-    driver_RButton.whileFalse(new IntakeOff(intake_Subystem));
-    
-    //Doesn't work, could be issue with supplier or potentially my controller is just diff - Joaquin 
-/* 
     driver_RTrigger = new Trigger(Supplier.createBooleanSupplier(driverController, Constants.d_RTriggerPort, Constants.d_LTriggerPort));
-    driver_RTrigger.whileTrue(new IntakeOn(intake_Subystem));
-    driver_RTrigger.onFalse(new IntakeOff(intake_Subystem));
+    driver_RTrigger.whileTrue(new IntakeOn());
+    driver_RTrigger.onFalse(new IntakeOff());
 
-     driver_LTrigger = new Trigger(Supplier.createBooleanSupplier(driverController, Constants.d_LTriggerPort, Constants.d_RTriggerPort));
-    driver_LTrigger.whileTrue(new IntakeOnReverse(intake_Subystem));
-    driver_LTrigger.onFalse(new IntakeOff(intake_Subystem));
-*/
+    driver_LTrigger = new Trigger(Supplier.createBooleanSupplier(driverController, Constants.d_LTriggerPort, Constants.d_RTriggerPort));
+    driver_LTrigger.whileTrue(new IntakeOnReverse());
+    driver_LTrigger.onFalse(new IntakeOff());
+
     //Compressor 
     driver_StartButton = new JoystickButton(driverController, 9);
     driver_StartButton.onTrue(new CompressorOn(pneumatics_Subsystem));
