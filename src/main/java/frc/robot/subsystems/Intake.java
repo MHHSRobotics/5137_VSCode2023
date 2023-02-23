@@ -1,9 +1,9 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.Intake_Constants;
 import frc.robot.simulation.SparkMaxWrapper;
