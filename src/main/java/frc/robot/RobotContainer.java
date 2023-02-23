@@ -24,11 +24,13 @@ import frc.robot.constants.Controller_Constants.*;
 public class RobotContainer {
 
   //Subsystems
-  public static Intake intake_Subsystem;
   public static Drive drive_Subsystem;
+  public static Intake_Subystem intake_Subsystem;
+  public static Pneumatics_Subsystem pneumatics_Subsystem;
 
   //Commands
   public static Intake_Commands intake_Commands;
+
 
   //Controller
   public static Trigger driver_LT;
@@ -48,7 +50,8 @@ public class RobotContainer {
 
   public void configureSubsystems() {
     drive_Subsystem = new Drive(driverController);
-    intake_Subsystem = new Intake();
+    intake_Subsystem = new Intake_Subystem();
+    pneumatics_Subsystem = new Pneumatics_Subsystem();
   }
 
   public void configureCommands() {
@@ -56,8 +59,8 @@ public class RobotContainer {
   }
   
   public void configureBindings() {
-    driver_LT = new Trigger(createBooleanSupplier(driverController, PS4_Constants.LTPort, PS4_Constants.RTPort));
-    driver_RT = new Trigger(createBooleanSupplier(driverController, PS4_Constants.RTPort, PS4_Constants.LTPort));
+    driver_LT = new Trigger(createBooleanSupplier(driverController, XBOX_Constants.LTPort, XBOX_Constants.RTPort));
+    driver_RT = new Trigger(createBooleanSupplier(driverController, XBOX_Constants.RTPort, XBOX_Constants.LTPort));
 
     driver_LT.whileTrue(intake_Commands.runIntakeReverse());
     driver_LT.onFalse(intake_Commands.stopIntake());
@@ -66,6 +69,9 @@ public class RobotContainer {
     driver_RT.onFalse(intake_Commands.stopIntake());
   }
 
+
+  //required port is the joystick you are currecntly attempting to use 
+  //dependent port is the joytick we're checking against, to make sure you're not breaking the robot 
   public BooleanSupplier createBooleanSupplier(Joystick controller, int requiredPort, int dependentPort) {
     BooleanSupplier supply;
     supply = () -> {
