@@ -77,23 +77,6 @@
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Auto Modes": "String Chooser",
       "/SmartDashboard/Driver Controller Type": "String Chooser"
-    },
-    "windows": {
-      "/SmartDashboard/Assist Controller Type": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Auto Modes": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Driver Controller Type": {
-        "window": {
-          "visible": true
-        }
-      }
     }
   },
   "NetworkTables": {
