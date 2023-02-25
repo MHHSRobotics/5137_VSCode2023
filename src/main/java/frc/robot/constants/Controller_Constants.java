@@ -8,6 +8,7 @@ public final class Controller_Constants {
         public static final int RTPort = 3;
         public static final int RXPort = 4;
         public static final int RYPort = 5;
+        public static final int APort = 1;
     }
     public final class PS4_Constants {
         public static final int LXPort = 0;
@@ -16,5 +17,6 @@ public final class Controller_Constants {
         public static final int LTPort = 3;
         public static final int RTPort = 4;
         public static final int RYPort = 5;
+        public static final int XPort = 2;
     }
 }

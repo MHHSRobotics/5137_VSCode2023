@@ -9,6 +9,7 @@ import frc.robot.subsystems.*;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.commands.*;
@@ -27,14 +28,21 @@ public class RobotContainer {
   public static Drive drive_Subsystem;
   public static Intake_Subystem intake_Subsystem;
   public static Pneumatics_Subsystem pneumatics_Subsystem;
+  public static Clamp_Subsystem clamp_Subsystem;
 
   //Commands
   public static Intake_Commands intake_Commands;
+  public static Clamp_Commands clamp_Commands;
 
 
-  //Controller
+  //Controller Triggers
   public static Trigger driver_LT;
   public static Trigger driver_RT;
+  public static Trigger assist_LT;
+  public static Trigger assist_RT;
+
+  //Controller Buttons
+  public static JoystickButton driver_AButton;
   
   //Controllers
   public static Joystick driverController;
@@ -52,10 +60,12 @@ public class RobotContainer {
     drive_Subsystem = new Drive(driverController);
     intake_Subsystem = new Intake_Subystem();
     pneumatics_Subsystem = new Pneumatics_Subsystem();
+    clamp_Subsystem = new Clamp_Subsystem();
   }
 
   public void configureCommands() {
     intake_Commands = new Intake_Commands(intake_Subsystem);
+    clamp_Commands = new Clamp_Commands(clamp_Subsystem);
   }
   
   public void configureBindings() {
@@ -67,6 +77,16 @@ public class RobotContainer {
 
     driver_RT.whileTrue(intake_Commands.runIntakeForward());
     driver_RT.onFalse(intake_Commands.stopIntake());
+
+    driver_AButton = new JoystickButton(driverController, XBOX_Constants.APort);
+
+    assist_RT = new Trigger(createBooleanSupplier(assistController, XBOX_Constants.RTPort, XBOX_Constants.LTPort));
+    assist_RT.whileTrue(clamp_Commands.clampCone());
+    assist_RT.onFalse(clamp_Commands.clampRelease());
+
+    assist_LT = new Trigger(createBooleanSupplier(assistController, XBOX_Constants.LTPort, XBOX_Constants.RTPort));
+    assist_LT.whileTrue(clamp_Commands.clampCube());
+    assist_LT.onFalse(clamp_Commands.clampRelease());
   }
 
 
