@@ -16,11 +16,6 @@
           "open": true
         }
       },
-      "SPARK MAX [5]": {
-        "header": {
-          "open": true
-        }
-      },
       "SparkMax[5]": {
         "header": {
           "open": true
@@ -37,6 +32,16 @@
         }
       },
       "SparkMax[9]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX[1]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX[3]": {
         "header": {
           "open": true
         }

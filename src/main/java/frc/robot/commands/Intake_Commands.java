@@ -9,7 +9,6 @@ public class Intake_Commands {
 
     public Intake_Commands (Intake_Subystem intake) {
         this.intake = intake;
-        
     }
 
     public Command runIntakeForward() {

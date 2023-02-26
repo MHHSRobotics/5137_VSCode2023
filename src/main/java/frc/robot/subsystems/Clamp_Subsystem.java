@@ -15,12 +15,8 @@ public class Clamp_Subsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void clamp(boolean type) {
-    if(type) {
-      Pneumatics_Subsystem.clampSolenoid.set(true);
-    } else {
-      Pneumatics_Subsystem.clampSolenoid.set(true);
-    }    
+  public void clamp() {
+    Pneumatics_Subsystem.clampSolenoid.set(true);   
   }
 
   public void release(){

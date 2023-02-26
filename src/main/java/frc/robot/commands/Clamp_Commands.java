@@ -4,29 +4,26 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.*;
+
 import frc.robot.subsystems.Clamp_Subsystem;
 
-public class Clamp_Commands extends CommandBase {
-  /** Creates a new Clamp_Commands. */
-private final Clamp_Subsystem clamp;
+public class Clamp_Commands {
+  private final Clamp_Subsystem clamp;
 
   public Clamp_Commands(Clamp_Subsystem clamp) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.clamp = clamp;
   }
 
   public Command clampCone(){
-    return new InstantCommand(() -> {clamp.clamp(true);});
+    return new InstantCommand(() -> clamp.clamp());
   }
 
   public Command clampCube(){
-    return new InstantCommand(() -> {clamp.clamp(false);});
+    return new InstantCommand(() -> clamp.clamp());
   }
 
   public Command clampRelease(){
-    return new InstantCommand(() -> {clamp.release();});
+    return new InstantCommand(() -> clamp.release());
   }
 }

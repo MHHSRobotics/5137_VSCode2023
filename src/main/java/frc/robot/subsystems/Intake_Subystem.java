@@ -6,7 +6,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.Intake_Constants;
-import frc.robot.subsystems.Pneumatics_Subsystem;
 import frc.robot.simulation.SparkMaxWrapper;
 
 public class Intake_Subystem extends SubsystemBase {

@@ -13,16 +13,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Pneumatics_Constants;
 
 public class Pneumatics_Subsystem extends SubsystemBase {
+  public static Compressor comp;
   public static Solenoid intakeSolenoid;
   public static Solenoid clampSolenoid;
   public static Solenoid feetSolenoid;
 
-
-
-
-  /** Creates a new Pneumatics. */
   public Pneumatics_Subsystem() {
-    final Compressor comp = new Compressor(PneumaticsModuleType.REVPH);
+    comp = new Compressor(PneumaticsModuleType.REVPH);
 
     intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Pneumatics_Constants.intakeSolChannel);
     clampSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Pneumatics_Constants.clampSolChannel);
@@ -31,7 +28,14 @@ public class Pneumatics_Subsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run 
 
+  }
+
+  public void enableCompressor() {
+    comp.enableDigital();
+  }
+
+  public void disableCompressor() {
+    comp.disable();
   }
 }

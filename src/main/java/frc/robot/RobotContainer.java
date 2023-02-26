@@ -25,7 +25,7 @@ import frc.robot.constants.Controller_Constants.*;
 public class RobotContainer {
 
   //Subsystems
-  public static Drive drive_Subsystem;
+  public static Drive_Subsystem drive_Subsystem;
   public static Intake_Subystem intake_Subsystem;
   public static Pneumatics_Subsystem pneumatics_Subsystem;
   public static Clamp_Subsystem clamp_Subsystem;
@@ -33,16 +33,7 @@ public class RobotContainer {
   //Commands
   public static Intake_Commands intake_Commands;
   public static Clamp_Commands clamp_Commands;
-
-
-  //Controller Triggers
-  public static Trigger driver_LT;
-  public static Trigger driver_RT;
-  public static Trigger assist_LT;
-  public static Trigger assist_RT;
-
-  //Controller Buttons
-  public static JoystickButton driver_AButton;
+  public static Pneumatics_Commands pneumatics_Commands;
   
   //Controllers
   public static Joystick driverController;
@@ -57,7 +48,7 @@ public class RobotContainer {
   }
 
   public void configureSubsystems() {
-    drive_Subsystem = new Drive(driverController);
+    drive_Subsystem = new Drive_Subsystem(driverController);
     intake_Subsystem = new Intake_Subystem();
     pneumatics_Subsystem = new Pneumatics_Subsystem();
     clamp_Subsystem = new Clamp_Subsystem();
@@ -66,27 +57,31 @@ public class RobotContainer {
   public void configureCommands() {
     intake_Commands = new Intake_Commands(intake_Subsystem);
     clamp_Commands = new Clamp_Commands(clamp_Subsystem);
+    pneumatics_Commands = new Pneumatics_Commands(pneumatics_Subsystem);
   }
   
   public void configureBindings() {
-    driver_LT = new Trigger(createBooleanSupplier(driverController, XBOX_Constants.LTPort, XBOX_Constants.RTPort));
-    driver_RT = new Trigger(createBooleanSupplier(driverController, XBOX_Constants.RTPort, XBOX_Constants.LTPort));
+    new Trigger(createBooleanSupplier(driverController, PS4_Constants.LTPort, PS4_Constants.RTPort))
+    .whileTrue(intake_Commands.runIntakeReverse())
+    .onFalse(intake_Commands.stopIntake());
 
-    driver_LT.whileTrue(intake_Commands.runIntakeReverse());
-    driver_LT.onFalse(intake_Commands.stopIntake());
+    new Trigger(createBooleanSupplier(driverController, PS4_Constants.RTPort, PS4_Constants.LTPort))
+    .whileTrue(intake_Commands.runIntakeForward())
+    .onFalse(intake_Commands.stopIntake());
 
-    driver_RT.whileTrue(intake_Commands.runIntakeForward());
-    driver_RT.onFalse(intake_Commands.stopIntake());
+    new JoystickButton(driverController, PS4_Constants.SharePort)
+    .onTrue(pneumatics_Commands.enableCompressor());
 
-    driver_AButton = new JoystickButton(driverController, XBOX_Constants.APort);
+    new JoystickButton(driverController, PS4_Constants.OptionsPort)
+    .onTrue(pneumatics_Commands.disableCompressor());
 
-    assist_RT = new Trigger(createBooleanSupplier(assistController, XBOX_Constants.RTPort, XBOX_Constants.LTPort));
-    assist_RT.whileTrue(clamp_Commands.clampCone());
-    assist_RT.onFalse(clamp_Commands.clampRelease());
+    new Trigger(createBooleanSupplier(assistController, PS4_Constants.RTPort, PS4_Constants.LTPort))
+    .whileTrue(clamp_Commands.clampCone())
+    .onFalse(clamp_Commands.clampRelease());
 
-    assist_LT = new Trigger(createBooleanSupplier(assistController, XBOX_Constants.LTPort, XBOX_Constants.RTPort));
-    assist_LT.whileTrue(clamp_Commands.clampCube());
-    assist_LT.onFalse(clamp_Commands.clampRelease());
+    new Trigger(createBooleanSupplier(assistController, PS4_Constants.LTPort, PS4_Constants.RTPort))
+    .whileTrue(clamp_Commands.clampCube())
+    .onFalse(clamp_Commands.clampRelease());
   }
 
 

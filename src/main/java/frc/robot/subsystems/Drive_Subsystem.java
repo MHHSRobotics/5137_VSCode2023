@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Drive_Constants;
 import frc.robot.constants.Controller_Constants.*;
 
-public class Drive extends SubsystemBase {
+public class Drive_Subsystem extends SubsystemBase {
   private static WPI_TalonFX leftFrontMotor;
   private static WPI_TalonFX leftBackMotor;
   private static WPI_TalonFX rightFrontMotor;
@@ -27,7 +27,7 @@ public class Drive extends SubsystemBase {
 
   private Joystick controller;
 
-  public Drive(Joystick controller) {
+  public Drive_Subsystem(Joystick controller) {
     leftFrontMotor = new WPI_TalonFX(Drive_Constants.leftFrontPort);
     leftBackMotor = new WPI_TalonFX(Drive_Constants.leftBackPort);
     rightFrontMotor = new WPI_TalonFX(Drive_Constants.rightFrontPort);
