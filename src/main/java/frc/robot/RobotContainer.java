@@ -23,12 +23,12 @@ import frc.robot.constants.Controller_Constants.*;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-
   //Subsystems
+  public static Pneumatics_Subsystem pneumatics_Subsystem;
   public static Drive_Subsystem drive_Subsystem;
   public static Intake_Subystem intake_Subsystem;
-  public static Pneumatics_Subsystem pneumatics_Subsystem;
   public static Clamp_Subsystem clamp_Subsystem;
+  public static Shuffleboard_Subsystem shuffleboard_Subsystem;
 
   //Commands
   public static Intake_Commands intake_Commands;
@@ -47,11 +47,13 @@ public class RobotContainer {
     configureBindings();
   }
 
+  //PNEUMATICS FIRST, SHUFFLEBOARD LAST
   public void configureSubsystems() {
+    pneumatics_Subsystem = new Pneumatics_Subsystem();
     drive_Subsystem = new Drive_Subsystem(driverController);
     intake_Subsystem = new Intake_Subystem();
-    pneumatics_Subsystem = new Pneumatics_Subsystem();
     clamp_Subsystem = new Clamp_Subsystem();
+    shuffleboard_Subsystem = new Shuffleboard_Subsystem();
   }
 
   public void configureCommands() {
@@ -83,7 +85,6 @@ public class RobotContainer {
     .whileTrue(clamp_Commands.clampCube())
     .onFalse(clamp_Commands.clampRelease());
   }
-
 
   //required port is the joystick you are currecntly attempting to use 
   //dependent port is the joytick we're checking against, to make sure you're not breaking the robot 

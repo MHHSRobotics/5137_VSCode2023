@@ -1,13 +1,11 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.RobotContainer;
+
 public class Clamp_Subsystem extends SubsystemBase {
-  /** Creates a new Clamp_Subsystem. */
+
   public Clamp_Subsystem() {}
 
   @Override
@@ -16,10 +14,10 @@ public class Clamp_Subsystem extends SubsystemBase {
   }
 
   public void clamp() {
-    Pneumatics_Subsystem.clampSolenoid.set(true);   
+    RobotContainer.pneumatics_Subsystem.enableClamp();
   }
 
   public void release(){
-    Pneumatics_Subsystem.clampSolenoid.set(false);
+    RobotContainer.pneumatics_Subsystem.disableClamp();
   }
 }

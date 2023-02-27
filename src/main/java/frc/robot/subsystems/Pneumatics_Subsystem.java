@@ -38,4 +38,44 @@ public class Pneumatics_Subsystem extends SubsystemBase {
   public void disableCompressor() {
     comp.disable();
   }
+
+  public void enableIntake() {
+    intakeSolenoid.set(true);
+  }
+
+  public void disableIntake() {
+    intakeSolenoid.set(false);
+  }
+
+  public void enableClamp() {
+    clampSolenoid.set(true);
+  }
+
+  public void disableClamp() {
+    clampSolenoid.set(false);
+  }
+
+  public void enableFeet() {
+    feetSolenoid.set(true);
+  }
+
+  public void disableFeet() {
+    feetSolenoid.set(false);
+  }
+
+  public boolean getIntakeEnabled() {
+    return intakeSolenoid.get();
+  }
+
+  public boolean getClampEnabled() {
+    return clampSolenoid.get();
+  }
+
+  public boolean getFeetEnabled() {
+    return feetSolenoid.get();
+  }
+
+  public boolean getCompressorEnabled() {
+    return comp.isEnabled();
+  }
 }

@@ -16,11 +16,6 @@
           "open": true
         }
       },
-      "SparkMax[5]": {
-        "header": {
-          "open": true
-        }
-      },
       "SparkMax[7]": {
         "header": {
           "open": true
@@ -32,16 +27,6 @@
         }
       },
       "SparkMax[9]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[1]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[3]": {
         "header": {
           "open": true
         }
@@ -83,10 +68,14 @@
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/SmartDashboard/Arm Preset": "String Chooser",
       "/SmartDashboard/Assist Controller Type": "String Chooser",
+      "/SmartDashboard/Auto Choice": "String Chooser",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Auto Modes": "String Chooser",
-      "/SmartDashboard/Driver Controller Type": "String Chooser"
+      "/SmartDashboard/Driver Controller Type": "String Chooser",
+      "/SmartDashboard/Manual Arm": "String Chooser",
+      "/SmartDashboard/jMoneyDrive": "DifferentialDrive"
     }
   },
   "NetworkTables": {

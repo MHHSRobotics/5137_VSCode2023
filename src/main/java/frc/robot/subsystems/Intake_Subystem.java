@@ -5,17 +5,14 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.RobotContainer;
 import frc.robot.constants.Intake_Constants;
 import frc.robot.simulation.SparkMaxWrapper;
 
 public class Intake_Subystem extends SubsystemBase {
-  private boolean intakeExtended;
-
-  public static SparkMaxWrapper intakeMotor;
+  private static SparkMaxWrapper intakeMotor;
 
   public Intake_Subystem() {
-    intakeExtended = false;
-
     intakeMotor = new SparkMaxWrapper(Intake_Constants.Port, MotorType.kBrushless);
   }
 
@@ -32,19 +29,16 @@ public class Intake_Subystem extends SubsystemBase {
     intakeMotor.set(0.0);
   }
 
-
   //Pneumatics 
-  public void extendIntake(){
-    Pneumatics_Subsystem.intakeSolenoid.set(true);
-    intakeExtended = true;
+  public void extendIntake() {
+    RobotContainer.pneumatics_Subsystem.enableIntake();
   }
 
-  public void retractIntake(){
-    Pneumatics_Subsystem.intakeSolenoid.set(false);
-    intakeExtended = false;
+  public void retractIntake() {
+    RobotContainer.pneumatics_Subsystem.disableIntake();
   }
 
-  public boolean getIntakeExtended(){
-    return intakeExtended;
+  public double getIntakeSpeed() {
+    return intakeMotor.get();
   }
 }

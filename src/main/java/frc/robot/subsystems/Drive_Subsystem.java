@@ -19,7 +19,7 @@ public class Drive_Subsystem extends SubsystemBase {
   private static MotorControllerGroup leftDrive;
   private static MotorControllerGroup rightDrive;
 
-  private static DifferentialDrive jMoneyDrive;
+  public static DifferentialDrive jMoneyDrive;
 
   private static Double currentSpeed;
   private static Double currentRotateSpeed;
