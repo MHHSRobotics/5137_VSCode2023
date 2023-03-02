@@ -22,4 +22,6 @@ public final class Arm_Constants {
     public final static double topConeExtension = 55;
     public final static double middleConeExtension = 45;
     public final static double hybridExtension = 30;
+
+    public final static double rotationSafe = 0; //the minimum degrees at which rotation is safe
 }

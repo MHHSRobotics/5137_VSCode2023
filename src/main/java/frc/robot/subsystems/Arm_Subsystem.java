@@ -11,6 +11,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.simulation.*;
 import frc.robot.constants.Arm_Constants;
+import frc.robot.constants.Intake_Constants;
+import frc.robot.RobotContainer;
 
 public class Arm_Subsystem extends SubsystemBase {
     private static SparkMaxWrapper rotateMotor;
@@ -43,7 +45,11 @@ public class Arm_Subsystem extends SubsystemBase {
         isFinished = () -> {
             if (Math.abs(currentRotation-desiredRotation) < rotateMargin) {
                 return true;
-            } else {
+            } 
+            else if (rotateEncoder.getPosition() >= Arm_Constants.rotationSafe || RobotContainer.pneumatics_Subsystem.getIntakeEnabled()){
+                return true;
+            }
+            else {
                 return false;
             }
         };
@@ -63,7 +69,8 @@ public class Arm_Subsystem extends SubsystemBase {
 
     public void moveArm(Double rotation, Double extension) {
         desiredRotation = rotation;
-        desiredExtension = extension;
+        desiredExtension = extension; 
+
     }
 
     public void stopArm() {
@@ -121,4 +128,5 @@ public class Arm_Subsystem extends SubsystemBase {
         }
         extendEncoder.update(); //Remove later
     }
+
 }

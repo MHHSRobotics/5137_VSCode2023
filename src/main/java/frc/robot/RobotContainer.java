@@ -68,44 +68,44 @@ public class RobotContainer {
   }
   
   public void configureBindings() {
-    new Trigger(createBooleanSupplier(driverController, PS4_Constants.LTPort, PS4_Constants.RTPort))
+    new Trigger(createBooleanSupplier(driverController, XBOX_Constants.LTPort, XBOX_Constants.RTPort))
     .whileTrue(intake_Commands.runIntakeReverse())
     .onFalse(intake_Commands.stopIntake());
 
-    new Trigger(createBooleanSupplier(driverController, PS4_Constants.RTPort, PS4_Constants.LTPort))
+    new Trigger(createBooleanSupplier(driverController, XBOX_Constants.RTPort, XBOX_Constants.LTPort))
     .whileTrue(intake_Commands.runIntakeForward())
     .onFalse(intake_Commands.stopIntake());
 
-    new JoystickButton(driverController, PS4_Constants.SharePort)
+    new JoystickButton(driverController, XBOX_Constants.Start)
     .onTrue(pneumatics_Commands.enableCompressor());
 
-    new JoystickButton(driverController, PS4_Constants.OptionsPort)
+    new JoystickButton(driverController, XBOX_Constants.Back)
     .onTrue(pneumatics_Commands.disableCompressor());
 
-    new Trigger(createBooleanSupplier(assistController, PS4_Constants.RTPort, PS4_Constants.LTPort))
+    new Trigger(createBooleanSupplier(assistController, XBOX_Constants.RTPort, XBOX_Constants.LTPort))
     .whileTrue(clamp_Commands.clampCone())
     .onFalse(clamp_Commands.clampRelease());
 
-    new Trigger(createBooleanSupplier(assistController, PS4_Constants.LTPort, PS4_Constants.RTPort))
+    new Trigger(createBooleanSupplier(assistController, XBOX_Constants.LTPort, XBOX_Constants.RTPort))
     .whileTrue(clamp_Commands.clampCube())
     .onFalse(clamp_Commands.clampRelease());
 
-    new POVButton(assistController, PS4_Constants.DownDPad)
+    new POVButton(assistController, XBOX_Constants.DownDPad)
     .onTrue(arm_Commands.moveToIntake());
 
-    new POVButton(assistController, PS4_Constants.UpDPad)
+    new POVButton(assistController, XBOX_Constants.UpDPad)
     .onTrue(arm_Commands.moveToHybrid());
 
-    new JoystickButton(assistController, PS4_Constants.XPort)
+    new JoystickButton(assistController, XBOX_Constants.AButton)
     .onTrue(arm_Commands.moveToMiddleCube());
 
-    new JoystickButton(assistController, PS4_Constants.CirclePort)
+    new JoystickButton(assistController, XBOX_Constants.BButton)
     .onTrue(arm_Commands.moveToMiddleCone());
 
-    new JoystickButton(assistController, PS4_Constants.SquarePort)
+    new JoystickButton(assistController, XBOX_Constants.XButton)
     .onTrue(arm_Commands.moveToTopCube());
 
-    new JoystickButton(assistController, PS4_Constants.TrianglePort)
+    new JoystickButton(assistController, XBOX_Constants.YButton)
     .onTrue(arm_Commands.moveToTopCone());
   }
 

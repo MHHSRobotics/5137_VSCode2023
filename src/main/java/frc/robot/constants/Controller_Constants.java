@@ -8,7 +8,19 @@ public final class Controller_Constants {
         public static final int RTPort = 3;
         public static final int RXPort = 4;
         public static final int RYPort = 5;
+        public static final int UpDPad = 0;
+        public static final int RightDPad = 90;
+        public static final int DownDPad = 180;
+        public static final int LeftDPad = 270;
+        public static final int AButton = 1;
+        public static final int BButton = 2;
+        public static final int XButton = 3;
+        public static final int YButton = 4;
+
+
         public static final int APort = 1;
+        public static final int Start = 8;
+        public static final int Back = 7;
     }
     public final class PS4_Constants {
         public static final int LXPort = 0;
