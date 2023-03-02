@@ -21,16 +21,6 @@
           "open": true
         }
       },
-      "SparkMax[8]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SparkMax[9]": {
-        "header": {
-          "open": true
-        }
-      },
       "Talon SRX[1]": {
         "header": {
           "open": true

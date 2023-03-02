@@ -13,10 +13,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Pneumatics_Constants;
 
 public class Pneumatics_Subsystem extends SubsystemBase {
-  public static Compressor comp;
-  public static Solenoid intakeSolenoid;
-  public static Solenoid clampSolenoid;
-  public static Solenoid feetSolenoid;
+  private static Compressor comp;
+  private static Solenoid intakeSolenoid;
+  private static Solenoid clampSolenoid;
+  private static Solenoid feetSolenoid;
 
   public Pneumatics_Subsystem() {
     comp = new Compressor(PneumaticsModuleType.REVPH);

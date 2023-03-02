@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.*;
 
 import frc.robot.subsystems.Pneumatics_Subsystem;
 
-public class Pneumatics_Commands extends CommandBase {
+public class Pneumatics_Commands {
   private final Pneumatics_Subsystem pneumatics;
 
   public Pneumatics_Commands(Pneumatics_Subsystem pneumatics) {

@@ -31,5 +31,14 @@ public final class Controller_Constants {
         public static final int RJPort = 12;
         public static final int PSPort = 13;
         public static final int TrackPort = 14;
+        public static final int CenterDPad = -1;
+        public static final int UpDPad = 0;
+        public static final int UpRightDPad = 45;
+        public static final int RightDPad = 90;
+        public static final int DownRightDPad = 135;
+        public static final int DownDPad = 180;
+        public static final int DownLeftDPad = 225;
+        public static final int LeftDPad = 270;
+        public static final int UpLeftDPad = 315;
     }
 }
