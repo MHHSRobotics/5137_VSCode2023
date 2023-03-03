@@ -7,17 +7,11 @@ import frc.robot.RobotContainer;
 
 public class Shuffleboard_Subsystem extends SubsystemBase {
     SendableChooser<String> autoChooser = new SendableChooser<>();
-    SendableChooser<String> armPreset = new SendableChooser<>();
-    SendableChooser<Boolean> manualArm = new SendableChooser<>();
 
     public Shuffleboard_Subsystem() {
         configureSendableString(autoChooser, "AutoOne", "AutoOne", "AutoTwo", "AutoThree");
-        configureSendableString(armPreset, "None", "None", "Hybrid", "MidCube", "MidCone", "TopCube", "TopCone");
-        configureSendableBoolean(manualArm, false);
 
         SmartDashboard.putData("Auto Choice", autoChooser);
-        SmartDashboard.putData("Arm Preset", armPreset);
-        SmartDashboard.putData("Manual Arm", manualArm);
         SmartDashboard.putData("jMoneyDrive", Drive_Subsystem.jMoneyDrive);
 
         update();

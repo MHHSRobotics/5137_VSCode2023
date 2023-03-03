@@ -55,7 +55,7 @@ public class RobotContainer {
     pneumatics_Subsystem = new Pneumatics_Subsystem();
     drive_Subsystem = new Drive_Subsystem(driverController);
     intake_Subsystem = new Intake_Subystem();
-    arm_Subsystem = new Arm_Subsystem();
+    arm_Subsystem = new Arm_Subsystem(assistController);
     clamp_Subsystem = new Clamp_Subsystem();
     shuffleboard_Subsystem = new Shuffleboard_Subsystem();
   }
@@ -68,50 +68,50 @@ public class RobotContainer {
   }
   
   public void configureBindings() {
-    new Trigger(createBooleanSupplier(driverController, XBOX_Constants.LTPort, XBOX_Constants.RTPort))
+    new Trigger(createBooleanSupplier(driverController, PS4_Constants.LTPort, PS4_Constants.RTPort))
     .whileTrue(intake_Commands.runIntakeReverse())
     .onFalse(intake_Commands.stopIntake());
 
-    new Trigger(createBooleanSupplier(driverController, XBOX_Constants.RTPort, XBOX_Constants.LTPort))
+    new Trigger(createBooleanSupplier(driverController, PS4_Constants.RTPort, PS4_Constants.LTPort))
     .whileTrue(intake_Commands.runIntakeForward())
     .onFalse(intake_Commands.stopIntake());
 
-    new JoystickButton(driverController, XBOX_Constants.Start)
+    new JoystickButton(driverController, PS4_Constants.SharePort)
     .onTrue(pneumatics_Commands.enableCompressor());
 
-    new JoystickButton(driverController, XBOX_Constants.Back)
+    new JoystickButton(driverController, PS4_Constants.OptionsPort)
     .onTrue(pneumatics_Commands.disableCompressor());
-
-    new Trigger(createBooleanSupplier(assistController, XBOX_Constants.RTPort, XBOX_Constants.LTPort))
+    
+    new Trigger(createBooleanSupplier(assistController, PS4_Constants.RTPort, PS4_Constants.LTPort))
     .whileTrue(clamp_Commands.clampCone())
     .onFalse(clamp_Commands.clampRelease());
 
-    new Trigger(createBooleanSupplier(assistController, XBOX_Constants.LTPort, XBOX_Constants.RTPort))
+    new Trigger(createBooleanSupplier(assistController, PS4_Constants.LTPort, PS4_Constants.RTPort))
     .whileTrue(clamp_Commands.clampCube())
     .onFalse(clamp_Commands.clampRelease());
 
-    new POVButton(assistController, XBOX_Constants.DownDPad)
+    new POVButton(assistController, PS4_Constants.DownDPad)
     .onTrue(arm_Commands.moveToIntake());
 
-    new POVButton(assistController, XBOX_Constants.UpDPad)
+    new POVButton(assistController, PS4_Constants.UpDPad)
     .onTrue(arm_Commands.moveToHybrid());
 
-    new JoystickButton(assistController, XBOX_Constants.AButton)
+    new JoystickButton(assistController, PS4_Constants.XPort)
     .onTrue(arm_Commands.moveToMiddleCube());
 
-    new JoystickButton(assistController, XBOX_Constants.BButton)
+    new JoystickButton(assistController, PS4_Constants.CirclePort)
     .onTrue(arm_Commands.moveToMiddleCone());
 
-    new JoystickButton(assistController, XBOX_Constants.XButton)
+    new JoystickButton(assistController, PS4_Constants.SquarePort)
     .onTrue(arm_Commands.moveToTopCube());
 
-    new JoystickButton(assistController, XBOX_Constants.YButton)
+    new JoystickButton(assistController, PS4_Constants.TrianglePort)
     .onTrue(arm_Commands.moveToTopCone());
   }
 
   //required port is the joystick you are currecntly attempting to use 
   //dependent port is the joytick we're checking against, to make sure you're not breaking the robot 
-  public BooleanSupplier createBooleanSupplier(Joystick controller, int requiredPort, int dependentPort) {
+  private BooleanSupplier createBooleanSupplier(Joystick controller, int requiredPort, int dependentPort) {
     BooleanSupplier supply;
     supply = () -> {
       if (controller != null) {

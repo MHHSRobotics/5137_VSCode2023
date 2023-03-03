@@ -14,7 +14,7 @@ public class Arm_Commands {
 
     public Command moveToIntake() {
         return new FunctionalCommand(
-            () -> {},
+            () -> {arm.resetOverride();},
             () -> {arm.moveArm(Arm_Constants.armIntakeRotation, Arm_Constants.armIntakeExtension);},
             arm.endCommand,
             arm.isFinished,
@@ -23,7 +23,7 @@ public class Arm_Commands {
 
     public Command moveToHybrid() {
         return new FunctionalCommand(
-            () -> {},
+            () -> {arm.resetOverride();},
             () -> {arm.moveArm(Arm_Constants.hybridRotation, Arm_Constants.hybridExtension);},
             arm.endCommand,
             arm.isFinished,
@@ -32,7 +32,7 @@ public class Arm_Commands {
 
     public Command moveToMiddleCube() {
         return new FunctionalCommand(
-            () -> {},
+            () -> {arm.resetOverride();},
             () -> {arm.moveArm(Arm_Constants.middleCubeRotation, Arm_Constants.middleCubeExtension);},
             arm.endCommand,
             arm.isFinished,
@@ -41,7 +41,7 @@ public class Arm_Commands {
 
     public Command moveToMiddleCone() {
         return new FunctionalCommand(
-            () -> {},
+            () -> {arm.resetOverride();},
             () -> {arm.moveArm(Arm_Constants.middleConeRotation, Arm_Constants.middleConeExtension);},
             arm.endCommand,
             arm.isFinished,
@@ -50,7 +50,7 @@ public class Arm_Commands {
 
     public Command moveToTopCube() {
         return new FunctionalCommand(
-            () -> {},
+            () -> {arm.resetOverride();},
             () -> {arm.moveArm(Arm_Constants.topCubeRotation, Arm_Constants.topCubeExtension);},
             arm.endCommand,
             arm.isFinished,
@@ -59,7 +59,7 @@ public class Arm_Commands {
 
     public Command moveToTopCone() {
         return new FunctionalCommand(
-            () -> {},
+            () -> {arm.resetOverride();},
             () -> {arm.moveArm(Arm_Constants.topConeRotation, Arm_Constants.topConeExtension);},
             arm.endCommand,
             arm.isFinished,
