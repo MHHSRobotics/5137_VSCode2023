@@ -19,11 +19,10 @@ public class Pneumatics_Subsystem extends SubsystemBase {
   private static Solenoid feetSolenoid;
 
   public Pneumatics_Subsystem() {
-    comp = new Compressor(PneumaticsModuleType.REVPH);
-
-    intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Pneumatics_Constants.intakeSolChannel);
-    clampSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Pneumatics_Constants.clampSolChannel);
-    feetSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Pneumatics_Constants.feetSolChannel);
+    comp = new Compressor(PneumaticsModuleType.CTREPCM); //Change to the other type later
+    intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Pneumatics_Constants.intakeSolChannel);
+    clampSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Pneumatics_Constants.clampSolChannel);
+    feetSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Pneumatics_Constants.feetSolChannel);
   }
 
   @Override
