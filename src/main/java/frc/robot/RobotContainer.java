@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Arm_Subsystem;
 //Subsystems
 import frc.robot.subsystems.*;
@@ -138,13 +139,15 @@ public class RobotContainer {
     .whileTrue(new AutoBalance(driveBase_Subsystem)); //Balancing
 
     //Intake Commands
-    new JoystickButton(driverController, Constants.d_LTriggerPort) 
-    .whileTrue(new IntakeOnReverse(intake_Subystem)) //Intake running in reverse
-    .whileFalse(new IntakeOff(intake_Subystem)); 
-     
-    new JoystickButton(driverController, Constants.d_RTriggerPort) 
+
+
+    new Trigger(Supplier.createBooleanSupplier(driverController, Constants.d_RTriggerPort, Constants.d_LTriggerPort))
     .whileTrue(new IntakeOn(intake_Subystem)) //Intake running
-    .whileFalse(new IntakeOff(intake_Subystem));
+    .onFalse(new IntakeOff(intake_Subystem));
+
+    new Trigger(Supplier.createBooleanSupplier(driverController, Constants.d_LTriggerPort, Constants.d_RTriggerPort))
+    .whileTrue(new IntakeOnReverse(intake_Subystem)) //Intake running
+    .onFalse(new IntakeOff(intake_Subystem));
     
     //Compressor Commands
     new JoystickButton(driverController, Constants.d_StoptionsPort)
