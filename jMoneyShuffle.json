@@ -53,7 +53,7 @@
               "Visuals/Show velocity vectors": true
             }
           },
-          "8,0": {
+          "6,0": {
             "size": [
               1,
               1
@@ -69,7 +69,7 @@
               "Visuals/Show value": true
             }
           },
-          "8,1": {
+          "6,1": {
             "size": [
               1,
               1
@@ -171,32 +171,6 @@
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
-          },
-          "6,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Manual Arm",
-              "_title": "Manual Arm Enabled",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "6,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Arm Preset",
-              "_title": "Manual Arm Preset",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
           }
         }
       }
@@ -230,9 +204,9 @@
     }
   ],
   "windowGeometry": {
-    "x": 0.0,
-    "y": 61.0,
-    "width": 1471.0,
+    "x": 229.0,
+    "y": 555.0,
+    "width": 1440.0,
     "height": 875.0
   }
 }
