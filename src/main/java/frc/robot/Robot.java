@@ -22,6 +22,9 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer; 
   private Command m_autonomousCommand; //Will be used to run auto
+  private int x = 0;
+  private int y = 0;
+  private boolean m_switch = true;
 
  
   
@@ -36,6 +39,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    //m_robotContainer.setLedMode();
   
   }
 
@@ -53,6 +57,37 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    //runLEDS();
+    //m_robotContainer.gradiant();
+    m_robotContainer.cardinalgold();
+  }
+
+  private void runLEDS() {
+    if (x < 250) {
+      if (m_switch) {
+        m_robotContainer.moveColorsForward();
+      } else {
+        m_robotContainer.moveColorsBackward();
+      }
+      x++;
+    } else if (y < 30) {
+      m_robotContainer.solidCardinal();
+      y++;
+    } else if (y < 60) {
+      m_robotContainer.solidGold();
+      y++;
+    } else if (y < 90) {
+      m_robotContainer.solidCardinal();
+      y++;
+    } else {
+      if (m_switch) {
+        m_switch = false;
+      } else {
+        m_switch = true;
+      }
+      x = 0;
+      y = 0;
+    }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

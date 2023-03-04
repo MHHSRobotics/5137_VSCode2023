@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.Joystick;
 //import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -38,6 +40,7 @@ public class Arm_Subsystem extends SubsystemBase {
   private PIDController extendPID = new PIDController(Constants.eKP, Constants.eKD, Constants.eKI);
 
 
+  private SlewRateLimiter armRotate = new SlewRateLimiter(1);
   //int pulse = rotateEncoder.getCountsPerRevolution() / 4;         //converts counts into pulses 
   //int pulsePerDegree = pulse / 360;    
 
@@ -59,7 +62,7 @@ public class Arm_Subsystem extends SubsystemBase {
     extendEncoder.setPosition(0.0);
 
   
-
+    
     //int pulse = rotateEncoder.getCountsPerRevolution() / 4;         //converts counts into pulses 
     //int pulsePerDegree = pulse / 360;                               //figures out how many pulses per degree, so we can use that
     }
@@ -74,6 +77,7 @@ public class Arm_Subsystem extends SubsystemBase {
       arcadeArm();
       rotatePosition = rotateEncoder.getPosition();
       extendPosition = extendEncoder.getPosition();
+      // System.out.println("rotate encoder" + rotatePosition);
     }
 
     private void arcadeArm() {
@@ -86,6 +90,11 @@ public class Arm_Subsystem extends SubsystemBase {
       desiredExtension = extension;
     }
    
+    public void manualRotate (Joystick controller)
+    {
+      double speed = controller.getRawAxis(Constants.a_RXStickAxisPort);
+      setRotation(speed*180);
+    }
 
     private void armRotate() {
 
@@ -93,6 +102,7 @@ public class Arm_Subsystem extends SubsystemBase {
       if(rotatePosition < desiredRotation) {
         double speed = rotatePID.calculate(rotatePosition, desiredRotation);
         armRotateMotor.setVoltage(speed + feedForward.calculate(desiredRotation, 2));
+        //System.out.println("volt" + (speed + feedForward.calculate(desiredRotation, 2)));
       } 
       else if (rotatePosition > desiredRotation) {
         double speed = -rotatePID.calculate(rotatePosition, desiredRotation);

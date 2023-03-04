@@ -129,8 +129,7 @@ public class RobotContainer {
     new JoystickButton(driverController, 1)
   .whileTrue(new InstantCommand(() -> arm_Subsystem.setRotation(10) , arm_Subsystem)); //AutoRotate
 
-    //new JoystickButton(driverController, 1)
-    //.whileTrue(new InstantCommand(()-> {arm_Subsystem1.setGoal(5); arm_Subsystem1.enable();}, arm_Subsystem1));
+
     
     new JoystickButton(driverController, Constants.d_BirclePort)  
     .whileTrue(new AutoDrive(driveBase_Subsystem, Constants.pose2b)); //AutoDrive
@@ -139,7 +138,7 @@ public class RobotContainer {
     .whileTrue(new AutoBalance(driveBase_Subsystem)); //Balancing
 
     //Intake Commands
-     
+    /* 
     new JoystickButton(driverController, 1) 
     .whileTrue(new IntakeOnReverse(intake_Subystem)) //Intake running in reverse
     .whileFalse(new IntakeOff(intake_Subystem)); 
@@ -147,6 +146,7 @@ public class RobotContainer {
     new JoystickButton(driverController, Constants.d_RTriggerPort) 
     .whileTrue(new IntakeOn(intake_Subystem)) //Intake running
     .whileFalse(new IntakeOff(intake_Subystem));
+    */
     
 
     new Trigger(Supplier.createBooleanSupplier(driverController, Constants.d_RTriggerPort, Constants.d_LTriggerPort))
@@ -210,5 +210,37 @@ public class RobotContainer {
     {
       addressable_LEDS_Subsystem.solidColor(Constants.cardinal);
     }
+  }
+
+  public void moveColorsForward() {
+    addressable_LEDS_Subsystem.moveForward(Constants.cardinal, Constants.gold);
+  }
+
+  public void moveColorsBackward() {
+    addressable_LEDS_Subsystem.moveBackward(Constants.cardinal, Constants.gold);
+  }
+
+  public void solidCardinal() {
+    addressable_LEDS_Subsystem.solidColor(Constants.cardinal);
+  }
+
+  public void solidGold() {
+    addressable_LEDS_Subsystem.solidColor(Constants.gold);
+  }
+
+  public void gradiant() {
+    addressable_LEDS_Subsystem.gradiant();
+  }
+
+  public void cardinalgold() {
+    addressable_LEDS_Subsystem.pulsingGradiant(Constants.gold, Constants.cardinal, 1);
+  }
+
+  public void s(){
+    addressable_LEDS_Subsystem.s(Constants.cardinal, Constants.gold, 0);
+  }
+
+  public void rainbow() {
+    addressable_LEDS_Subsystem.rainbow();
   }
 }

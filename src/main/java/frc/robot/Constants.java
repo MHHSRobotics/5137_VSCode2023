@@ -111,8 +111,8 @@ public final class Constants {
 
   //RGB Values for Color Addressable LEDS
 
-  public final static Color cardinal = new Color(146, 45, 53);
-  public final static Color gold = new Color(255, 215, 0);
+  public final static Color cardinal = new Color(200, 0, 0);
+  public final static Color gold = new Color(100, 40, 0);
 
     //april tags/vision
   //Change values to match 2023 bot
@@ -135,10 +135,7 @@ public final class Constants {
     public final static PIDConstants drivePIDConstants = new PIDConstants(0.1,0,0);
 
     //Gains for FeedForward / Left+Right motor volts
-    public final static double kS = 1.49;
-    public final static double kV = 1.95;
-    public final static double kA = 0.08;
-    public final static double kG = 0;
+   
 
     public final static double dKS = .55;
     public final static double dKV = 2.6;
@@ -156,10 +153,10 @@ public final class Constants {
 
 
     //Gains for FeedForward Arm
-    public static final double kSVolts = 1;
-    public static final double kGVolts = 1;
-    public static final double kVVoltSecondPerRad = 0.5;
-    public static final double kAVoltSecondSquaredPerRad = 0.1;
+    public final static double kS = 1.5;
+    public final static double kV = 1.95;
+    public final static double kA = 0.06;
+    public final static double kG = 1.21;
 
     public final static double armMaxVelocity = 10; //rad/s
     public final static double armMaxAccel = 3; //rad/s^2

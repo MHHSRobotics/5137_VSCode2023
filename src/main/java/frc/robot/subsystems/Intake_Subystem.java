@@ -15,8 +15,8 @@ public class Intake_Subystem extends SubsystemBase {
    private boolean intakeExtended;
 
     public Intake_Subystem() {
-        intakeMotor = new CANSparkMax(Constants.intakePort, MotorType.kBrushless);
-        //intakeMotor = new SparkMaxWrapper(Constants.intakePort, MotorType.kBrushless);
+       intakeMotor = new CANSparkMax(Constants.intakePort, MotorType.kBrushless);
+       // intakeMotor = new SparkMaxWrapper(Constants.intakePort, MotorType.kBrushless);
         intakeActive = false;
     }
 
