@@ -6,22 +6,29 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class Shuffleboard_Subsystem extends SubsystemBase {
-    SendableChooser<String> autoChooser = new SendableChooser<>();
+    SendableChooser<String> autoPosition = new SendableChooser<>();
+    SendableChooser<Boolean> autoScore = new SendableChooser<>();
+    SendableChooser<Boolean> autoMobility = new SendableChooser<>();
+    SendableChooser<Boolean> autoEngage = new SendableChooser<>();
+    SendableChooser<Boolean> autoIntake = new SendableChooser<>();
+
 
     public Shuffleboard_Subsystem() {
-        configureSendableString(autoChooser, "AutoOne", "AutoOne", "AutoTwo", "AutoThree");
+        configureSendableString(autoPosition, "middle", "left", "middle", "right");
 
-        SmartDashboard.putData("Auto Choice", autoChooser);
+        SmartDashboard.putData("Auto Position", autoPosition);
         SmartDashboard.putData("jMoneyDrive", Drive_Subsystem.jMoneyDrive);
 
         update();
     }
 
-    
-
     @Override
     public void periodic() {
         update();
+    }
+
+    public String getAutoChoice() {
+       return "hi";
     }
 
     private void update() {
