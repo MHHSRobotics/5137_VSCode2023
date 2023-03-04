@@ -139,15 +139,15 @@ public class RobotContainer {
     .whileTrue(new AutoBalance(driveBase_Subsystem)); //Balancing
 
     //Intake Commands
-    /* 
-    new JoystickButton(driverController, Constants.d_LTriggerPort) 
+     
+    new JoystickButton(driverController, 1) 
     .whileTrue(new IntakeOnReverse(intake_Subystem)) //Intake running in reverse
     .whileFalse(new IntakeOff(intake_Subystem)); 
      
     new JoystickButton(driverController, Constants.d_RTriggerPort) 
     .whileTrue(new IntakeOn(intake_Subystem)) //Intake running
     .whileFalse(new IntakeOff(intake_Subystem));
-    */
+    
 
     new Trigger(Supplier.createBooleanSupplier(driverController, Constants.d_RTriggerPort, Constants.d_LTriggerPort))
     .whileTrue(new IntakeOn(intake_Subystem)) //Intake running
