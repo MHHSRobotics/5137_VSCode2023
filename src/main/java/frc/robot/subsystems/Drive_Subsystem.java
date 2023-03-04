@@ -1,7 +1,21 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.kauailabs.navx.frc.AHRS;
+ 
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -25,6 +39,13 @@ public class Drive_Subsystem extends SubsystemBase {
   private static Double currentRotateSpeed;
   private static Boolean arcadeDriveActive;
 
+  //vision
+  public static DifferentialDrivePoseEstimator poseEstimator;
+  public static AHRS gyro;
+  
+  Pose2d estimatedPose;
+  double timeStamp;
+
   private Joystick controller;
 
   public Drive_Subsystem(Joystick controller) {
@@ -41,6 +62,10 @@ public class Drive_Subsystem extends SubsystemBase {
     currentSpeed = 0.0;
     currentRotateSpeed = 0.0;
     arcadeDriveActive = false;
+
+    gyro = new AHRS(SPI.Port.kMXP);
+    gyro.calibrate();
+    poseEstimator = new DifferentialDrivePoseEstimator(new DifferentialDriveKinematics(Units.inchesToMeters(Drive_Constants.trackWidth)), new Rotation2d(gyro.getRoll()), Drive_Constants.initialLeftDistance, Drive_Constants.initialLeftDistance, new Pose2d());
 
     this.controller = controller;
   }
@@ -88,4 +113,42 @@ public class Drive_Subsystem extends SubsystemBase {
   public Boolean getArcadeDriveEnabled() {
     return arcadeDriveActive;
   }
+
+
+//vision and pose 
+public Pose2d getPose(){
+  return poseEstimator.getEstimatedPosition();
+}
+
+public void updatePoseEstimator(){
+  double leftFrontEncoder = leftFrontMotor.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
+  double rightFrontEncoder = rightFrontMotor.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
+
+  poseEstimator.updateWithTime(Timer.getFPGATimestamp(), new Rotation2d((double)gyro.getRoll()), leftFrontEncoder, rightFrontEncoder);
+}
+
+public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds){
+  Optional<EstimatedRobotPose> ar1CamResult = Vision_Subsystem.getPoseFromCamera(Vision_Subsystem.ar1CamPoseEstimator, this.getPose()); 
+  Optional<EstimatedRobotPose> ar2CamResult = Vision_Subsystem.getPoseFromCamera(Vision_Subsystem.ar2CamPoseEstimator, this.getPose()); 
+
+  if (ar1CamResult.isPresent()){
+    estimatedPose = ar1CamResult.get().estimatedPose.toPose2d();
+    timeStamp = ar1CamResult.get().timestampSeconds;
+    this.addVisionMeasurement(estimatedPose, timeStamp);
+  }
+  if (ar2CamResult.isPresent()){
+    estimatedPose = ar2CamResult.get().estimatedPose.toPose2d();
+    timeStamp = ar2CamResult.get().timestampSeconds;
+    this.addVisionMeasurement(estimatedPose, timeStamp);
+  }
+
+}
+
+public void resetPose(Pose2d pose){
+  poseEstimator.resetPosition(new Rotation2d(gyro.getRoll()), 0, 0, pose);
+}
+
+
+
+
 }

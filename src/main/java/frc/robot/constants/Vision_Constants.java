@@ -57,10 +57,10 @@ public class Vision_Constants {
     private final static Pose2d pose8c = new Pose2d(1.02743 + scoreDistance, 1.071626 - nodeSpacing, new Rotation2d(0));
 
     public final static Pose2d[][] alignArray = {
-        {pose1a, pose1b, pose1c},
-        {pose2a, pose2b, pose2c},
+        {pose1a, pose1b, pose1c}, //each row represents one april tag (or loading stations)
+        {pose2a, pose2b, pose2c}, //each column is the 3 alignment positions related to that tag (Lcone, cube, Rcone)
         {pose3a, pose3b, pose3c},
-        {pose4,  pose4,  pose4},
+        {pose4,  pose4,  pose4},  
         {pose5,  pose5,  pose5}, 
         {pose6a, pose6b, pose6c},
         {pose7a, pose7b, pose7c},

@@ -8,6 +8,10 @@ import frc.robot.subsystems.*;
 
 import java.util.function.BooleanSupplier;
 
+import com.pathplanner.lib.auto.RamseteAutoBuilder;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -31,6 +35,7 @@ public class RobotContainer {
   public static Clamp_Subsystem clamp_Subsystem;
   public static Arm_Subsystem arm_Subsystem;
   public static Shuffleboard_Subsystem shuffleboard_Subsystem;
+  public static Vision_Subsystem vision_Subsystem;
 
   //Commands
   public static Intake_Commands intake_Commands;
@@ -40,7 +45,7 @@ public class RobotContainer {
   
   //Controllers
   public static Joystick driverController;
-  public static Joystick assistController;
+  public static Joystick assistController; 
 
   public RobotContainer() {
     driverController = new Joystick(0);
@@ -58,6 +63,7 @@ public class RobotContainer {
     arm_Subsystem = new Arm_Subsystem(assistController);
     clamp_Subsystem = new Clamp_Subsystem();
     shuffleboard_Subsystem = new Shuffleboard_Subsystem();
+    vision_Subsystem = new Vision_Subsystem();
   }
 
   public void configureCommands() {
@@ -66,6 +72,8 @@ public class RobotContainer {
     clamp_Commands = new Clamp_Commands(clamp_Subsystem);
     pneumatics_Commands = new Pneumatics_Commands(pneumatics_Subsystem);
   }
+
+  
   
   public void configureBindings() {
     new Trigger(createBooleanSupplier(driverController, PS4_Constants.LTPort, PS4_Constants.RTPort))

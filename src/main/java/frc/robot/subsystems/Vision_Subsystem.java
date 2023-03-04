@@ -15,15 +15,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.Vision_Constants;
 
-public class Vision extends SubsystemBase {
+public class Vision_Subsystem extends SubsystemBase {
   private static AprilTagFieldLayout aprilTagFieldLayout;
-  private static PhotonPoseEstimator ar1CamPoseEstimator;
-  private static PhotonPoseEstimator ar2CamPoseEstimator;
+  public static PhotonPoseEstimator ar1CamPoseEstimator;
+  public static PhotonPoseEstimator ar2CamPoseEstimator;
 
-  private static PhotonCamera ar1Camera;
-  private static PhotonCamera ar2Camera;
+  public static PhotonCamera ar1Camera;
+  public static PhotonCamera ar2Camera;
 
-  public Vision() {
+  public Vision_Subsystem() {
     //Initiallizes the camera being run with photovision, using the proper camera name
     ar1Camera = new PhotonCamera("AR1");
     ar2Camera = new PhotonCamera("AR2");
@@ -49,46 +49,46 @@ public class Vision extends SubsystemBase {
       
   }
 
-  public Optional<EstimatedRobotPose> getPoseFromCamera(PhotonPoseEstimator camera, Pose2d referencePose) {
+  public static Optional<EstimatedRobotPose> getPoseFromCamera(PhotonPoseEstimator camera, Pose2d referencePose) {
     camera.setReferencePose(referencePose);
     return camera.update();
   }
 
-  public Pose2d getNearestAlign(String targetName, Pose2d robotPose, boolean alliance) {
+  public Pose2d getNearestAlign(String targetName, Pose2d robotPose) {
     int alignIndex = -1;
     double minDiff = Double.MAX_VALUE;
     double currentDiff;
     Pose2d[][] array = Vision_Constants.alignArray;
 
-    int start;
-    int end;
-    int index;
+    int leftmostTag;
+    int rightmostTag;
+    int column;
 
     //Sets targets based on alliance
-    if (alliance) { //True == red, False == blue
-      start = 0;
-      end = 3;
-    } else {
-      start = 5;
-      end = 8;
+    if (robotPose.getX() <= 8.27 ) { //blue
+      leftmostTag = 5;
+      rightmostTag = 8;
+    } else { //red
+      leftmostTag = 0;
+      rightmostTag = 3;
     }
 
     //Sets targets based on position on the field
     switch (targetName) {
-      case ("right"): {index = 0;}
-      case ("middle"): {index = 1;}
-      case ("left"): {index = 2;}
-      default: {index = 1;}
+      case ("right"): {column = 0;}
+      case ("middle"): {column = 1;}
+      case ("left"): {column = 2;}
+      default: {column = 1;}
     }
 
     //Gets the best pose based off of selection
-    for (int i = start; i < end; i++) {
-      currentDiff = Math.abs(array[i][index].getY() - robotPose.getY());
+    for (int i = leftmostTag; i < rightmostTag; i++) {
+      currentDiff = Math.abs(array[i][column].getY() - robotPose.getY());
       if (currentDiff < minDiff) {
         minDiff = currentDiff;
         alignIndex = i;
       }
     }
-    return array[alignIndex][0];
+    return array[alignIndex][column];
   }
 }
