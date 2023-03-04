@@ -1,11 +1,11 @@
-package frc.robot.subsystems;
+package frc.robot.systems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.*;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.Drive_Subsystem;
 
-public class Shuffleboard_Subsystem extends SubsystemBase {
+public class Shuffleboard extends SubsystemBase {
     SendableChooser<String> autoPosition = new SendableChooser<>();
     SendableChooser<Boolean> autoScore = new SendableChooser<>();
     SendableChooser<Boolean> autoMobility = new SendableChooser<>();
@@ -13,7 +13,7 @@ public class Shuffleboard_Subsystem extends SubsystemBase {
     SendableChooser<Boolean> autoIntake = new SendableChooser<>();
 
 
-    public Shuffleboard_Subsystem() {
+    public Shuffleboard() {
         configureSendableString(autoPosition, "middle", "left", "middle", "right");
 
         SmartDashboard.putData("Auto Position", autoPosition);

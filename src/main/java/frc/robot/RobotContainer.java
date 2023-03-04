@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.subsystems.*;
+import frc.robot.systems.*;
 
 import java.util.function.BooleanSupplier;
 
@@ -34,8 +35,11 @@ public class RobotContainer {
   public static Intake_Subystem intake_Subsystem;
   public static Clamp_Subsystem clamp_Subsystem;
   public static Arm_Subsystem arm_Subsystem;
-  public static Shuffleboard_Subsystem shuffleboard_Subsystem;
   public static Vision_Subsystem vision_Subsystem;
+
+  //Other Systems
+  public static Shuffleboard shuffleboard;
+  public static AutoManager autoManager;
 
   //Commands
   public static Intake_Commands intake_Commands;
@@ -50,19 +54,24 @@ public class RobotContainer {
   public RobotContainer() {
     driverController = new Joystick(0);
     assistController = new Joystick(1);
-    configureSubsystems();
+    configureSystems();
     configureCommands();
     configureBindings();
   }
 
   //PNEUMATICS FIRST, SHUFFLEBOARD LAST
+  private void configureSystems() {
+    configureSubsystems();
+    shuffleboard = new Shuffleboard();
+    autoManager = new AutoManager(drive_Subsystem);
+  }
   public void configureSubsystems() {
     pneumatics_Subsystem = new Pneumatics_Subsystem();
     drive_Subsystem = new Drive_Subsystem(driverController);
     intake_Subsystem = new Intake_Subystem();
     arm_Subsystem = new Arm_Subsystem(assistController);
     clamp_Subsystem = new Clamp_Subsystem();
-    shuffleboard_Subsystem = new Shuffleboard_Subsystem();
+    
     vision_Subsystem = new Vision_Subsystem();
   }
 

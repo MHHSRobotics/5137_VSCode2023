@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.systems;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,8 +15,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.Drive_Constants;
+import frc.robot.subsystems.Drive_Subsystem;
 
-public class Auto_Subsystem extends SubsystemBase {
+public class AutoManager extends SubsystemBase {
     private final Drive_Subsystem drive;
     private final RamseteAutoBuilder autoBuilder; //Allows auto to drive a path
     private final HashMap<String, Command> eventMap; //Maps out events during autoPath
@@ -33,7 +34,7 @@ public class Auto_Subsystem extends SubsystemBase {
     private final ArrayList<PathPlannerTrajectory> right_doubleScore;
     private final ArrayList<PathPlannerTrajectory> right_doubleScore_engage;
 
-    public Auto_Subsystem(Drive_Subsystem drive) {
+    public AutoManager(Drive_Subsystem drive) {
         this.drive = drive;
 
         eventMap = new HashMap<>();
