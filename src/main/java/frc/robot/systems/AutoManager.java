@@ -64,8 +64,8 @@ public class AutoManager extends SubsystemBase {
         maxVelo = Auto_Constants.maxVelo;
         maxAccel = Auto_Constants.maxAccel;
 
-        scoreTopCone = new SequentialCommandGroup(clamp_Commands.clampCone(), arm_Commands.moveToTopCone(), clamp_Commands.clampRelease());
-        scoreTopCube = new SequentialCommandGroup(clamp_Commands.clampCube(), arm_Commands.moveToTopCube(), clamp_Commands.clampRelease());
+        scoreTopCone = new SequentialCommandGroup(clamp_Commands.clamp(), arm_Commands.moveToTopCone(), clamp_Commands.clampRelease());
+        scoreTopCube = new SequentialCommandGroup(clamp_Commands.clamp(), arm_Commands.moveToTopCube(), clamp_Commands.clampRelease());
         intakeObject = new SequentialCommandGroup(intake_Commands.runIntakeForward(), arm_Commands.moveToIntake());
 
         eventMap = new HashMap<>();
