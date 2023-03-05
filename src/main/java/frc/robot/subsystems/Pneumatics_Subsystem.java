@@ -7,8 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-
-
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Pneumatics_Constants;
 
@@ -17,22 +16,33 @@ public class Pneumatics_Subsystem extends SubsystemBase {
   private static Solenoid intakeSolenoid;
   private static Solenoid clampSolenoid;
   private static Solenoid feetSolenoid;
+  private static ModuleType compModule;
 
   public Pneumatics_Subsystem() {
-    comp = new Compressor(6, PneumaticsModuleType.CTREPCM); //Change to the other type later
-    intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Pneumatics_Constants.intakeSolChannel);
-    clampSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Pneumatics_Constants.clampSolChannel);
-    feetSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Pneumatics_Constants.feetSolChannel);
+    comp = new Compressor(6, PneumaticsModuleType.REVPH); //Change to the other type later
+    intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Pneumatics_Constants.intakeSolChannel);
+    clampSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Pneumatics_Constants.clampSolChannel);
+    feetSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Pneumatics_Constants.feetSolChannel);
     
+    
+    
+    //comp.enableAnalog(110, 120);
+    comp.enableDigital();
   }
 
   @Override
   public void periodic() {
 
+    //System.out.println(comp.getAnalogVoltage()); 
+    System.out.println(comp.getPressure());
+    
+
+
   }
 
   public void enableCompressor() {
-    comp.enableAnalog(110, 120);
+    //comp.enableAnalog(110, 120);
+    comp.enableDigital();
   }
 
   /*public void disableCompressor() {

@@ -93,11 +93,11 @@ public class RobotContainer {
     .whileTrue(intake_Commands.runIntakeForward())
     .onFalse(intake_Commands.stopIntake());
 
-    new JoystickButton(driverController, XBOX_Constants.Back)
+    new JoystickButton(driverController, XBOX_Constants.Start)
     .onTrue(pneumatics_Commands.enableCompressor());
 
-    new JoystickButton(driverController, XBOX_Constants.Start)
-    .onTrue(pneumatics_Commands.disableCompressor());
+    /*new JoystickButton(driverController, XBOX_Constants.Back)
+    .onTrue(pneumatics_Commands.disableCompressor());*/
     
     new Trigger(createBooleanSupplier(assistController, XBOX_Constants.RTPort, XBOX_Constants.LTPort))
     .whileTrue(clamp_Commands.clamp())
