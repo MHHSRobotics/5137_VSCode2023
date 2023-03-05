@@ -20,8 +20,8 @@ public class Arm_Subsystem extends SubsystemBase {
     private static SparkMaxWrapper rotateMotor;
     private static SparkMaxWrapper extendMotor;
 
-    private static JMoneyEncoder rotateEncoder; //Switch to relatives encoders once arm actually works
-    private static JMoneyEncoder extendEncoder;
+    private static RelativeEncoder rotateEncoder; //Switch to relatives encoders once arm actually works
+    private static RelativeEncoder extendEncoder;
 
     private static Double desiredRotation;
     private static Double desiredExtension;
@@ -43,8 +43,10 @@ public class Arm_Subsystem extends SubsystemBase {
         rotateMotor = new SparkMaxWrapper(Arm_Constants.armRotatePort, MotorType.kBrushless);
         extendMotor = new SparkMaxWrapper(Arm_Constants.armExtendPort, MotorType.kBrushless);
 
-        rotateEncoder = new JMoneyEncoder(rotateMotor, 3.0);
-        extendEncoder = new JMoneyEncoder(extendMotor, 3.0);
+        //rotateEncoder = new JMoneyEncoder(rotateMotor, 3.0);
+        //extendEncoder = new JMoneyEncoder(extendMotor, 3.0);
+        rotateEncoder = rotateMotor.getEncoder();
+        extendEncoder = extendMotor.getEncoder();
 
         desiredRotation = 0.0;
         desiredExtension = 0.0;
@@ -72,7 +74,7 @@ public class Arm_Subsystem extends SubsystemBase {
  
     @Override
     public void periodic() {
-        //arcadeArm();
+        arcadeArm();
     }
 
     public void moveArm(double rotation, double extension) {
@@ -115,11 +117,11 @@ public class Arm_Subsystem extends SubsystemBase {
 
     private void armRotate() {
         currentRotation = rotateEncoder.getPosition()*Arm_Constants.rotationToDegreeConversion;
-        if (Math.abs(controller.getRawAxis(PS4_Constants.RXPort)) > 0.1 || rotateOverride) {
-            rotateMotor.set(adjust(controller.getRawAxis(PS4_Constants.RXPort))*Arm_Constants.armRotateSpeed);
+        //if (Math.abs(controller.getRawAxis(PS4_Constants.RXPort)) > 0.1 || rotateOverride) {
+            rotateMotor.set(adjust(controller.getRawAxis(PS4_Constants.RXPort))*Arm_Constants.armRotateSpeed*0.5);
             desiredRotation = currentRotation;
             rotateOverride = true;
-        } else {
+        /*} else {
             if (Math.abs(currentRotation-desiredRotation) < rotateMargin) {
                 rotateMotor.set(0.0);
             } else if ((currentRotation-desiredRotation) < rotateMargin) {
@@ -129,17 +131,17 @@ public class Arm_Subsystem extends SubsystemBase {
             } else {
                 rotateMotor.set(0.0); //Failsafe
             }
-        }
-        rotateEncoder.update();
+        }*/
+        //rotateEncoder.update();
     }
 
     private void armExtend() {
         currentExtension = extendEncoder.getPosition()*Arm_Constants.rotationToDegreeConversion;
-        if (Math.abs(controller.getRawAxis(PS4_Constants.LYPort)) > 0.1 || extendOverride) {
-            extendMotor.set(adjust(-controller.getRawAxis(PS4_Constants.LYPort))*Arm_Constants.armExtendSpeed);
+        //if (Math.abs(controller.getRawAxis(PS4_Constants.LYPort)) > 0.1 || extendOverride) {
+            extendMotor.set(adjust(-controller.getRawAxis(PS4_Constants.LYPort))*Arm_Constants.armExtendSpeed*0.5);
             desiredExtension = currentExtension;
             extendOverride = true;
-        } else {
+        /*} else {
             if (Math.abs(currentExtension-desiredExtension) < extendMargin) {
                 extendMotor.set(0.0);
             } else if ((currentExtension-desiredExtension) < extendMargin) {
@@ -149,8 +151,8 @@ public class Arm_Subsystem extends SubsystemBase {
             } else {
                 extendMotor.set(0.0); //Failsafe
             }
-        }
-        extendEncoder.update(); //Remove later
+        }*/
+        //extendEncoder.update(); //Remove later
     }
 
     private Double adjust(Double x) {
