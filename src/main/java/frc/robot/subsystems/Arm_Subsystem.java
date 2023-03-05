@@ -12,7 +12,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.constants.Arm_Constants;
-import frc.robot.constants.Controller_Constants.PS4_Constants;
+import frc.robot.constants.Controller_Constants.XBOX_Constants;
 import frc.robot.objects.*;
 import frc.robot.RobotContainer;
 
@@ -118,7 +118,7 @@ public class Arm_Subsystem extends SubsystemBase {
     private void armRotate() {
         currentRotation = rotateEncoder.getPosition()*Arm_Constants.rotationToDegreeConversion;
         //if (Math.abs(controller.getRawAxis(PS4_Constants.RXPort)) > 0.1 || rotateOverride) {
-            rotateMotor.set(adjust(controller.getRawAxis(PS4_Constants.RXPort))*Arm_Constants.armRotateSpeed*0.5);
+            rotateMotor.set(adjust(controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.armRotateSpeed*0.5);
             desiredRotation = currentRotation;
             rotateOverride = true;
         /*} else {
@@ -138,7 +138,7 @@ public class Arm_Subsystem extends SubsystemBase {
     private void armExtend() {
         currentExtension = extendEncoder.getPosition()*Arm_Constants.rotationToDegreeConversion;
         //if (Math.abs(controller.getRawAxis(PS4_Constants.LYPort)) > 0.1 || extendOverride) {
-            extendMotor.set(adjust(-controller.getRawAxis(PS4_Constants.LYPort))*Arm_Constants.armExtendSpeed*0.5);
+            extendMotor.set(adjust(-controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed*0.5);
             desiredExtension = currentExtension;
             extendOverride = true;
         /*} else {

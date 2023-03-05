@@ -145,8 +145,8 @@ public class Drive_Subsystem extends SubsystemBase {
   }
 
   private void arcadeDrive() {
-    Double speed = adjust(controller.getRawAxis(PS4_Constants.LYPort));
-    Double rotate = adjust(controller.getRawAxis(PS4_Constants.RXPort));
+    Double speed = adjust(controller.getRawAxis(XBOX_Constants.LYPort));
+    Double rotate = adjust(controller.getRawAxis(XBOX_Constants.RXPort));
     jMoneyDrive.curvatureDrive(-speed/Drive_Constants.driveSensitivity, -rotate/Drive_Constants.turnSensitivity, true);
   }
 
