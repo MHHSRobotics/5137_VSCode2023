@@ -107,11 +107,11 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     public double getRotationPosition() {
-        return rotateEncoder.getPosition()*Arm_Constants.rotationToDegreeConversion;
+        return rotateEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
     }
 
     public double getExtensionPosition() {
-        return extendEncoder.getPosition()*Arm_Constants.rotationToDegreeConversion;
+        return extendEncoder.getPosition()*Arm_Constants.rawToInchesConversion;
     }
 
     private void arcadeArm() {
@@ -120,7 +120,7 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     private void armRotate() {
-        currentRotation = rotateEncoder.getPosition()*Arm_Constants.rotationToDegreeConversion;
+        currentRotation = rotateEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
         //if (Math.abs(controller.getRawAxis(PS4_Constants.RXPort)) > 0.1 || rotateOverride) {
             rotateMotor.set(adjust(controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.armRotateSpeed*0.5);
             desiredRotation = currentRotation;
@@ -140,7 +140,7 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     private void armExtend() {
-        currentExtension = extendEncoder.getPosition()*Arm_Constants.rotationToDegreeConversion;
+        currentExtension = extendEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
         //if (Math.abs(controller.getRawAxis(PS4_Constants.LYPort)) > 0.1 || extendOverride) {
             extendMotor.set(adjust(-controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed*0.5);
             desiredExtension = currentExtension;
