@@ -7,3 +7,4 @@ public class Pneumatics_Constants {
     public static final int clampSolChannel = 1;
     public static final int feetSolChannel = 5;
 }
+ 

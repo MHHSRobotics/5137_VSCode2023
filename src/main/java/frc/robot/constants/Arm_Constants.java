@@ -3,6 +3,7 @@ package frc.robot.constants;
 public final class Arm_Constants {
     public final static int armRotatePort = 8; //filler number, change later
     public final static int armExtendPort = 9; //filler number, change later
+    
     public final static double rotationToDegreeConversion = 275; //gear ratio for rotation moter
     public final static double armExtendSpeed = 0.2; //needs testing
     public final static double armRotateSpeed = 0.2; //needs testing

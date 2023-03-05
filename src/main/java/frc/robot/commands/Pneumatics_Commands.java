@@ -15,7 +15,7 @@ public class Pneumatics_Commands {
     return new InstantCommand(() -> pneumatics.enableCompressor());
   }
 
-  public Command disableCompressor() {
+  /*public Command disableCompressor() {
     return new InstantCommand(() -> pneumatics.disableCompressor());
-  }
+  }*/
 }

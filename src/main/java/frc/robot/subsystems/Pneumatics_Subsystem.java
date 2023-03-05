@@ -19,10 +19,11 @@ public class Pneumatics_Subsystem extends SubsystemBase {
   private static Solenoid feetSolenoid;
 
   public Pneumatics_Subsystem() {
-    comp = new Compressor(PneumaticsModuleType.CTREPCM); //Change to the other type later
+    comp = new Compressor(6, PneumaticsModuleType.CTREPCM); //Change to the other type later
     intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Pneumatics_Constants.intakeSolChannel);
     clampSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Pneumatics_Constants.clampSolChannel);
     feetSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Pneumatics_Constants.feetSolChannel);
+    
   }
 
   @Override
@@ -34,9 +35,9 @@ public class Pneumatics_Subsystem extends SubsystemBase {
     comp.enableAnalog(110, 120);
   }
 
-  public void disableCompressor() {
+  /*public void disableCompressor() {
     comp.disable();
-  }
+  }*/
 
   public void enableIntake() {
     intakeSolenoid.set(true);
@@ -78,3 +79,4 @@ public class Pneumatics_Subsystem extends SubsystemBase {
     return comp.isEnabled();
   }
 }
+ 
