@@ -55,23 +55,23 @@ public class RobotContainer {
     driverController = new Joystick(0);
     assistController = new Joystick(1);
     configureSystems();
-    configureCommands();
     configureBindings();
   }
 
   //PNEUMATICS FIRST, SHUFFLEBOARD LAST
   private void configureSystems() {
     configureSubsystems();
+    configureCommands();
     shuffleboard = new Shuffleboard();
-    autoManager = new AutoManager(drive_Subsystem);
+    autoManager = new AutoManager(drive_Subsystem, intake_Commands, arm_Commands, clamp_Commands);
   }
+
   public void configureSubsystems() {
     pneumatics_Subsystem = new Pneumatics_Subsystem();
     drive_Subsystem = new Drive_Subsystem(driverController);
     intake_Subsystem = new Intake_Subystem();
     arm_Subsystem = new Arm_Subsystem(assistController);
     clamp_Subsystem = new Clamp_Subsystem();
-    
     vision_Subsystem = new Vision_Subsystem();
   }
 
@@ -124,6 +124,10 @@ public class RobotContainer {
 
     new JoystickButton(assistController, PS4_Constants.TrianglePort)
     .onTrue(arm_Commands.moveToTopCone());
+  }
+
+  public void runAuto() {
+    autoManager.runAuto(shuffleboard.getAuto());
   }
 
   //required port is the joystick you are currecntly attempting to use 

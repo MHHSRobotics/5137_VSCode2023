@@ -2,21 +2,27 @@ package frc.robot.systems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.*;
+
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drive_Subsystem;
+import frc.robot.objects.AutoData;
 
 public class Shuffleboard extends SubsystemBase {
     SendableChooser<String> autoPosition = new SendableChooser<>();
-    SendableChooser<Boolean> autoScore = new SendableChooser<>();
+    SendableChooser<String> autoChoice = new SendableChooser<>();
     SendableChooser<Boolean> autoMobility = new SendableChooser<>();
     SendableChooser<Boolean> autoEngage = new SendableChooser<>();
-    SendableChooser<Boolean> autoIntake = new SendableChooser<>();
-
 
     public Shuffleboard() {
-        configureSendableString(autoPosition, "middle", "left", "middle", "right");
+        configureSendableString(autoPosition, "Middle", "Left", "Middle", "Right");
+        configureSendableString(autoChoice, "None", "None", "SingleScore", "DoubleScore");
+        configureSendableBoolean(autoMobility, false);
+        configureSendableBoolean(autoEngage, false);
 
         SmartDashboard.putData("Auto Position", autoPosition);
+        SmartDashboard.putData("Auto Choice", autoChoice);
+        SmartDashboard.putData("Mobility", autoMobility);
+        SmartDashboard.putData("Engage", autoEngage);
         SmartDashboard.putData("jMoneyDrive", Drive_Subsystem.jMoneyDrive);
 
         update();
@@ -27,8 +33,8 @@ public class Shuffleboard extends SubsystemBase {
         update();
     }
 
-    public String getAutoChoice() {
-       return "hi";
+    public AutoData getAuto() {
+       return new AutoData(autoPosition.getSelected(), autoChoice.getSelected(), autoMobility.getSelected(), autoEngage.getSelected());
     }
 
     private void update() {

@@ -63,8 +63,11 @@
       "/SmartDashboard/Auto Choice": "String Chooser",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Auto Modes": "String Chooser",
+      "/SmartDashboard/Auto Position": "String Chooser",
       "/SmartDashboard/Driver Controller Type": "String Chooser",
+      "/SmartDashboard/Engage": "String Chooser",
       "/SmartDashboard/Manual Arm": "String Chooser",
+      "/SmartDashboard/Mobility": "String Chooser",
       "/SmartDashboard/jMoneyDrive": "DifferentialDrive"
     }
   },

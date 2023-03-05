@@ -11,9 +11,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import frc.robot.simulation.*;
 import frc.robot.constants.Arm_Constants;
 import frc.robot.constants.Controller_Constants.PS4_Constants;
+import frc.robot.objects.*;
 import frc.robot.RobotContainer;
 
 public class Arm_Subsystem extends SubsystemBase {

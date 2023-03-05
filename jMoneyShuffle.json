@@ -198,14 +198,66 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "3,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto Choice",
+              "_title": "Auto Choice",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto Position",
+              "_title": "Auto Position",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Engage",
+              "_title": "Engage",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Mobility",
+              "_title": "Mobility",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
     }
   ],
   "windowGeometry": {
-    "x": 229.0,
-    "y": 555.0,
+    "x": 249.0,
+    "y": 287.0,
     "width": 1440.0,
     "height": 875.0
   }

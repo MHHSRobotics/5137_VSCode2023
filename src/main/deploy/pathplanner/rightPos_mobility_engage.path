@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score1"
+          "ScoreCone"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",

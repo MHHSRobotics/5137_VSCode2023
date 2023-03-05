@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.RobotContainer;
 import frc.robot.constants.Intake_Constants;
-import frc.robot.simulation.SparkMaxWrapper;
+import frc.robot.objects.SparkMaxWrapper;
 
 public class Intake_Subystem extends SubsystemBase {
   private static SparkMaxWrapper intakeMotor;
