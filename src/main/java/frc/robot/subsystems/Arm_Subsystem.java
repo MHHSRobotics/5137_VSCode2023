@@ -72,7 +72,7 @@ public class Arm_Subsystem extends SubsystemBase {
  
     @Override
     public void periodic() {
-        arcadeArm();
+        //arcadeArm();
     }
 
     public void moveArm(double rotation, double extension) {
