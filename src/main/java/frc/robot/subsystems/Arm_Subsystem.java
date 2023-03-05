@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.constants.Arm_Constants;
@@ -17,8 +18,8 @@ import frc.robot.objects.*;
 import frc.robot.RobotContainer;
 
 public class Arm_Subsystem extends SubsystemBase {
-    private static SparkMaxWrapper rotateMotor;
-    private static SparkMaxWrapper extendMotor;
+    private static CANSparkMax rotateMotor;
+    private static CANSparkMax extendMotor;
 
     private static RelativeEncoder rotateEncoder; //Switch to relatives encoders once arm actually works
     private static RelativeEncoder extendEncoder;
@@ -40,9 +41,10 @@ public class Arm_Subsystem extends SubsystemBase {
     private final Joystick controller;
 
     public Arm_Subsystem(Joystick controller) {
-        rotateMotor = new SparkMaxWrapper(Arm_Constants.armRotatePort, MotorType.kBrushless);
-        extendMotor = new SparkMaxWrapper(Arm_Constants.armExtendPort, MotorType.kBrushless);
-
+        rotateMotor = new CANSparkMax(Arm_Constants.armRotatePort, MotorType.kBrushless);
+        extendMotor = new CANSparkMax(Arm_Constants.armExtendPort, MotorType.kBrushless);
+        rotateMotor.setIdleMode(IdleMode.kCoast);
+        extendMotor.setIdleMode(IdleMode.kCoast);
         //rotateEncoder = new JMoneyEncoder(rotateMotor, 3.0);
         //extendEncoder = new JMoneyEncoder(extendMotor, 3.0);
         rotateEncoder = rotateMotor.getEncoder();
@@ -75,6 +77,8 @@ public class Arm_Subsystem extends SubsystemBase {
     @Override
     public void periodic() {
         arcadeArm();
+
+        System.out.println("Rotation: " + rotateEncoder.getPosition() + "\t\tExtension " + extendEncoder.getPosition());;
     }
 
     public void moveArm(double rotation, double extension) {

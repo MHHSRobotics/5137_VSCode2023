@@ -10,10 +10,10 @@ import frc.robot.constants.Intake_Constants;
 import frc.robot.objects.SparkMaxWrapper;
 
 public class Intake_Subystem extends SubsystemBase {
-  private static SparkMaxWrapper intakeMotor;
+  private static CANSparkMax intakeMotor;
 
   public Intake_Subystem() {
-    intakeMotor = new SparkMaxWrapper(Intake_Constants.Port, MotorType.kBrushless);
+    intakeMotor = new CANSparkMax(Intake_Constants.Port, MotorType.kBrushless);
   }
 
   //Wheels 
@@ -26,7 +26,7 @@ public class Intake_Subystem extends SubsystemBase {
   }
 
   public void stop() {
-    intakeMotor.set(0.0);
+    intakeMotor.stopMotor();
   }
 
   //Pneumatics 

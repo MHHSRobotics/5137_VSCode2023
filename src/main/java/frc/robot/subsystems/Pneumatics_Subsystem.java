@@ -16,7 +16,6 @@ public class Pneumatics_Subsystem extends SubsystemBase {
   private static Solenoid intakeSolenoid;
   private static Solenoid clampSolenoid;
   private static Solenoid feetSolenoid;
-  private static ModuleType compModule;
 
   public Pneumatics_Subsystem() {
     comp = new Compressor(6, PneumaticsModuleType.REVPH); //Change to the other type later
@@ -25,23 +24,16 @@ public class Pneumatics_Subsystem extends SubsystemBase {
     feetSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Pneumatics_Constants.feetSolChannel);
     
     
-    
-    //comp.enableAnalog(110, 120);
     comp.enableDigital();
   }
 
   @Override
   public void periodic() {
-
-    //System.out.println(comp.getAnalogVoltage()); 
-    System.out.println(comp.getPressure());
-    
-
-
+    //System.out.println("preasure " + comp.getPressure());
+  
   }
 
   public void enableCompressor() {
-    //comp.enableAnalog(110, 120);
     comp.enableDigital();
   }
 
@@ -50,11 +42,13 @@ public class Pneumatics_Subsystem extends SubsystemBase {
   }*/
 
   public void enableIntake() {
-    intakeSolenoid.set(true);
+    intakeSolenoid.toggle();
+    //System.out.println("intakeExtend switch??? " + intakeSolenoid.get());
   }
 
   public void disableIntake() {
-    intakeSolenoid.set(false);
+    intakeSolenoid.toggle();
+    //System.out.println("intakeRetract switch??? " + intakeSolenoid.get());
   }
 
   public void enableClamp() {
