@@ -100,11 +100,11 @@ public class RobotContainer {
     .onTrue(pneumatics_Commands.disableCompressor());
     
     new Trigger(createBooleanSupplier(assistController, PS4_Constants.RTPort, PS4_Constants.LTPort))
-    .whileTrue(clamp_Commands.clampCone())
+    .whileTrue(clamp_Commands.clamp())
     .onFalse(clamp_Commands.clampRelease());
 
     new Trigger(createBooleanSupplier(assistController, PS4_Constants.LTPort, PS4_Constants.RTPort))
-    .whileTrue(clamp_Commands.clampCube())
+    .whileTrue(clamp_Commands.clamp())
     .onFalse(clamp_Commands.clampRelease());
 
     new POVButton(assistController, PS4_Constants.DownDPad)

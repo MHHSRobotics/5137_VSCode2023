@@ -1,10 +1,14 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonUtils;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
@@ -17,6 +21,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -36,18 +41,31 @@ public class Drive_Subsystem extends SubsystemBase {
   private static MotorControllerGroup rightDrive;
 
   public static DifferentialDrive jMoneyDrive;
-  public SimpleMotorFeedforward voltPID;
 
   private static Boolean arcadeDriveActive;
 
   //vision
   public static DifferentialDrivePoseEstimator poseEstimator;
-  public static AHRS gyro;
   
-  Pose2d estimatedPose;
-  double timeStamp;
+  private Pose2d estimatedPose;
+  private double timeStamp;
 
-  private Joystick controller;
+  //PID
+  public static PIDController distanceController;
+  public static PIDController rotationController;
+  public static PIDController balanceController;
+  public static SimpleMotorFeedforward voltPID;
+
+  //Gyro 
+  public static AHRS gyro;
+
+  //Controlers 
+  private Joystick controller; 
+
+  //Commands 
+  public BooleanSupplier balanceIsFinished;
+  public Consumer<Boolean> balanceEndCommand;
+  public Consumer<Boolean> tagDriveEndCommands;
 
   public Drive_Subsystem(Joystick controller) {
     leftFrontMotor = new WPI_TalonFX(Drive_Constants.leftFrontPort);
@@ -59,6 +77,10 @@ public class Drive_Subsystem extends SubsystemBase {
     rightDrive = new MotorControllerGroup(rightFrontMotor, rightBackMotor);
 
     jMoneyDrive = new DifferentialDrive(leftDrive, rightDrive);
+
+    distanceController = new PIDController(Drive_Constants.dKP,Drive_Constants.dKI, Drive_Constants.dKD);
+    rotationController = new PIDController(Drive_Constants.rKP,Drive_Constants.rKI, Drive_Constants.rKD);
+    balanceController = new PIDController(Drive_Constants.bKP,Drive_Constants.bKI, Drive_Constants.bKD);
     voltPID = new SimpleMotorFeedforward(Drive_Constants.dKS, Drive_Constants.dKV, Drive_Constants.dKA);
 
     arcadeDriveActive = false;
@@ -68,13 +90,58 @@ public class Drive_Subsystem extends SubsystemBase {
     poseEstimator = new DifferentialDrivePoseEstimator(new DifferentialDriveKinematics(Units.inchesToMeters(Drive_Constants.trackWidth)), new Rotation2d(gyro.getRoll()), Drive_Constants.initialLeftDistance, Drive_Constants.initialLeftDistance, new Pose2d());
 
     this.controller = controller;
-  }
+
+    balanceIsFinished = () -> {
+      if(balanceController.calculate(gyro.getPitch(), 0) < 0.05 && Math.abs(gyro.getPitch()) < 2)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    }; 
+
+    balanceEndCommand = (balanceIsFinished) -> {
+      jMoneyDrive.curvatureDrive(0, 0, false);
+    };
+
+    
+
+    tagDriveEndCommands = (tagDriveriveIsFinished) -> {
+      jMoneyDrive.curvatureDrive(0, 0, false);
+    };
+
+  }   
+
+
+  
+
+
+  public BooleanSupplier tagDriveriveIsFinished(Pose2d targetPose) {
+    double distance = distanceController.calculate(PhotonUtils.getDistanceToPose(getPose(), targetPose));
+    double rotation = rotationController.calculate(PhotonUtils.getDistanceToPose(getPose(), targetPose));
+
+      if (distance < 0.1 && rotation < 3){
+        return () -> true;
+      }
+      else {
+        return () -> false;
+      }
+    }
+
+
+
+  
+
+    
+  
 
   @Override
   public void periodic() {
     if (arcadeDriveActive) {
       arcadeDrive();
-    }
+    } 
   }
 
   private void arcadeDrive() {
@@ -116,6 +183,25 @@ public class Drive_Subsystem extends SubsystemBase {
     leftDrive.setVoltage(-leftVolts);
     rightDrive.setVoltage(-rightVolts);
   }
+
+//auto and gyro 
+  //Drives towards and rotates towards a given position based on distance and yaw using PIDs
+  public double tagDrive(Pose2d targetPose){
+    double forwardSpeed = distanceController.calculate(PhotonUtils.getDistanceToPose(getPose(), targetPose), 0); //Calculates forward speed using PID
+    double rotateSpeed =  -rotationController.calculate(PhotonUtils.getYawToPose(getPose(), targetPose).getDegrees(), 0.0);
+    jMoneyDrive.curvatureDrive(forwardSpeed, rotateSpeed, false); ////Sets the drivetraub to drive forward/backwards using PID speed
+
+    return forwardSpeed;
+  }
+
+  public void balance()
+  {
+    double forwardSpeed = balanceController.calculate(gyro.getPitch(), 0); //Calculates forward speed using PID
+    jMoneyDrive.curvatureDrive(forwardSpeed, 0, false);; //Sets the drivetraub to drive forward/backwards using PID speed
+  }
+
+  
+
 
   //vision and pose 
   public Pose2d getPose(){

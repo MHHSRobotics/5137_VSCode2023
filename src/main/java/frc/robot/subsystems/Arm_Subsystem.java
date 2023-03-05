@@ -69,7 +69,7 @@ public class Arm_Subsystem extends SubsystemBase {
 
         this.controller = controller;
     }
-
+ 
     @Override
     public void periodic() {
         arcadeArm();

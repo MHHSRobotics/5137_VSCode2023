@@ -9,19 +9,23 @@ public final class Arm_Constants {
     public final static double manualExtendSpeed = 0.1;
     public final static double manualRotateSpeed = 0.1;
     
-    public final static double armIntakeRotation = 0;
-    public final static double topCubeRotation = 45;
-    public final static double middleCubeRotation = 30;
-    public final static double topConeRotation = 60;
-    public final static double middleConeRotation = 50;
-    public final static double hybridRotation = 20;
+    public final static double armIntakeRotation = -55;
+    public final static double armIntakeExtension = 10;
 
-    public final static double armIntakeExtension = 0;
-    public final static double topCubeExtension = 50;
-    public final static double middleCubeExtension = 40;
-    public final static double topConeExtension = 55;
-    public final static double middleConeExtension = 45;
-    public final static double hybridExtension = 30;
+    public final static double topConeRotation = 173.766;
+    public final static double topConeExtension = 17.22;
 
-    public final static double rotationSafe = 0; //the minimum degrees at which rotation is safe
+    public final static double middleConeRotation = 192.29;
+    public final static double middleConeExtension = 0.66;
+
+    public final static double topCubeRotation = 188.578;
+    public final static double topCubeExtension = 17.481;
+
+    public final static double middleCubeRotation = 211.787;
+    public final static double middleCubeExtension = 5.419;
+
+    public final static double hybridRotation = 250.755;
+    public final static double hybridExtension = 15.099;
+
+    public final static double rotationSafe = -20; //the minimum degrees at which rotation is safe
 }

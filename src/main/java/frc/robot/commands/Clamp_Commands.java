@@ -15,13 +15,13 @@ public class Clamp_Commands {
     this.clamp = clamp;
   }
 
-  public Command clampCone(){
+  public Command clamp(){
     return new InstantCommand(() -> clamp.clamp());
   }
 
-  public Command clampCube(){
+  /*public Command clampCube(){
     return new InstantCommand(() -> clamp.clamp());
-  }
+  }*/
 
   public Command clampRelease(){
     return new InstantCommand(() -> clamp.release());
