@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.HashMap;
 
+import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.RamseteAutoBuilder;
 
 import edu.wpi.first.math.controller.RamseteController;
@@ -126,9 +127,8 @@ public class RobotContainer {
   public void configureBindings() {
 
     //Automated Commands
-    new JoystickButton(driverController, 1)
-  .whileTrue(new InstantCommand(() -> arm_Subsystem.setRotation(10) , arm_Subsystem)); //AutoRotate
-
+    new JoystickButton(driverController, Constants.g_Yangle)
+  .whileTrue(new InstantCommand(() -> arm_Subsystem.setRotation(0) , arm_Subsystem)); //AutoRotate
 
     
     new JoystickButton(driverController, Constants.d_BirclePort)  
@@ -136,6 +136,19 @@ public class RobotContainer {
     
     new JoystickButton(driverController, Constants.d_AxePort) //A Button
     .whileTrue(new AutoBalance(driveBase_Subsystem)); //Balancing
+
+
+    new JoystickButton(driverController, Constants.d_XSquaredPort) //A Button
+    .whileTrue(new IntakeExtend(intake_Subystem)); 
+
+
+    new Trigger(Supplier.createBooleanSupplier(driverController, Constants.d_RTriggerPort, Constants.d_LTriggerPort))
+    .whileTrue(new IntakeOn(intake_Subystem)) //Intake running
+    .onFalse(new IntakeOff(intake_Subystem));
+
+    new Trigger(Supplier.createBooleanSupplier(driverController, Constants.d_LTriggerPort, Constants.d_RTriggerPort))
+    .whileTrue(new IntakeOnReverse(intake_Subystem)) //Intake running
+    .onFalse(new IntakeOff(intake_Subystem));
 
     //Intake Commands
     /* 
@@ -149,13 +162,7 @@ public class RobotContainer {
     */
     
 
-    new Trigger(Supplier.createBooleanSupplier(driverController, Constants.d_RTriggerPort, Constants.d_LTriggerPort))
-    .whileTrue(new IntakeOn(intake_Subystem)) //Intake running
-    .onFalse(new IntakeOff(intake_Subystem));
-
-    new Trigger(Supplier.createBooleanSupplier(driverController, Constants.d_LTriggerPort, Constants.d_RTriggerPort))
-    .whileTrue(new IntakeOnReverse(intake_Subystem)) //Intake running
-    .onFalse(new IntakeOff(intake_Subystem));
+   
     
     //Compressor Commands
     new JoystickButton(driverController, Constants.d_StoptionsPort)

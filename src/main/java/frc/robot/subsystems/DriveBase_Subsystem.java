@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import org.photonvision.PhotonUtils;
 
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
@@ -80,21 +81,26 @@ public class DriveBase_Subsystem extends SubsystemBase {
 
   public DriveBase_Subsystem() {
 
-    score_mobility_chargeEngage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_chargeEngage", new PathConstraints(4, 3));
-    score_mobility_intake_score = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_intake_score", new PathConstraints(4, 3));
-    score_chargeEngage =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_chargeEngage", new PathConstraints(4, 3));
-    score_mobility_straightChargeEngage =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_straightChargeEngage", new PathConstraints(2, 1));
-    Goal_Path = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("Goal_Path", new PathConstraints(4, 3));
+    score_mobility_chargeEngage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_chargeEngage", new PathConstraints(2, 1.5));
+    score_mobility_intake_score = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_intake_score", new PathConstraints(2, 1.5));
+    score_chargeEngage =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_chargeEngage", new PathConstraints(2, 1.5));
+    score_mobility_straightChargeEngage =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_straightChargeEngage", new PathConstraints(2, 1.5));
+    Goal_Path = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("Goal_Path", new PathConstraints(2, 1.5));
 
     //Maps for the path groups
     leftFrontTalon = new WPI_TalonFX(Constants.leftFrontTalonPort);
     leftBackTalon = new WPI_TalonFX(Constants.leftBackTalonPort);
     leftDrive = new MotorControllerGroup(leftFrontTalon, leftBackTalon);
+    //leftFrontTalon.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,      20,                25,                1.0));
+    //leftBackTalon.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,      20,                25,                1.0));
+
     //right motors
     rightFrontTalon = new WPI_TalonFX(Constants.rightFrontTalonPort);
     rightBackTalon = new WPI_TalonFX(Constants.rightBackTalonPort);
     rightDrive = new MotorControllerGroup(rightFrontTalon, rightBackTalon);
     rightDrive.setInverted(true);
+   // rightBackTalon.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,      20,                25,                1.0));
+    //rightFrontTalon.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true,      20,                25,                1.0));
 
     
     //Gyros
@@ -119,6 +125,10 @@ public class DriveBase_Subsystem extends SubsystemBase {
     rotationController = new PIDController(Constants.rKP,Constants.rKI, Constants.rKD);
     balanceController = new PIDController(Constants.bKP,Constants.bKI, Constants.bKD);
     voltPID = new SimpleMotorFeedforward(Constants.dKS, Constants.dKV, Constants.dKA);
+    distanceController.setTolerance(.1);
+    rotationController.setTolerance(3);
+
+
   }
 
   @Override
@@ -163,8 +173,8 @@ public class DriveBase_Subsystem extends SubsystemBase {
   public void setVolts(double leftVolts, double rightVolts)
   {
     
-    leftVolts *= .2;
-    rightVolts *= .2;
+    leftVolts *= .4;
+    rightVolts *= .4;
     leftVolts -= 0.1*leftVolts;
 
     leftDrive.setVoltage(-leftVolts);

@@ -22,12 +22,6 @@ public class IntakeExtend extends CommandBase {
      @Override
      public boolean isFinished() {
         //Returns finished if the time is 0.5 seconds after command called
-         if(intake_Subystem.getIntakeExtended())
-         {
-            System.out.println("Intake extended");
-            return true;
-
-         }
-         return false;
+        return true;
      }
 }

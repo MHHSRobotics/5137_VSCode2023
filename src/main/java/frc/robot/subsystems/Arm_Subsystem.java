@@ -16,22 +16,23 @@ import frc.robot.simulation.SparkMaxWrapper;
 import com.revrobotics.CANSparkMax;
 //import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Arm_Subsystem extends SubsystemBase {
-  //CANSparkMax armRotateMotor = new CANSparkMax(Constants.armRotatePort, MotorType.kBrushless);
-  //CANSparkMax armExtendMotor = new CANSparkMax(Constants.armExtendPort, MotorType.kBrushless);
-  SparkMaxWrapper armRotateMotor = new SparkMaxWrapper(Constants.armRotatePort, MotorType.kBrushless);
-  SparkMaxWrapper armExtendMotor = new SparkMaxWrapper(Constants.armExtendPort, MotorType.kBrushless);
-  //final EncoderSim rotateEncoderSim = new EncoderSim(rotateEncoder);
-  //final EncoderSim extendEncoderSim = new EncoderSim(extendEncoder);
+  CANSparkMax armRotateMotor = new CANSparkMax(Constants.armRotatePort, MotorType.kBrushless);
+  CANSparkMax armExtendMotor = new CANSparkMax(Constants.armExtendPort, MotorType.kBrushless);
+  //SparkMaxWrapper armRotateMotor = new SparkMaxWrapper(Constants.armRotatePort, MotorType.kBrushless);
+  //SparkMaxWrapper armExtendMotor = new SparkMaxWrapper(Constants.armExtendPort, MotorType.kBrushless);
+  //final EncoderSim rotateEncoderSim = new EncoderSim(rotateEncoder)
+  //final EncoderSim extendEncoderSim = new EncoderSim(extendEncoder)
   private ArmFeedforward feedForward = new ArmFeedforward(Constants.kS, Constants.kG, Constants.kV, Constants.kA);
   
   public RelativeEncoder rotateEncoder = armRotateMotor.getEncoder();
   RelativeEncoder extendEncoder = armExtendMotor.getEncoder();
 
-  public static double desiredRotation = 0.0;
-  public static double desiredExtension = 0.0;
+  public static double desiredRotation = -55;
+  public static double desiredExtension = -55;
 
   private double rotatePosition;
   private double extendPosition;
@@ -51,15 +52,16 @@ public class Arm_Subsystem extends SubsystemBase {
     //possibly helpful info: 42 counts of the encoder for one rev on neos
 
     //delete these if it creates issues
-    armRotateMotor.restoreFactoryDefaults();
-    armExtendMotor.restoreFactoryDefaults();
+    //armRotateMotor.restoreFactoryDefaults();
+   // armExtendMotor.restoreFactoryDefaults();
 
     rotateEncoder.setPositionConversionFactor(Constants.rotationToDegreeConversion);          
-    extendEncoder.setPositionConversionFactor(Constants.rotationToDegreeConversion);
+    //extendEncoder.setPositionConversionFactor(Constants.rotationToDegreeConversion);
 
     // Sets origin 
-    rotateEncoder.setPosition(0.0);
-    extendEncoder.setPosition(0.0);
+    //rotateEncoder.setPosition(0);
+    //extendEncoder.setPosition(0);
+    armRotateMotor.setIdleMode(IdleMode.kCoast);
 
   
     
@@ -74,14 +76,16 @@ public class Arm_Subsystem extends SubsystemBase {
     @Override
     public void periodic() {
       // This method will be called once per scheduler run
-      arcadeArm();
-      rotatePosition = rotateEncoder.getPosition();
+      //arcadeArm();
+      rotatePosition = rotateEncoder.getPosition()/200.0;
       extendPosition = extendEncoder.getPosition();
+      System.out.println("rotate " + rotatePosition);
+
       // System.out.println("rotate encoder" + rotatePosition);
     }
 
     private void arcadeArm() {
-      armRotate();
+       armRotate();
       armExtend();
     }
 
@@ -102,10 +106,13 @@ public class Arm_Subsystem extends SubsystemBase {
       if(rotatePosition < desiredRotation) {
         double speed = rotatePID.calculate(rotatePosition, desiredRotation);
         armRotateMotor.setVoltage(speed + feedForward.calculate(desiredRotation, 2));
+        //armRotateMotor.setVoltage(speed );
+
         //System.out.println("volt" + (speed + feedForward.calculate(desiredRotation, 2)));
       } 
       else if (rotatePosition > desiredRotation) {
         double speed = -rotatePID.calculate(rotatePosition, desiredRotation);
+        //armRotateMotor.setVoltage(speed);
         armRotateMotor.setVoltage(speed + feedForward.calculate(desiredRotation, 2));
       }
     }

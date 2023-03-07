@@ -23,7 +23,8 @@ public class Pneumatics_Subsystem extends SubsystemBase {
     intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Constants.intakeSolChannel);
     clampSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Constants.clampSolChannel);
     feetSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Constants.feetSolChannel);
-  }
+ comp.enableAnalog(110, 120);
+}
 
   @Override
   public void periodic() {
@@ -37,10 +38,10 @@ public class Pneumatics_Subsystem extends SubsystemBase {
 
   public void compress(boolean active) {
     if (active) {
-      comp.enableDigital();
+      comp.enableAnalog(110, 120);
       compressed = true;
     } else {
-      comp.disable();
+      comp.enableAnalog(0, 120);
       compressed = false;
     } 
   } 

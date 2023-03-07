@@ -132,15 +132,16 @@ public final class Constants {
 
     //PID FOR RIGHT and Left side
 
-    public final static PIDConstants drivePIDConstants = new PIDConstants(0.1,0,0);
+    public final static PIDConstants drivePIDConstants = new PIDConstants(0.0001,0,0);
 
     //Gains for FeedForward / Left+Right motor volts
    
 
     public final static double dKS = .55;
-    public final static double dKV = 2.6;
+    public final static double dKV = 2.6; //2.6
     public final static double dKA = .3;
     
+
     //Gains for Arm PID ROtate
     public final static double aKP = .025;
     public final static double aKD = 0.0;
