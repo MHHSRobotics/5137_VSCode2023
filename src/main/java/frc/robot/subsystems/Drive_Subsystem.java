@@ -176,66 +176,43 @@ public class Drive_Subsystem extends SubsystemBase {
 
     //For Testing
     //System.out.println(getPose());
-    
-    
-
-
     //System.out.println("Pitch (Vertical)" + gyro.getPitch());
-
-
   }
 
-
-  //A consumer(method that takes a value) used in the auto paths / autoBuilder that drives the robot using a left and right speed
-  public void drive(double leftSpeed, double rightSpeed)
-  {
-   System.out.print("left speed" + leftSpeed);
-   System.out.print("right speed" + rightSpeed);
-    //jMoney_Drive.tankDrive(leftSpeed, rightSpeed);
-  }
-
-  //Returns wheel speeds of motors
+  //Returns wheel speeds of motors in meters per second
   public DifferentialDriveWheelSpeeds getWheelSpeeds()
   {
-    double leftSpeed = leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10; //Speed = sensor count per 100 ms * distance per count * 10 (converts 100 ms to s)
+    double leftSpeed = leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10 ; //Speed = sensor count per 100 ms * distance per count * 10 (converts 100 ms to s)
     double rightSpeed = rightFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10;
-    
     return new DifferentialDriveWheelSpeeds(leftSpeed, rightSpeed);
   }
 
   //Sets the volts of each motor 
   public void setVolts(double leftVolts, double rightVolts)
   {
-    
+    System.out.println("Desired Volts - Left: " + leftVolts + " Right: " + rightVolts);
     leftVolts *= .2;
     rightVolts *= .2;
     leftVolts -= 0.1*leftVolts;
-
+    System.out.println("Actual Volts - Left: " + leftVolts + " Right: " + rightVolts);
     leftDrive.setVoltage(-leftVolts);
     rightDrive.setVoltage(-rightVolts);
-    System.out.println(getWheelSpeeds());
-    System.out.println(leftVolts);
+   // System.out.println(getWheelSpeeds());
   }
-
 
   //Used by the bot to drive -- calls upon adjust method to reduce error. Is used by the DefaultDrive command to drive in TeleOp
   public void arcadeDrive(Joystick controller) {
     //Gets controller values
     double speed = controller.getRawAxis(1);
     double rotate = controller.getRawAxis(4);
-
     speed = adjust(speed);
     rotate = adjust(rotate);
     speed = rateLimiter.calculate(speed);
     rotate = rotateLimiter.calculate(rotate);
-    //rotate = rateLimiter.calculate(rotate);
-  //System.out.println("speed:" + speed);
-  //System.out.println("rotate" + rotate);
-  if(speed!=0.0){
-    rotate -= 0.4*speed;
-  }
-  //System.out.println("speed:" + speed);
-  //System.out.println("rotate" + rotate);  
+    if(speed!=0.0){
+      rotate -= 0.4*speed;
+    }
+    //System.out.println(getWheelSpeeds());
     jMoneyDrive.curvatureDrive(speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
 
   }
@@ -276,7 +253,6 @@ public class Drive_Subsystem extends SubsystemBase {
   public Pose2d getPose()
   {
     return poseEstimator.getEstimatedPosition(); 
-    
   }
 
   //Updates the pose estimator with current encoder values and gyro readings
@@ -284,6 +260,8 @@ public class Drive_Subsystem extends SubsystemBase {
     //Make sure timer delay is added if needed, could need because of motor delays from inversion
     double leftFrontEncoder = leftFrontTalon.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
     double rightFrontEncoder = rightFrontTalon.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
+    //System.out.println("leftFrontEncoder" + leftFrontEncoder);
+    //System.out.println("rightFrontEncoder" + rightFrontEncoder);
     poseEstimator.updateWithTime(Timer.getFPGATimestamp(), new Rotation2d((double)gyro.getRoll()), leftFrontEncoder, rightFrontEncoder); //ad gyro value
   } 
    
@@ -297,11 +275,8 @@ public class Drive_Subsystem extends SubsystemBase {
       double timestamp = camResult.get().timestampSeconds;
       poseEstimator.addVisionMeasurement(estimatedPose, timestamp);
     }
-   
   }
-
-
-  //Resets global pose estimator based on a position parameter, gyro and encoder have no effect
+  //Resets global pose estimator based on a position parameter, gyro and encoder have no effect - used by auto
   public void resetPose(Pose2d pose)
   {
     poseEstimator.resetPosition(new Rotation2d(gyro.getRoll()), 0, 0, pose);
