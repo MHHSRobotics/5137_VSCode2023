@@ -142,6 +142,7 @@ public class Arm_Subsystem extends SubsystemBase {
 
     private void armRotate() {
         currentRotation = rotateEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
+        System.out.println("arm encoder (deg)" + currentRotation);
         if (Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1 /*|| rotateOverride*/) {
             rotateMotor.set((controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.armRotateSpeed);
             desiredRotation = currentRotation;

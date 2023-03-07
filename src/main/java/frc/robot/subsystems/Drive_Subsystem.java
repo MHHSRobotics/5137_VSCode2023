@@ -91,7 +91,7 @@ public class Drive_Subsystem extends SubsystemBase {
     leftFrontTalon = new WPI_TalonFX(Drive_Constants.leftFrontTalonPort);
     leftBackTalon = new WPI_TalonFX(Drive_Constants.leftBackTalonPort);
     leftDrive = new MotorControllerGroup(leftFrontTalon, leftBackTalon);
-    leftDrive.setInverted(true);
+    
     //right motors
     rightFrontTalon = new WPI_TalonFX(Drive_Constants.rightFrontPort);
     rightBackTalon = new WPI_TalonFX(Drive_Constants.rightBackPort);
