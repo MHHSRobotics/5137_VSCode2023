@@ -173,8 +173,8 @@ public class DriveBase_Subsystem extends SubsystemBase {
   public void setVolts(double leftVolts, double rightVolts)
   {
     
-    leftVolts *= .4;
-    rightVolts *= .4;
+    leftVolts *= .2;
+    rightVolts *= .2;
     leftVolts -= 0.1*leftVolts;
 
     leftDrive.setVoltage(-leftVolts);

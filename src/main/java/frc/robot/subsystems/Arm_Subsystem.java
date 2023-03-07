@@ -79,7 +79,6 @@ public class Arm_Subsystem extends SubsystemBase {
       //arcadeArm();
       rotatePosition = rotateEncoder.getPosition()/200.0;
       extendPosition = extendEncoder.getPosition();
-      System.out.println("rotate " + rotatePosition);
 
       // System.out.println("rotate encoder" + rotatePosition);
     }
