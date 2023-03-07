@@ -18,15 +18,15 @@ import frc.robot.constants.Vision_Constants;
 public class Vision_Subsystem extends SubsystemBase {
   private static AprilTagFieldLayout aprilTagFieldLayout;
   public static PhotonPoseEstimator ar1CamPoseEstimator;
-  public static PhotonPoseEstimator ar2CamPoseEstimator;
+  public static PhotonPoseEstimator lifeCamPoseEstimator;
 
   public static PhotonCamera ar1Camera;
-  public static PhotonCamera ar2Camera;
+  public static PhotonCamera lifeCamera;
 
   public Vision_Subsystem() {
     //Initiallizes the camera being run with photovision, using the proper camera name
     ar1Camera = new PhotonCamera("AR1");
-    ar2Camera = new PhotonCamera("AR2");
+    lifeCamera = new PhotonCamera("LifeCam");
 
     //Pose estimators using each camera instance, make sure to update where the camera is on the robot in Constants.
 
@@ -41,7 +41,7 @@ public class Vision_Subsystem extends SubsystemBase {
     }
 
     ar1CamPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, ar1Camera, Vision_Constants.robotToAR1Cam);
-    ar2CamPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, ar2Camera, Vision_Constants.robotToAR2Cam);
+    lifeCamPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, lifeCamera, Vision_Constants.robotToAR2Cam);
   }
   @Override
   public void periodic() {
