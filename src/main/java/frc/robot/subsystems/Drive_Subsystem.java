@@ -5,9 +5,12 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -91,7 +94,7 @@ public class Drive_Subsystem extends SubsystemBase {
     leftFrontTalon = new WPI_TalonFX(Drive_Constants.leftFrontTalonPort);
     leftBackTalon = new WPI_TalonFX(Drive_Constants.leftBackTalonPort);
     leftDrive = new MotorControllerGroup(leftFrontTalon, leftBackTalon);
-    
+
     //right motors
     rightFrontTalon = new WPI_TalonFX(Drive_Constants.rightFrontPort);
     rightBackTalon = new WPI_TalonFX(Drive_Constants.rightBackPort);
@@ -168,6 +171,8 @@ public class Drive_Subsystem extends SubsystemBase {
     }
     //Updates the position with gyro and encoder periodcally 
     updatePoseEstimator();
+    addVisionMeasurement(Vision_Subsystem.ar1CamPoseEstimator);
+    addVisionMeasurement(Vision_Subsystem.lifeCamPoseEstimator);
 
     //For Testing
     //System.out.println(getPose());
@@ -282,10 +287,17 @@ public class Drive_Subsystem extends SubsystemBase {
     poseEstimator.updateWithTime(Timer.getFPGATimestamp(), new Rotation2d((double)gyro.getRoll()), leftFrontEncoder, rightFrontEncoder); //ad gyro value
   } 
    
-  //Used by AddVisionMeasurement command to add a location to pose estimator based on april tag system
-  public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds)
+  //Uses a PhotonPoseEstimator object to add a vision measurement to the Diff.Drive pose estimator if it has a valid result (detecting)
+  public void addVisionMeasurement(PhotonPoseEstimator camEstimator)
   {
-  poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
+    Optional<EstimatedRobotPose> camResult = Vision_Subsystem.getPoseFromCamera(camEstimator, poseEstimator.getEstimatedPosition());
+    if(camResult.isPresent())
+    {
+      Pose2d estimatedPose = camResult.get().estimatedPose.toPose2d();
+      double timestamp = camResult.get().timestampSeconds;
+      poseEstimator.addVisionMeasurement(estimatedPose, timestamp);
+    }
+   
   }
 
 
