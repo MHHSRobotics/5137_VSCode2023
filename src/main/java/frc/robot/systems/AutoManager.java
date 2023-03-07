@@ -74,7 +74,7 @@ public class AutoManager extends SubsystemBase {
         drive::getPose, // Pose2d supplier method from drivetrain
         drive::resetPose, // Pose2d consume method used to reset odometry at the beginning of auto
         new RamseteController(),
-        new DifferentialDriveKinematics(Units.inchesToMeters(Drive_Constants.trackWidth)), //Kinematics for our drivebase
+        Drive_Constants.trackWidth, //Kinematics for our drivebase
         drive.voltPID,
         drive::getWheelSpeeds,
         Drive_Constants.drivePIDConstants,

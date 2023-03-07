@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.BooleanSupplier;
@@ -9,19 +10,21 @@ import java.util.function.Consumer;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.constants.Arm_Constants;
-import frc.robot.constants.Controller_Constants.PS4_Constants;
+import frc.robot.constants.Controller_Constants.XBOX_Constants;
+import frc.robot.constants.Controller_Constants.XBOX_Constants;
 import frc.robot.objects.*;
 import frc.robot.RobotContainer;
 
 public class Arm_Subsystem extends SubsystemBase {
-    private static SparkMaxWrapper rotateMotor;
-    private static SparkMaxWrapper extendMotor;
+    private static CANSparkMax rotateMotor;
+    private static CANSparkMax extendMotor;
 
-    private static JMoneyEncoder rotateEncoder; //Switch to relatives encoders once arm actually works
-    private static JMoneyEncoder extendEncoder;
+    private static RelativeEncoder rotateEncoder; //Switch to relatives encoders once arm actually works
+    private static RelativeEncoder extendEncoder;
 
     private static Double desiredRotation;
     private static Double desiredExtension;
@@ -40,14 +43,14 @@ public class Arm_Subsystem extends SubsystemBase {
     private final Joystick controller;
 
     public Arm_Subsystem(Joystick controller) {
-        rotateMotor = new SparkMaxWrapper(Arm_Constants.armRotatePort, MotorType.kBrushless);
-        extendMotor = new SparkMaxWrapper(Arm_Constants.armExtendPort, MotorType.kBrushless);
+        rotateMotor = new CANSparkMax(Arm_Constants.armRotatePort, MotorType.kBrushless);
+        extendMotor = new CANSparkMax(Arm_Constants.armExtendPort, MotorType.kBrushless);
 
-        rotateEncoder = new JMoneyEncoder(rotateMotor, 3.0);
-        extendEncoder = new JMoneyEncoder(extendMotor, 3.0);
+        rotateEncoder = rotateMotor.getEncoder();
+        extendEncoder = extendMotor.getEncoder();
 
-        desiredRotation = 0.0;
-        desiredExtension = 0.0;
+        desiredRotation = Arm_Constants.armIntakeRotation;
+        desiredExtension = Arm_Constants.armIntakeExtension;
 
         isFinished = () -> {
             if (((Math.abs(currentRotation-desiredRotation) < rotateMargin) && (Math.abs(currentExtension-desiredExtension) < rotateMargin)) || (rotateEncoder.getPosition() >= Arm_Constants.rotationSafe && RobotContainer.pneumatics_Subsystem.getIntakeEnabled())) {
@@ -72,7 +75,27 @@ public class Arm_Subsystem extends SubsystemBase {
  
     @Override
     public void periodic() {
-        arcadeArm();
+        arcadeArm();   
+
+        if (RobotState.isEnabled()){
+            if (rotateMotor.getOutputCurrent() > 1.5){
+                rotateMotor.setIdleMode(IdleMode.kBrake);
+            }
+            else {
+                rotateMotor.setIdleMode(IdleMode.kCoast);
+            }
+            if (extendMotor.getOutputCurrent() > 1.5){
+                extendMotor.setIdleMode(IdleMode.kBrake);
+            }
+            else {
+                extendMotor.setIdleMode(IdleMode.kCoast);
+    
+            }
+        }
+        else if (RobotState.isDisabled()) {
+            rotateMotor.setIdleMode(IdleMode.kCoast);
+            extendMotor.setIdleMode(IdleMode.kCoast);
+        }
     }
 
     public void moveArm(double rotation, double extension) {
@@ -88,8 +111,8 @@ public class Arm_Subsystem extends SubsystemBase {
     public void stopArm() {
         desiredRotation = currentRotation;
         desiredExtension = currentExtension;
-        rotateMotor.set(0.0);
-        rotateMotor.set(0.0);
+        rotateMotor.stopMotor();
+        rotateMotor.stopMotor();
     }
 
     public double getRotationSpeed() {
@@ -101,11 +124,11 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     public double getRotationPosition() {
-        return rotateEncoder.getPosition()*Arm_Constants.rotationToDegreeConversion;
+        return rotateEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
     }
 
     public double getExtensionPosition() {
-        return extendEncoder.getPosition()*Arm_Constants.rotationToDegreeConversion;
+        return extendEncoder.getPosition()*Arm_Constants.rawToInchesConversion;
     }
 
     private void arcadeArm() {
@@ -114,48 +137,41 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     private void armRotate() {
-        currentRotation = rotateEncoder.getPosition()*Arm_Constants.rotationToDegreeConversion;
-        if (Math.abs(controller.getRawAxis(PS4_Constants.RXPort)) > 0.1 || rotateOverride) {
-            rotateMotor.set(adjust(controller.getRawAxis(PS4_Constants.RXPort))*Arm_Constants.armRotateSpeed);
+        currentRotation = rotateEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
+        if (Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1 || rotateOverride) {
+            rotateMotor.set((controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.armRotateSpeed);
             desiredRotation = currentRotation;
             rotateOverride = true;
         } else {
+            /*
             if (Math.abs(currentRotation-desiredRotation) < rotateMargin) {
                 rotateMotor.set(0.0);
             } else if ((currentRotation-desiredRotation) < rotateMargin) {
                 rotateMotor.set(Arm_Constants.armRotateSpeed);
             } else if ((currentRotation-desiredRotation) > rotateMargin) {
                 rotateMotor.set(-Arm_Constants.armRotateSpeed);
-            } else {
-                rotateMotor.set(0.0); //Failsafe
-            }
+            } else {*/
+                rotateMotor.setIdleMode(IdleMode.kBrake);
+            //}
         }
-        rotateEncoder.update();
     }
 
     private void armExtend() {
-        currentExtension = extendEncoder.getPosition()*Arm_Constants.rotationToDegreeConversion;
-        if (Math.abs(controller.getRawAxis(PS4_Constants.LYPort)) > 0.1 || extendOverride) {
-            extendMotor.set(adjust(-controller.getRawAxis(PS4_Constants.LYPort))*Arm_Constants.armExtendSpeed);
+        currentExtension = extendEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
+        if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1 || extendOverride) {
+            extendMotor.set((-controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed);
             desiredExtension = currentExtension;
             extendOverride = true;
         } else {
-            if (Math.abs(currentExtension-desiredExtension) < extendMargin) {
-                extendMotor.set(0.0);
+            /*if (Math.abs(currentExtension-desiredExtension) < extendMargin) {
+                extendMotor.stopMotor();
             } else if ((currentExtension-desiredExtension) < extendMargin) {
                 extendMotor.set(Arm_Constants.armExtendSpeed);
             } else if ((currentExtension - desiredExtension) > extendMargin) {
                 extendMotor.set(-Arm_Constants.armExtendSpeed);
-            } else {
-                extendMotor.set(0.0); //Failsafe
-            }
+            } else {*/
+                extendMotor.setIdleMode(IdleMode.kBrake);
+            //}
         }
-        extendEncoder.update(); //Remove later
     }
-
-    private Double adjust(Double x) {
-        if (Math.abs(x) < 0.1) {return 0.0;}
-        else if (Math.abs(x) > 0.9) {return Math.abs(x)/x;}
-        else {return x;}
-      }
 }

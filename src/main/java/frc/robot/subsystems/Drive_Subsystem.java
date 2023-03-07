@@ -1,95 +1,128 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
-import java.util.Optional;
+import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import java.util.function.DoubleSupplier;
 
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
- 
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.math.util.Units;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.Drive_Constants;
-import frc.robot.constants.Controller_Constants.*;
 
 public class Drive_Subsystem extends SubsystemBase {
-  private static WPI_TalonFX leftFrontMotor;
-  private static WPI_TalonFX leftBackMotor;
-  private static WPI_TalonFX rightFrontMotor;
-  private static WPI_TalonFX rightBackMotor;
+  //left motors
+  public static WPI_TalonFX leftFrontTalon;
+  public static WPI_TalonFX leftBackTalon;
+  public static MotorControllerGroup leftDrive;
+  
+  //right motors
+  public static WPI_TalonFX rightFrontTalon;
+  public static WPI_TalonFX rightBackTalon;
+  public static MotorControllerGroup rightDrive;
 
-  private static MotorControllerGroup leftDrive;
-  private static MotorControllerGroup rightDrive;
-
+  //DriveTrain
   public static DifferentialDrive jMoneyDrive;
 
-  private static Boolean arcadeDriveActive;
+  //Position Estimator
+  private DifferentialDrivePoseEstimator poseEstimator = new DifferentialDrivePoseEstimator(Drive_Constants.trackWidth, new Rotation2d(0), Drive_Constants.initialLeftDistance, Drive_Constants.initialRightDistance, new Pose2d());
 
-  //vision
-  public static DifferentialDrivePoseEstimator poseEstimator;
-  
-  private Pose2d estimatedPose;
-  private double timeStamp;
+  //Controller
+  Joystick controller;
+  PIDController distanceController;
+  PIDController rotationController;
+  PIDController balanceController;
+  public SimpleMotorFeedforward voltPID;
 
-  //PID
-  public static PIDController distanceController;
-  public static PIDController rotationController;
-  public static PIDController balanceController;
-  public static SimpleMotorFeedforward voltPID;
-
-  //Gyro 
+  //gyros
   public static AHRS gyro;
-
-  //Controlers 
-  private Joystick controller; 
 
   //Commands 
   public BooleanSupplier balanceIsFinished;
   public Consumer<Boolean> balanceEndCommand;
-  public Consumer<Boolean> tagDriveEndCommands;
+  public Consumer<Boolean> tagDriveEndCommands;  
 
-  public Drive_Subsystem(Joystick controller) {
-    leftFrontMotor = new WPI_TalonFX(Drive_Constants.leftFrontPort);
-    leftBackMotor = new WPI_TalonFX(Drive_Constants.leftBackPort);
-    rightFrontMotor = new WPI_TalonFX(Drive_Constants.rightFrontPort);
-    rightBackMotor = new WPI_TalonFX(Drive_Constants.rightBackPort);
+  //Paths
+  public ArrayList<PathPlannerTrajectory> score_mobility_chargeEngage;
+  public ArrayList<PathPlannerTrajectory> score_mobility_intake_score;
+  public ArrayList<PathPlannerTrajectory> score_chargeEngage;
+  public ArrayList<PathPlannerTrajectory> score_mobility_straightChargeEngage;
+  public ArrayList<PathPlannerTrajectory> Goal_Path;
 
-    leftDrive = new MotorControllerGroup(leftFrontMotor, leftBackMotor);
-    rightDrive = new MotorControllerGroup(rightFrontMotor, rightBackMotor);
+  //rate limiter
+  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(1.2);
+  private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(4);
 
-    jMoneyDrive = new DifferentialDrive(leftDrive, rightDrive);
 
-    distanceController = new PIDController(Drive_Constants.dKP,Drive_Constants.dKI, Drive_Constants.dKD);
-    rotationController = new PIDController(Drive_Constants.rKP,Drive_Constants.rKI, Drive_Constants.rKD);
-    balanceController = new PIDController(Drive_Constants.bKP,Drive_Constants.bKI, Drive_Constants.bKD);
-    voltPID = new SimpleMotorFeedforward(Drive_Constants.dKS, Drive_Constants.dKV, Drive_Constants.dKA);
 
-    arcadeDriveActive = false;
+  public Drive_Subsystem() {
 
+    score_mobility_chargeEngage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_chargeEngage", new PathConstraints(4, 3));
+    score_mobility_intake_score = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_intake_score", new PathConstraints(4, 3));
+    score_chargeEngage =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_chargeEngage", new PathConstraints(4, 3));
+    score_mobility_straightChargeEngage =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_straightChargeEngage", new PathConstraints(2, 1));
+    Goal_Path = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("Goal_Path", new PathConstraints(4, 3));
+
+    //Maps for the path groups
+    leftFrontTalon = new WPI_TalonFX(Drive_Constants.leftFrontTalonPort);
+    leftBackTalon = new WPI_TalonFX(Drive_Constants.leftBackTalonPort);
+    leftDrive = new MotorControllerGroup(leftFrontTalon, leftBackTalon);
+    leftDrive.setInverted(true);
+    //right motors
+    rightFrontTalon = new WPI_TalonFX(Drive_Constants.rightFrontPort);
+    rightBackTalon = new WPI_TalonFX(Drive_Constants.rightBackPort);
+    rightDrive = new MotorControllerGroup(rightFrontTalon, rightBackTalon);
+    rightDrive.setInverted(true);
+
+    
+
+    
+    //Gyros
     gyro = new AHRS(SPI.Port.kMXP);
     gyro.calibrate();
-    poseEstimator = new DifferentialDrivePoseEstimator(new DifferentialDriveKinematics(Units.inchesToMeters(Drive_Constants.trackWidth)), new Rotation2d(gyro.getRoll()), Drive_Constants.initialLeftDistance, Drive_Constants.initialLeftDistance, new Pose2d());
 
-    this.controller = controller;
+    //position estimator 
+    poseEstimator = new DifferentialDrivePoseEstimator(Drive_Constants.trackWidth, new Rotation2d(gyro.getRoll()),Drive_Constants.initialLeftDistance, Drive_Constants.initialRightDistance, new Pose2d());
+
+
+    //Encoders 
+    leftFrontTalon.setSelectedSensorPosition(0);
+    rightFrontTalon.setSelectedSensorPosition(0);
+
+    //DriveTrain
+    jMoneyDrive = new DifferentialDrive(leftDrive, rightDrive);
+    jMoneyDrive.setMaxOutput(.7);
+    
+
+    //PID
+    distanceController = new PIDController(Drive_Constants.dKP,Drive_Constants.dKI, Drive_Constants.dKD);
+    rotationController = new PIDController(Drive_Constants.rKP,Drive_Constants.rKI, Drive_Constants.rKD);
+    balanceController = new PIDController(Drive_Constants.bKP, Drive_Constants.bKI, Drive_Constants.bKD);
+    voltPID = new SimpleMotorFeedforward(Drive_Constants.dKS, Drive_Constants.dKV, Drive_Constants.dKA);
 
     balanceIsFinished = () -> {
       if(balanceController.calculate(gyro.getPitch(), 0) < 0.05 && Math.abs(gyro.getPitch()) < 2)
@@ -112,11 +145,8 @@ public class Drive_Subsystem extends SubsystemBase {
       jMoneyDrive.curvatureDrive(0, 0, false);
     };
 
-  }   
-
-
-  
-
+    
+  }
 
   public BooleanSupplier tagDriveriveIsFinished(Pose2d targetPose) {
     double distance = distanceController.calculate(PhotonUtils.getDistanceToPose(getPose(), targetPose));
@@ -130,109 +160,141 @@ public class Drive_Subsystem extends SubsystemBase {
       }
     }
 
-
-
-  
-
-    
-  
-
   @Override
   public void periodic() {
-    if (arcadeDriveActive) {
-      arcadeDrive();
-    } 
+    // This method will be called once per scheduler run
+    if (controller != null) {
+      arcadeDrive(controller);
+    }
+    //Updates the position with gyro and encoder periodcally 
+    updatePoseEstimator();
+
+    //For Testing
+    //System.out.println(getPose());
+    
+    
+
+
+    //System.out.println("Pitch (Vertical)" + gyro.getPitch());
+
+
   }
 
-  private void arcadeDrive() {
-    Double speed = adjust(controller.getRawAxis(PS4_Constants.LYPort));
-    Double rotate = adjust(controller.getRawAxis(PS4_Constants.RXPort));
-    jMoneyDrive.curvatureDrive(-speed/Drive_Constants.driveSensitivity, -rotate/Drive_Constants.turnSensitivity, true);
+
+  //A consumer(method that takes a value) used in the auto paths / autoBuilder that drives the robot using a left and right speed
+  public void drive(double leftSpeed, double rightSpeed)
+  {
+   System.out.print("left speed" + leftSpeed);
+   System.out.print("right speed" + rightSpeed);
+    //jMoney_Drive.tankDrive(leftSpeed, rightSpeed);
   }
 
-  private Double adjust(Double x) {
-    if (Math.abs(x) < 0.1) {return 0.0;}
-    else if (Math.abs(x) > 0.9) {return Math.abs(x)/x;}
-    else {return x;}
-  }
-
-  public void drive(Double speed, Double rotate) {
-    arcadeDriveActive = false;
-    jMoneyDrive.curvatureDrive(speed, rotate, true);
-  }
-
-  public void enableArcadeDrive() {
-    arcadeDriveActive = true;
-  }
-
-  public Boolean getArcadeDriveEnabled() {
-    return arcadeDriveActive;
-  }
-
-  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    double leftSpeed = leftFrontMotor.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10;
-    double rightSpeed = rightFrontMotor.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10;
+  //Returns wheel speeds of motors
+  public DifferentialDriveWheelSpeeds getWheelSpeeds()
+  {
+    double leftSpeed = leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10; //Speed = sensor count per 100 ms * distance per count * 10 (converts 100 ms to s)
+    double rightSpeed = rightFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10;
+    
     return new DifferentialDriveWheelSpeeds(leftSpeed, rightSpeed);
   }
 
-  public void setVolts(double leftVolts, double rightVolts) {
+  //Sets the volts of each motor 
+  public void setVolts(double leftVolts, double rightVolts)
+  {
+    
     leftVolts *= .2;
     rightVolts *= .2;
-    leftVolts -= 0.1*leftVolts; //Accounting for wheel offset
+    leftVolts -= 0.1*leftVolts;
 
     leftDrive.setVoltage(-leftVolts);
     rightDrive.setVoltage(-rightVolts);
+    System.out.println(getWheelSpeeds());
+    System.out.println(leftVolts);
   }
 
-//auto and gyro 
-  //Drives towards and rotates towards a given position based on distance and yaw using PIDs
-  public double tagDrive(Pose2d targetPose){
-    double forwardSpeed = distanceController.calculate(PhotonUtils.getDistanceToPose(getPose(), targetPose), 0); //Calculates forward speed using PID
-    double rotateSpeed =  -rotationController.calculate(PhotonUtils.getYawToPose(getPose(), targetPose).getDegrees(), 0.0);
-    jMoneyDrive.curvatureDrive(forwardSpeed, rotateSpeed, false); ////Sets the drivetraub to drive forward/backwards using PID speed
 
-    return forwardSpeed;
+  //Used by the bot to drive -- calls upon adjust method to reduce error. Is used by the DefaultDrive command to drive in TeleOp
+  public void arcadeDrive(Joystick controller) {
+    //Gets controller values
+    double speed = controller.getRawAxis(1);
+    double rotate = controller.getRawAxis(4);
+
+    speed = adjust(speed);
+    rotate = adjust(rotate);
+    speed = rateLimiter.calculate(speed);
+    rotate = rotateLimiter.calculate(rotate);
+    //rotate = rateLimiter.calculate(rotate);
+  //System.out.println("speed:" + speed);
+  //System.out.println("rotate" + rotate);
+  if(speed!=0.0){
+    rotate -= 0.4*speed;
+  }
+  //System.out.println("speed:" + speed);
+  //System.out.println("rotate" + rotate);  
+    jMoneyDrive.curvatureDrive(speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
+
   }
 
-  public void balance()
+  //Also not required but stops drifiting and gurantees max speed
+  public double adjust(double axis) {
+    if (Math.abs(axis)<Drive_Constants.errormargin) {return 0.0;}
+    if (Math.abs(axis)>(1-Drive_Constants.errormargin)) {return (Math.abs(axis)/axis);}
+    return axis;
+  }
+
+  //Automatically Balances on charge station using gyro measurements
+  public double balance()
   {
     double forwardSpeed = balanceController.calculate(gyro.getPitch(), 0); //Calculates forward speed using PID
     jMoneyDrive.curvatureDrive(forwardSpeed, 0, false);; //Sets the drivetraub to drive forward/backwards using PID speed
+    return forwardSpeed;
   }
 
+  //Drives towards and rotates towards a given position based on distance and yaw using PIDs
+  public double tagDrive(Pose2d targetPose) 
+  {
+    double forwardSpeed = distanceController.calculate(PhotonUtils.getDistanceToPose(getPose(), targetPose), 0); //Calculates forward speed using PID
+    double rotateSpeed =  -rotationController.calculate(PhotonUtils.getYawToPose(getPose(), targetPose).getDegrees(), 0.0);
+    jMoneyDrive.curvatureDrive(forwardSpeed, rotateSpeed, false);; //Sets the drivetraub to drive forward/backwards using PID speed
+    return forwardSpeed;
+  }
+
+  //Rotate towards a given pose based on yaw using a PID
+  public double autoRotate(Pose2d targetPose)
+  {
+    double rotateSpeed =  -rotationController.calculate(PhotonUtils.getYawToPose(getPose(), targetPose).getDegrees(), 0.0);
+    jMoneyDrive.curvatureDrive(0, rotateSpeed, true);
+    return rotateSpeed;
+  }
   
-
-
-  //vision and pose 
-  public Pose2d getPose(){
-    return poseEstimator.getEstimatedPosition();
+  //Returns the current global pose estimate of robot
+  public Pose2d getPose()
+  {
+    return poseEstimator.getEstimatedPosition(); 
+    
   }
 
+  //Updates the pose estimator with current encoder values and gyro readings
   public void updatePoseEstimator(){
-    double leftFrontEncoder = leftFrontMotor.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
-    double rightFrontEncoder = rightFrontMotor.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
-
-    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), new Rotation2d((double)gyro.getRoll()), leftFrontEncoder, rightFrontEncoder);
+    //Make sure timer delay is added if needed, could need because of motor delays from inversion
+    double leftFrontEncoder = leftFrontTalon.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
+    double rightFrontEncoder = rightFrontTalon.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
+    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), new Rotation2d((double)gyro.getRoll()), leftFrontEncoder, rightFrontEncoder); //ad gyro value
+  } 
+   
+  //Used by AddVisionMeasurement command to add a location to pose estimator based on april tag system
+  public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds)
+  {
+  poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
   }
 
-  public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds){
-    Optional<EstimatedRobotPose> ar1CamResult = Vision_Subsystem.getPoseFromCamera(Vision_Subsystem.ar1CamPoseEstimator, this.getPose()); 
-    Optional<EstimatedRobotPose> ar2CamResult = Vision_Subsystem.getPoseFromCamera(Vision_Subsystem.ar2CamPoseEstimator, this.getPose()); 
 
-    if (ar1CamResult.isPresent()){
-      estimatedPose = ar1CamResult.get().estimatedPose.toPose2d();
-      timeStamp = ar1CamResult.get().timestampSeconds;
-      this.addVisionMeasurement(estimatedPose, timeStamp);
-    }
-    if (ar2CamResult.isPresent()){
-      estimatedPose = ar2CamResult.get().estimatedPose.toPose2d();
-      timeStamp = ar2CamResult.get().timestampSeconds;
-      this.addVisionMeasurement(estimatedPose, timeStamp);
-    }
-
-  }
-
-  public void resetPose(Pose2d pose){
+  //Resets global pose estimator based on a position parameter, gyro and encoder have no effect
+  public void resetPose(Pose2d pose)
+  {
     poseEstimator.resetPosition(new Rotation2d(gyro.getRoll()), 0, 0, pose);
   }
-}
+  }
+
+
+

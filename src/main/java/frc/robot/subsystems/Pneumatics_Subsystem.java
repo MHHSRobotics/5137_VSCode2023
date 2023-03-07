@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 
@@ -14,15 +15,20 @@ import frc.robot.constants.Pneumatics_Constants;
 
 public class Pneumatics_Subsystem extends SubsystemBase {
   private static Compressor comp;
+  private static PneumaticHub hub;  
   private static Solenoid intakeSolenoid;
   private static Solenoid clampSolenoid;
   private static Solenoid feetSolenoid;
 
   public Pneumatics_Subsystem() {
-    comp = new Compressor(PneumaticsModuleType.CTREPCM); //Change to the other type later
-    intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Pneumatics_Constants.intakeSolChannel);
-    clampSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Pneumatics_Constants.clampSolChannel);
-    feetSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Pneumatics_Constants.feetSolChannel);
+    
+    hub = new PneumaticHub(6);
+    
+    comp = new Compressor(PneumaticsModuleType.REVPH); //Change to the other type later
+    intakeSolenoid = hub.makeSolenoid(Pneumatics_Constants.intakeSolChannel);
+    clampSolenoid = hub.makeSolenoid(Pneumatics_Constants.clampSolChannel);
+
+    comp.enableDigital();
   }
 
   @Override
@@ -30,7 +36,7 @@ public class Pneumatics_Subsystem extends SubsystemBase {
 
   }
 
-  public void enableCompressor() {
+  public void enableCompressor() { //get rid of this if it refuses to compress 
     comp.enableDigital();
   }
 

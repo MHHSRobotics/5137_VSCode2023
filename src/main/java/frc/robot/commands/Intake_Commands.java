@@ -12,11 +12,11 @@ public class Intake_Commands {
     }
 
     public Command runIntakeForward() {
-        return new InstantCommand(() -> {intake.runForward(); intake.extendIntake();});
+        return new InstantCommand(() -> {intake.extendIntake(); intake.runForward();});
     }
 
     public Command runIntakeReverse() {
-        return new InstantCommand(() -> {intake.runReverse(); intake.extendIntake();});
+        return new InstantCommand(() -> {intake.extendIntake(); intake.runReverse();});
     }
 
     public Command stopIntake() {
