@@ -62,7 +62,7 @@ public class Arm_Subsystem extends SubsystemBase {
 
         endCommand = (finished) -> {
             if (finished) {
-                stopArm();
+                stopArm(); 
             }
 
         };
@@ -78,13 +78,14 @@ public class Arm_Subsystem extends SubsystemBase {
         arcadeArm();   
 
         if (RobotState.isEnabled()){
-            if (rotateMotor.getOutputCurrent() > 1.5){
+            if (rotateMotor.getOutputCurrent() < 1.5){
                 rotateMotor.setIdleMode(IdleMode.kBrake);
             }
             else {
                 rotateMotor.setIdleMode(IdleMode.kCoast);
             }
-            if (extendMotor.getOutputCurrent() > 1.5){
+
+            if (extendMotor.getOutputCurrent() < 1.5){
                 extendMotor.setIdleMode(IdleMode.kBrake);
             }
             else {
@@ -92,10 +93,13 @@ public class Arm_Subsystem extends SubsystemBase {
     
             }
         }
-        else if (RobotState.isDisabled()) {
+        else {
             rotateMotor.setIdleMode(IdleMode.kCoast);
             extendMotor.setIdleMode(IdleMode.kCoast);
         }
+
+    
+
     }
 
     public void moveArm(double rotation, double extension) {
@@ -138,7 +142,7 @@ public class Arm_Subsystem extends SubsystemBase {
 
     private void armRotate() {
         currentRotation = rotateEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
-        if (Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1 || rotateOverride) {
+        if (Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1 /*|| rotateOverride*/) {
             rotateMotor.set((controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.armRotateSpeed);
             desiredRotation = currentRotation;
             rotateOverride = true;
@@ -151,14 +155,14 @@ public class Arm_Subsystem extends SubsystemBase {
             } else if ((currentRotation-desiredRotation) > rotateMargin) {
                 rotateMotor.set(-Arm_Constants.armRotateSpeed);
             } else {*/
-                rotateMotor.setIdleMode(IdleMode.kBrake);
+                rotateMotor.stopMotor();
             //}
         }
     }
 
     private void armExtend() {
         currentExtension = extendEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
-        if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1 || extendOverride) {
+        if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1 /*|| extendOverride*/) {
             extendMotor.set((-controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed);
             desiredExtension = currentExtension;
             extendOverride = true;
@@ -170,7 +174,7 @@ public class Arm_Subsystem extends SubsystemBase {
             } else if ((currentExtension - desiredExtension) > extendMargin) {
                 extendMotor.set(-Arm_Constants.armExtendSpeed);
             } else {*/
-                extendMotor.setIdleMode(IdleMode.kBrake);
+                extendMotor.stopMotor();
             //}
         }
     }

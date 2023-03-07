@@ -79,7 +79,7 @@ public class Drive_Subsystem extends SubsystemBase {
 
 
 
-  public Drive_Subsystem() {
+  public Drive_Subsystem(Joystick m_controller) {
 
     score_mobility_chargeEngage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_chargeEngage", new PathConstraints(4, 3));
     score_mobility_intake_score = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_intake_score", new PathConstraints(4, 3));
@@ -99,7 +99,7 @@ public class Drive_Subsystem extends SubsystemBase {
     rightDrive.setInverted(true);
 
     
-
+    this.controller = m_controller;
     
     //Gyros
     gyro = new AHRS(SPI.Port.kMXP);
