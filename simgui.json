@@ -1,5 +1,13 @@
 {
   "HALProvider": {
+    "Addressable LEDs": {
+      "0": {
+        "columns": 20
+      },
+      "window": {
+        "visible": true
+      }
+    },
     "Other Devices": {
       "Intake Solenoid[0]": {
         "header": {
