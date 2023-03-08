@@ -49,8 +49,13 @@ public class Arm_Subsystem extends SubsystemBase {
         rotateEncoder = rotateMotor.getEncoder();
         extendEncoder = extendMotor.getEncoder();
 
-        desiredRotation = Arm_Constants.armIntakeRotation;
-        desiredExtension = Arm_Constants.armIntakeExtension;
+        rotateEncoder.setPosition((Arm_Constants.armIntakeRotation /*/ (- 211.84 ))-42.7458)*/)) ;
+        extendEncoder.setPosition((Arm_Constants.armIntakeExtension /*/ (-2237.521)) +2)*/));
+
+        desiredRotation = -1.0;
+        desiredExtension = 1.0; 
+
+
 
         isFinished = () -> {
             if (((Math.abs(currentRotation-desiredRotation) < rotateMargin) && (Math.abs(currentExtension-desiredExtension) < rotateMargin)) || (rotateEncoder.getPosition() >= Arm_Constants.rotationSafe && RobotContainer.pneumatics_Subsystem.getIntakeEnabled())) {
@@ -76,6 +81,8 @@ public class Arm_Subsystem extends SubsystemBase {
     @Override
     public void periodic() {
         arcadeArm();   
+
+        System.out.println("Rotate " + getRotationPosition() + "\t\t\tExtend " + getExtensionPosition());
 
         if (RobotState.isEnabled()){
             if (rotateMotor.getOutputCurrent() < 1.5){
@@ -128,11 +135,11 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     public double getRotationPosition() {
-        return rotateEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
+        return (rotateEncoder.getPosition() / -211.84) -42.7458 /**Arm_Constants.rawToDegreeConversion */ ; //-48786.85844 -45.86875459; 
     }
 
     public double getExtensionPosition() {
-        return extendEncoder.getPosition()*Arm_Constants.rawToInchesConversion;
+        return (extendEncoder.getPosition() / -2237.521 +2)/*Arm_Constants.rawToInchesConversion*/;
     }
 
     private void arcadeArm() {
@@ -143,39 +150,39 @@ public class Arm_Subsystem extends SubsystemBase {
     private void armRotate() {
         currentRotation = rotateEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
         if (Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1 /*|| rotateOverride*/) {
-            rotateMotor.set((controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.armRotateSpeed);
+           // rotateMotor.set((-controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.armRotateSpeed);
             desiredRotation = currentRotation;
             rotateOverride = true;
         } else {
-            /*
+            
             if (Math.abs(currentRotation-desiredRotation) < rotateMargin) {
                 rotateMotor.set(0.0);
             } else if ((currentRotation-desiredRotation) < rotateMargin) {
-                rotateMotor.set(Arm_Constants.armRotateSpeed);
-            } else if ((currentRotation-desiredRotation) > rotateMargin) {
                 rotateMotor.set(-Arm_Constants.armRotateSpeed);
-            } else {*/
+            } else if ((currentRotation-desiredRotation) > rotateMargin) {
+                rotateMotor.set(Arm_Constants.armRotateSpeed);
+            } else {
                 rotateMotor.stopMotor();
-            //}
+            }
         }
     }
 
     private void armExtend() {
         currentExtension = extendEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
         if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1 /*|| extendOverride*/) {
-            extendMotor.set((-controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed);
+            //extendMotor.set((controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed);
             desiredExtension = currentExtension;
             extendOverride = true;
         } else {
-            /*if (Math.abs(currentExtension-desiredExtension) < extendMargin) {
+            if (Math.abs(currentExtension-desiredExtension) < extendMargin) {
                 extendMotor.stopMotor();
             } else if ((currentExtension-desiredExtension) < extendMargin) {
-                extendMotor.set(Arm_Constants.armExtendSpeed);
+                //extendMotor.set(-Arm_Constants.armExtendSpeed);
             } else if ((currentExtension - desiredExtension) > extendMargin) {
-                extendMotor.set(-Arm_Constants.armExtendSpeed);
-            } else {*/
+                //extendMotor.set(Arm_Constants.armExtendSpeed);
+            } else {
                 extendMotor.stopMotor();
-            //}
+            }
         }
     }
 }
