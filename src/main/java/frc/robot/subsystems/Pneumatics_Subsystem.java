@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -18,11 +19,11 @@ public class Pneumatics_Subsystem extends SubsystemBase {
   private static Solenoid feetSolenoid;
 
   public Pneumatics_Subsystem() {
-    comp = new Compressor(6, PneumaticsModuleType.REVPH); //Change to the other type later
+    comp = new Compressor(PneumaticsModuleType.REVPH); //Change to the other type later
     intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Pneumatics_Constants.intakeSolChannel);
     clampSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Pneumatics_Constants.clampSolChannel);
     feetSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Pneumatics_Constants.feetSolChannel);
-    
+    PneumaticHub p = new PneumaticHub(1);
     
     comp.enableDigital();
   }
