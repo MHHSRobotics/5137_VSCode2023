@@ -27,7 +27,7 @@ public class Pneumatics_Subsystem extends SubsystemBase {
     comp = new Compressor(PneumaticsModuleType.REVPH); //Change to the other type later
     intakeSolenoid = hub.makeSolenoid(Pneumatics_Constants.intakeSolChannel);
     clampSolenoid = hub.makeSolenoid(Pneumatics_Constants.clampSolChannel);
-
+    
     comp.enableDigital();
   }
 

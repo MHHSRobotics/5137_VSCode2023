@@ -84,28 +84,24 @@ public class RobotContainer {
 
   
   
-  public void configureBindings() {
+  public void configureBindings() { 
+    
+    //Right trigger intakes / extends -- retracts when released 
     new Trigger(createBooleanSupplier(driverController, XBOX_Constants.LTPort, XBOX_Constants.RTPort))
     .whileTrue(intake_Commands.runIntakeReverse())
     .onFalse(intake_Commands.stopIntake());
 
+    //Left trigger reverse extends / extends -- retracts when released 
     new Trigger(createBooleanSupplier(driverController, XBOX_Constants.RTPort, XBOX_Constants.LTPort))
     .whileTrue(intake_Commands.runIntakeForward())
     .onFalse(intake_Commands.stopIntake());
 
-    new JoystickButton(driverController, XBOX_Constants.Back)
-    .onTrue(pneumatics_Commands.enableCompressor());
+    //right trigger clamps
+    new Trigger(createBooleanSupplier(assistController, XBOX_Constants.RTPort, XBOX_Constants.LTPort))  //right trigger 
+    .whileTrue(clamp_Commands.clamp());
 
-    new JoystickButton(driverController, XBOX_Constants.Start)
-    .onTrue(pneumatics_Commands.disableCompressor());
-    
-    new Trigger(createBooleanSupplier(assistController, XBOX_Constants.RTPort, XBOX_Constants.LTPort))
-    .whileTrue(clamp_Commands.clamp())
-    .onFalse(clamp_Commands.clampRelease());
-
-    new Trigger(createBooleanSupplier(assistController, XBOX_Constants.LTPort, XBOX_Constants.RTPort))
-    .whileTrue(clamp_Commands.clamp())
-    .onFalse(clamp_Commands.clampRelease());
+    new Trigger(createBooleanSupplier(assistController, XBOX_Constants.LTPort, XBOX_Constants.RTPort))  //left trigger 
+    .whileTrue(clamp_Commands.clampRelease());
 
     new POVButton(assistController, XBOX_Constants.DownDPad)
     .onTrue(arm_Commands.moveToIntake());
@@ -113,18 +109,26 @@ public class RobotContainer {
     new POVButton(assistController, XBOX_Constants.UpDPad)
     .onTrue(arm_Commands.moveToHybrid());
 
-    /*
-    new JoystickButton(assistController, XBOX_Constants.XPort)
+    
+    new JoystickButton(assistController, XBOX_Constants.BButton)
     .onTrue(arm_Commands.moveToMiddleCube());
 
-    new JoystickButton(assistController, XBOX_Constants.CirclePort)
+    new JoystickButton(assistController, XBOX_Constants.AButton)
     .onTrue(arm_Commands.moveToMiddleCone());
 
-    new JoystickButton(assistController, XBOX_Constants.SquarePort)
+    new JoystickButton(assistController, XBOX_Constants.YButton)
     .onTrue(arm_Commands.moveToTopCube());
 
-    new JoystickButton(assistController, XBOX_Constants.TrianglePort)
-    .onTrue(arm_Commands.moveToTopCone());*/
+    new JoystickButton(assistController, XBOX_Constants.XButton)
+    .onTrue(arm_Commands.moveToTopCone());
+
+     //Start button force compresses (won't work if already at 120 PSI)
+     new JoystickButton(driverController, XBOX_Constants.Back)
+     .onTrue(pneumatics_Commands.enableCompressor());
+ 
+     //Back button force stops the compresses 
+     new JoystickButton(driverController, XBOX_Constants.Start) //usefull if working on some other component and don't want it running  
+     .onTrue(pneumatics_Commands.disableCompressor());
   }
 
   public void runAuto() {
