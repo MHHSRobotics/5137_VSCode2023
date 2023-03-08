@@ -21,7 +21,6 @@ public class LED_Subsystem extends SubsystemBase {
         ledSim = new AddressableLEDSim(null);
         ledBuffer = new AddressableLEDBuffer(LED_Constants.Length);
         led.setLength(ledBuffer.getLength());
-        singleColor(new Color(200, 0, 0));
         startLED();
     }
 
@@ -76,7 +75,6 @@ public class LED_Subsystem extends SubsystemBase {
                     Color currentColor = colors[x-1];
                     double dif = (amt*spacing-(i%(amt*spacing)))/(amt*spacing);
                     double posDif = (i%(amt*spacing))/(amt*spacing);
-                    System.out.println((255*mainColor.green)*posDif);
                     double red = (255*currentColor.red)*dif + (255*mainColor.red)*posDif;
                     double green = (255*currentColor.green)*dif + (255*mainColor.green)*posDif;
                     double blue = (255*currentColor.blue)*dif + (255*mainColor.blue)*posDif;
