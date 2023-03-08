@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -49,8 +50,11 @@ public class Arm_Subsystem extends SubsystemBase {
         rotateEncoder = rotateMotor.getEncoder();
         extendEncoder = extendMotor.getEncoder();
 
+
         rotateEncoder.setPosition((Arm_Constants.armIntakeRotation /*/ (- 211.84 ))-42.7458)*/)) ;
         extendEncoder.setPosition((Arm_Constants.armIntakeExtension /*/ (-2237.521)) +2)*/));
+
+        //rotateMotor.burnFlash();
 
         desiredRotation = -1.0;
         desiredExtension = 1.0; 
@@ -135,11 +139,11 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     public double getRotationPosition() {
-        return (rotateEncoder.getPosition() / -211.84) -42.7458 /**Arm_Constants.rawToDegreeConversion */ ; //-48786.85844 -45.86875459; 
+        return (((rotateEncoder.getPosition()) * 360) + (21176*2) + 2112); /*/ -211.84) -42.7458 /**Arm_Constants.rawToDegreeConversion */  //-48786.85844 -45.86875459; 
     }
 
     public double getExtensionPosition() {
-        return (extendEncoder.getPosition() / -2237.521 +2)/*Arm_Constants.rawToInchesConversion*/;
+        return (extendEncoder.getPosition()) * 360; /*/ -2237.521 +2)/*Arm_Constants.rawToInchesConversion*/
     }
 
     private void arcadeArm() {
