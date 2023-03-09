@@ -30,6 +30,7 @@ import frc.robot.constants.Controller_Constants.*;
  */
 public class RobotContainer {
   //Subsystems
+  public static LED_Subsystem led_Subsystem;
   public static Pneumatics_Subsystem pneumatics_Subsystem;
   public static Drive_Subsystem drive_Subsystem;
   public static Intake_Subystem intake_Subsystem;
@@ -67,6 +68,7 @@ public class RobotContainer {
   }
 
   public void configureSubsystems() {
+    led_Subsystem = new LED_Subsystem();
     pneumatics_Subsystem = new Pneumatics_Subsystem();
     drive_Subsystem = new Drive_Subsystem(driverController);
     intake_Subsystem = new Intake_Subystem();
@@ -141,6 +143,10 @@ public class RobotContainer {
 
   public void runAuto() {
     autoManager.runAuto(shuffleboard.getAuto());
+  }
+
+  public void pulsingRainbow() {
+    led_Subsystem.pulsingColors(150, 50, LED_Constants.Red, LED_Constants.Gold);
   }
 
   //required port is the joystick you are currecntly attempting to use 
