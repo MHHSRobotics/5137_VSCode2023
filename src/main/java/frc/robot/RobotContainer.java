@@ -147,7 +147,7 @@ public class RobotContainer {
     autoManager.runAuto(shuffleboard.getAuto());
   }
 
-  public void pulsingRainbow() {
+  public void rainbow() {
     LEDpulse += 1;
     LEDpulse %= 350;
     if (LEDpulse < 50) {
@@ -169,6 +169,10 @@ public class RobotContainer {
 
   public void pulsingCG() {
     led_Subsystem.pulsingColors(25, 25, LED_Constants.None, LED_Constants.Red, LED_Constants.Gold);
+  }
+
+  public void pulsingRainbow() {
+    led_Subsystem.pulsingColors(25, 25, LED_Constants.None, LED_Constants.Red, LED_Constants.Orange, LED_Constants.Yellow, LED_Constants.Green,LED_Constants.Cyan, LED_Constants.Blue, LED_Constants.Purple);
   }
 
   //required port is the joystick you are currecntly attempting to use 
