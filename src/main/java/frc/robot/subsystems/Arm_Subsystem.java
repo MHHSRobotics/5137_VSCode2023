@@ -21,8 +21,8 @@ import frc.robot.objects.*;
 import frc.robot.RobotContainer;
 
 public class Arm_Subsystem extends SubsystemBase {
-    private static CANSparkMax rotateMotor;
-    private static CANSparkMax extendMotor;
+    private static SparkMaxWrapper rotateMotor;
+    private static SparkMaxWrapper extendMotor;
 
     private static RelativeEncoder rotateEncoder; //Switch to relatives encoders once arm actually works
     private static RelativeEncoder extendEncoder;
@@ -44,21 +44,21 @@ public class Arm_Subsystem extends SubsystemBase {
     private final Joystick controller;
 
     public Arm_Subsystem(Joystick controller) {
-        rotateMotor = new CANSparkMax(Arm_Constants.armRotatePort, MotorType.kBrushless);
-        extendMotor = new CANSparkMax(Arm_Constants.armExtendPort, MotorType.kBrushless);
+        rotateMotor = new SparkMaxWrapper(Arm_Constants.armRotatePort, MotorType.kBrushless);
+        extendMotor = new SparkMaxWrapper(Arm_Constants.armExtendPort, MotorType.kBrushless);
 
         rotateEncoder = rotateMotor.getEncoder();
         extendEncoder = extendMotor.getEncoder();
 
 
-        //rotateEncoder.setPosition(0) /*/ (- 211.84 ))-42.7458)*/;
+        rotateEncoder.setPosition(0) /*/ (- 211.84 ))-42.7458)*/;
         extendEncoder.setPosition(0);
 
         //rotateMotor.burnFlash();
         //extendMotor.burnFlash();
 
-        desiredRotation = -1.0;
-        desiredExtension = 1.0; 
+        desiredRotation = Arm_Constants.topCubeRotation;
+        desiredExtension = Arm_Constants.topConeRotation; 
 
 
 
@@ -144,7 +144,7 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     public double getExtensionPosition() {
-        return (extendEncoder.getPosition()) ; /*/ -2237.521 +2)/*Arm_Constants.rawToInchesConversion*/
+        return (extendEncoder.getPosition() *-1) ; /*/ -2237.521 +2)/*Arm_Constants.rawToInchesConversion*/
     }
 
     private void arcadeArm() {
@@ -155,16 +155,16 @@ public class Arm_Subsystem extends SubsystemBase {
     private void armRotate() {
         currentRotation = rotateEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
         if (Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1 /*|| rotateOverride*/) {
-           // rotateMotor.set((-controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.armRotateSpeed);
+            rotateMotor.set((-controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.armRotateSpeed);
             desiredRotation = currentRotation;
             rotateOverride = true;
         } else {
             
             if (Math.abs(currentRotation-desiredRotation) < rotateMargin) {
                 rotateMotor.set(0.0);
-            } else if ((currentRotation-desiredRotation) < rotateMargin) {
+            } else if (Math.abs((currentRotation-desiredRotation)) < rotateMargin) {
                 rotateMotor.set(-Arm_Constants.armRotateSpeed);
-            } else if ((currentRotation-desiredRotation) > rotateMargin) {
+            } else if (Math.abs((currentRotation-desiredRotation)) > rotateMargin) {
                 rotateMotor.set(Arm_Constants.armRotateSpeed);
             } else {
                 rotateMotor.stopMotor();
@@ -175,16 +175,21 @@ public class Arm_Subsystem extends SubsystemBase {
     private void armExtend() {
         currentExtension = extendEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
         if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1 /*|| extendOverride*/) {
-            //extendMotor.set((controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed);
+            extendMotor.set((controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed);
             desiredExtension = currentExtension;
             extendOverride = true;
         } else {
-            if (Math.abs(currentExtension-desiredExtension) < extendMargin) {
+            if (currentExtension > 15 || (Math.abs(currentExtension-desiredExtension) < extendMargin)) {
                 extendMotor.stopMotor();
-            } else if ((currentExtension-desiredExtension) < extendMargin) {
-                //extendMotor.set(-Arm_Constants.armExtendSpeed);
+            } 
+            //if arm is within the range to get penalties 
+            /*else if (((Arm_Constants.frontExtensionSafe > currentRotation) || (currentRotation > Arm_Constants.backExtensionSafe)) && currentExtension > extendMargin) {
+                extendMotor.set(-Arm_Constants.armExtendSpeed);
+            }*/
+            else if ((currentExtension-desiredExtension) < extendMargin) { 
+                extendMotor.set(-Arm_Constants.armExtendSpeed);
             } else if ((currentExtension - desiredExtension) > extendMargin) {
-                //extendMotor.set(Arm_Constants.armExtendSpeed);
+                extendMotor.set(Arm_Constants.armExtendSpeed);
             } else {
                 extendMotor.stopMotor();
             }

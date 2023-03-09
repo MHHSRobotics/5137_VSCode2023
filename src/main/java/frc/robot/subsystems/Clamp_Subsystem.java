@@ -5,8 +5,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class Clamp_Subsystem extends SubsystemBase {
+  boolean clampStatus;
 
-  public Clamp_Subsystem() {}
+  public Clamp_Subsystem() {
+    clampStatus = false; //true = open, false = closed
+  }
 
   @Override
   public void periodic() {
@@ -15,9 +18,15 @@ public class Clamp_Subsystem extends SubsystemBase {
 
   public void clamp() {
     RobotContainer.pneumatics_Subsystem.enableClamp();
+    clampStatus = true;
   }
 
   public void release(){
     RobotContainer.pneumatics_Subsystem.disableClamp();
+    clampStatus = false;
+  }
+
+  public boolean clampStatus(){
+    return clampStatus;
   }
 }

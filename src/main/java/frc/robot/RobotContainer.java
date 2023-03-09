@@ -85,7 +85,7 @@ public class RobotContainer {
   
   
   public void configureBindings() { 
-    
+  //Driver Controller 
     //Right trigger intakes / extends -- retracts when released 
     new Trigger(createBooleanSupplier(driverController, XBOX_Constants.LTPort, XBOX_Constants.RTPort))
     .whileTrue(intake_Commands.runIntakeReverse())
@@ -96,39 +96,47 @@ public class RobotContainer {
     .whileTrue(intake_Commands.runIntakeForward())
     .onFalse(intake_Commands.stopIntake());
 
+    //Start button force compresses (won't work if already at 120 PSI)
+    new JoystickButton(driverController, XBOX_Constants.Back)
+    .onTrue(pneumatics_Commands.enableCompressor());
+
+    //Back button force stops the compresses 
+    new JoystickButton(driverController, XBOX_Constants.Start) //usefull if working on some other component and don't want it running  
+    .onTrue(pneumatics_Commands.disableCompressor());
+
+
+  //Assistant Controller
     //right trigger clamps
     new Trigger(createBooleanSupplier(assistController, XBOX_Constants.RTPort, XBOX_Constants.LTPort))  //right trigger 
     .whileTrue(clamp_Commands.clamp());
 
+    //left trigger releases clamp
     new Trigger(createBooleanSupplier(assistController, XBOX_Constants.LTPort, XBOX_Constants.RTPort))  //left trigger 
     .whileTrue(clamp_Commands.clampRelease());
 
+    //Down on Dpad moves to intake 
     new POVButton(assistController, XBOX_Constants.DownDPad)
     .onTrue(arm_Commands.moveToIntake());
 
+    //Up on Dpad moves to hypbrid location / the floor 
     new POVButton(assistController, XBOX_Constants.UpDPad)
     .onTrue(arm_Commands.moveToHybrid());
 
-    
+    //B -- midle cube 
     new JoystickButton(assistController, XBOX_Constants.BButton)
     .onTrue(arm_Commands.moveToMiddleCube());
 
+    //A -- middle cone 
     new JoystickButton(assistController, XBOX_Constants.AButton)
     .onTrue(arm_Commands.moveToMiddleCone());
 
+    //Y -- top cube
     new JoystickButton(assistController, XBOX_Constants.YButton)
     .onTrue(arm_Commands.moveToTopCube());
 
+    //X -- top cone 
     new JoystickButton(assistController, XBOX_Constants.XButton)
     .onTrue(arm_Commands.moveToTopCone());
-
-     //Start button force compresses (won't work if already at 120 PSI)
-     new JoystickButton(driverController, XBOX_Constants.Back)
-     .onTrue(pneumatics_Commands.enableCompressor());
- 
-     //Back button force stops the compresses 
-     new JoystickButton(driverController, XBOX_Constants.Start) //usefull if working on some other component and don't want it running  
-     .onTrue(pneumatics_Commands.disableCompressor());
   }
 
   public void runAuto() {
