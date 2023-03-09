@@ -50,7 +50,9 @@ public class RobotContainer {
   
   //Controllers
   public static Joystick driverController;
-  public static Joystick assistController; 
+  public static Joystick assistController;
+
+  public static int LEDpulse;
 
   public RobotContainer() {
     driverController = new Joystick(0);
@@ -146,7 +148,27 @@ public class RobotContainer {
   }
 
   public void pulsingRainbow() {
-    led_Subsystem.pulsingColors(150, 50, LED_Constants.Red, LED_Constants.Gold);
+    LEDpulse += 1;
+    LEDpulse %= 350;
+    if (LEDpulse < 50) {
+      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Red);
+    } else if (LEDpulse < 100) {
+      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Orange);
+    } else if (LEDpulse < 150) {
+      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Yellow);
+    } else if (LEDpulse < 200) {
+      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Green);
+    } else if (LEDpulse < 250) {
+      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Cyan);
+    } else if (LEDpulse < 300) {
+      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Blue);
+    } else {
+      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Purple);
+    }
+  }
+
+  public void pulsingCG() {
+    led_Subsystem.pulsingColors(25, 25, LED_Constants.None, LED_Constants.Red, LED_Constants.Gold);
   }
 
   //required port is the joystick you are currecntly attempting to use 

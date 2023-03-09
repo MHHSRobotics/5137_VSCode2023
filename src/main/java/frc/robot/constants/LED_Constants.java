@@ -11,6 +11,7 @@ public class LED_Constants {
     public static final Color Orange = new Color(200, 100, 0);
     public static final Color Yellow = new Color(200, 150, 0);
     public static final Color Green = new Color(0, 200, 0);
+    public static final Color Cyan = new Color(0, 200, 200);
     public static final Color Blue = new Color(0, 0, 200);
     public static final Color Purple = new Color(200, 0, 200);
 

@@ -2,7 +2,11 @@
   "HALProvider": {
     "Addressable LEDs": {
       "0": {
-        "columns": 75
+        "columns": 75,
+        "serpentine": true
+      },
+      "window": {
+        "visible": true
       }
     },
     "Other Devices": {
@@ -50,6 +54,9 @@
         "header": {
           "open": true
         }
+      },
+      "window": {
+        "visible": false
       }
     },
     "Solenoids": {
