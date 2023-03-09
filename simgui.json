@@ -88,6 +88,33 @@
       "/SmartDashboard/Manual Arm": "String Chooser",
       "/SmartDashboard/Mobility": "String Chooser",
       "/SmartDashboard/jMoneyDrive": "DifferentialDrive"
+    },
+    "windows": {
+      "/SmartDashboard/Auto Choice": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Auto Position": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Engage": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Mobility": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/jMoneyDrive": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {

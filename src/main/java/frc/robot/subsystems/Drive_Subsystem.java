@@ -13,13 +13,14 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -29,6 +30,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -127,6 +129,7 @@ public class Drive_Subsystem extends SubsystemBase {
     balanceController = new PIDController(Drive_Constants.bKP, Drive_Constants.bKI, Drive_Constants.bKD);
     voltPID = new SimpleMotorFeedforward(Drive_Constants.dKS, Drive_Constants.dKV, Drive_Constants.dKA);
 
+    //isFinished for balance command 
     balanceIsFinished = () -> {
       if(balanceController.calculate(gyro.getPitch(), 0) < 0.05 && Math.abs(gyro.getPitch()) < 2)
     {
@@ -174,9 +177,29 @@ public class Drive_Subsystem extends SubsystemBase {
     addVisionMeasurement(Vision_Subsystem.ar1CamPoseEstimator);
     addVisionMeasurement(Vision_Subsystem.lifeCamPoseEstimator);
 
-    //For Testing
-    //System.out.println(getPose());
-    //System.out.println("Pitch (Vertical)" + gyro.getPitch());
+    //Used to coast when the robot is moving / disabled -- breaks when stationary 
+    if (RobotState.isEnabled()){
+      //checks that we aren't using power and that speed is low so it's not an abrupt stops 
+      if (leftBackTalon.getMotorOutputVoltage() < 3 & (leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10 < 0.1)){
+          leftFrontTalon.setNeutralMode(NeutralMode.Brake);
+          leftBackTalon.setNeutralMode(NeutralMode.Brake);
+          rightBackTalon.setNeutralMode(NeutralMode.Brake);
+          rightFrontTalon.setNeutralMode(NeutralMode.Brake);
+      }
+      else {
+        leftFrontTalon.setNeutralMode(NeutralMode.Coast);
+        leftBackTalon.setNeutralMode(NeutralMode.Coast);
+        rightBackTalon.setNeutralMode(NeutralMode.Coast);
+        rightFrontTalon.setNeutralMode(NeutralMode.Coast);      
+      }
+    }
+    else {
+        leftFrontTalon.setNeutralMode(NeutralMode.Coast);
+        leftBackTalon.setNeutralMode(NeutralMode.Coast);
+        rightBackTalon.setNeutralMode(NeutralMode.Coast);
+        rightFrontTalon.setNeutralMode(NeutralMode.Coast);  
+    }
+  
   }
 
   //Returns wheel speeds of motors in meters per second

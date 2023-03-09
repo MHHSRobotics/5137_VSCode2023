@@ -32,8 +32,8 @@ public final class Arm_Constants {
     public final static double hybridRotation = 250.755 + newRotationOrigin;
     public final static double hybridExtension = 15.099;
 
-    public final static double rotationSafe = -20 + newRotationOrigin; //the minimum degrees at which rotation is safe 
-    public final static double frontExtensionSafe = 0;
-    public final static double backExtensionSafe = 0; 
+    public final static double rotationIntakeSafe = -20 + newRotationOrigin; //the minimum degrees at which rotation is safe 
+    public final static double frontRotationSafe = 0;
+    public final static double backRotationSafe = 250.755 + newRotationOrigin; 
 
 }

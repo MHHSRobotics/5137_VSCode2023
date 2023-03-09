@@ -63,7 +63,7 @@ public class Arm_Subsystem extends SubsystemBase {
 
 
         isFinished = () -> {
-            if (((Math.abs(currentRotation-desiredRotation) < rotateMargin) && (Math.abs(currentExtension-desiredExtension) < rotateMargin)) || (rotateEncoder.getPosition() >= Arm_Constants.rotationSafe && RobotContainer.pneumatics_Subsystem.getIntakeEnabled())) {
+            if (((Math.abs(currentRotation-desiredRotation) < rotateMargin) && (Math.abs(currentExtension-desiredExtension) < rotateMargin)) || (rotateEncoder.getPosition() >= Arm_Constants.rotationIntakeSafe && RobotContainer.pneumatics_Subsystem.getIntakeEnabled())) {
                 return true;
             } else {
                 return false;
