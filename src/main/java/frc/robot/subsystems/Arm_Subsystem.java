@@ -51,10 +51,11 @@ public class Arm_Subsystem extends SubsystemBase {
         extendEncoder = extendMotor.getEncoder();
 
 
-        rotateEncoder.setPosition((Arm_Constants.armIntakeRotation /*/ (- 211.84 ))-42.7458)*/)) ;
-        extendEncoder.setPosition((Arm_Constants.armIntakeExtension /*/ (-2237.521)) +2)*/));
+        //rotateEncoder.setPosition(0) /*/ (- 211.84 ))-42.7458)*/;
+        extendEncoder.setPosition(0);
 
         //rotateMotor.burnFlash();
+        //extendMotor.burnFlash();
 
         desiredRotation = -1.0;
         desiredExtension = 1.0; 
@@ -139,11 +140,11 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     public double getRotationPosition() {
-        return (((rotateEncoder.getPosition()) * 360) + (21176*2) + 2112); /*/ -211.84) -42.7458 /**Arm_Constants.rawToDegreeConversion */  //-48786.85844 -45.86875459; 
+        return (rotateEncoder.getPosition()) ; /*/ -211.84) -42.7458 /**Arm_Constants.rawToDegreeConversion */  //-48786.85844 -45.86875459; 
     }
 
     public double getExtensionPosition() {
-        return (extendEncoder.getPosition()) * 360; /*/ -2237.521 +2)/*Arm_Constants.rawToInchesConversion*/
+        return (extendEncoder.getPosition()) ; /*/ -2237.521 +2)/*Arm_Constants.rawToInchesConversion*/
     }
 
     private void arcadeArm() {
@@ -153,7 +154,6 @@ public class Arm_Subsystem extends SubsystemBase {
 
     private void armRotate() {
         currentRotation = rotateEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
-        System.out.println("arm encoder (deg)" + currentRotation);
         if (Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1 /*|| rotateOverride*/) {
            // rotateMotor.set((-controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.armRotateSpeed);
             desiredRotation = currentRotation;

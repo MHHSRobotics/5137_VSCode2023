@@ -12,8 +12,8 @@ public final class Arm_Constants {
     public final static double manualExtendSpeed = 0.1;
     public final static double manualRotateSpeed = 0.1;
     
-    public final static double armIntakeRotation = -59;
-    public final static double armIntakeExtension = 8.75;
+    public final static double armIntakeRotation = 0; //-59;
+    public final static double armIntakeExtension = 0; //8.75;
 
     public final static double topConeRotation = 173.766;
     public final static double topConeExtension = 17.22;
