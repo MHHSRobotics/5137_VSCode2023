@@ -172,7 +172,7 @@ public class RobotContainer {
   }
 
   public void pulsingRainbow() {
-    led_Subsystem.pulsingColors(20, 25, LED_Constants.None, LED_Constants.Purple, LED_Constants.Blue, LED_Constants.Cyan, LED_Constants.Green, LED_Constants.Yellow, LED_Constants.Orange, LED_Constants.Red);
+    led_Subsystem.pulsingColors(150/7, 25, LED_Constants.None, LED_Constants.Purple, LED_Constants.Blue, LED_Constants.Cyan, LED_Constants.Green, LED_Constants.Yellow, LED_Constants.Orange, LED_Constants.Red);
   }
 
   //required port is the joystick you are currecntly attempting to use 
