@@ -29,11 +29,7 @@ public class Clamp_Commands {
 
   //if clamp is currently closed it will open and vice versa 
   public Command clampToggle(){
-    if (clamp.clampStatus()){
-      return new InstantCommand(() -> clamp.release());
-    }
-    
-    return new InstantCommand(() -> clamp.clamp());
+    return new InstantCommand(() -> clamp.toggle());
   }
-
+  
 }

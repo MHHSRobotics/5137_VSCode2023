@@ -26,7 +26,11 @@ public class Clamp_Subsystem extends SubsystemBase {
     clampStatus = false;
   }
 
-  public boolean clampStatus(){
-    return clampStatus;
+  public void toggle(){
+    RobotContainer.pneumatics_Subsystem.toggleClamp();
   }
+
+  /*public boolean clampStatus(){
+    return clampStatus;
+  }*/
 }

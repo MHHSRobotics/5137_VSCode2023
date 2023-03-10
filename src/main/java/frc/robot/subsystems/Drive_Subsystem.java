@@ -79,8 +79,8 @@ public class Drive_Subsystem extends SubsystemBase {
   public ArrayList<PathPlannerTrajectory> Goal_Path;
 
   //rate limiter
-  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(1.2);
-  private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(4);
+  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(1); //1.2
+  private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(3); //4
 
 
 
@@ -120,7 +120,7 @@ public class Drive_Subsystem extends SubsystemBase {
 
     //DriveTrain
     jMoneyDrive = new DifferentialDrive(leftDrive, rightDrive);
-    jMoneyDrive.setMaxOutput(.7);
+    jMoneyDrive.setMaxOutput(0.9);
     
 
     //PID

@@ -108,6 +108,9 @@ public class RobotContainer {
     new JoystickButton(driverController, XBOX_Constants.Start) //usefull if working on some other component and don't want it running  
     .onTrue(pneumatics_Commands.disableCompressor());
 
+    /*new JoystickButton(driverController, XBOX_Constants.AButton)
+    .onTrue(clamp_Commands.clampToggle());*/
+
 
   //Assistant Controller
     //right trigger clamps
@@ -118,12 +121,12 @@ public class RobotContainer {
     new Trigger(createBooleanSupplier(assistController, XBOX_Constants.LTPort, XBOX_Constants.RTPort))  //left trigger 
     .whileTrue(clamp_Commands.clampRelease());
 
-    //Down on Dpad moves to intake 
-    new POVButton(assistController, XBOX_Constants.DownDPad)
+    //Up on Dpad moves to intake 
+    new POVButton(assistController, XBOX_Constants.UpDPad)
     .onTrue(arm_Commands.moveToIntake());
 
-    //Up on Dpad moves to hypbrid location / the floor 
-    new POVButton(assistController, XBOX_Constants.UpDPad)
+    //Down on Dpad moves to hypbrid location / the floor 
+    new POVButton(assistController, XBOX_Constants.DownDPad)
     .onTrue(arm_Commands.moveToHybrid());
 
     //B -- midle cube 

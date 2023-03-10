@@ -38,8 +38,8 @@ public class Arm_Subsystem extends SubsystemBase {
     public BooleanSupplier isFinished;
     public Consumer<Boolean> endCommand;
 
-    private static final Double rotateMargin = Arm_Constants.armRotateSpeed*1.5;
-    private static final Double extendMargin = Arm_Constants.armExtendSpeed*1.5;
+    //private static final Double rotateMargin = Arm_Constants.armRotateSpeed*1.5;
+    //private static final Double extendMargin = Arm_Constants.armExtendSpeed*1.5;
 
     private final Joystick controller;
 
@@ -57,13 +57,13 @@ public class Arm_Subsystem extends SubsystemBase {
         //rotateMotor.burnFlash();
         //extendMotor.burnFlash();
 
-        desiredRotation = Arm_Constants.topCubeRotation;
-        desiredExtension = Arm_Constants.topConeRotation; 
+        desiredRotation = 0.0;
+        desiredExtension = 0.0; 
 
 
 
         isFinished = () -> {
-            if (((Math.abs(currentRotation-desiredRotation) < rotateMargin) && (Math.abs(currentExtension-desiredExtension) < rotateMargin)) || (rotateEncoder.getPosition() >= Arm_Constants.rotationIntakeSafe && RobotContainer.pneumatics_Subsystem.getIntakeEnabled())) {
+            if (((Math.abs(currentRotation-desiredRotation) < Arm_Constants.rotateMarginOfError) && (Math.abs(currentExtension-desiredExtension) < Arm_Constants.extendeMarginOfError)) || (rotateEncoder.getPosition() >= Arm_Constants.rotationIntakeSafe && RobotContainer.pneumatics_Subsystem.getIntakeEnabled())) {
                 return true;
             } else {
                 return false;
@@ -85,19 +85,23 @@ public class Arm_Subsystem extends SubsystemBase {
  
     @Override
     public void periodic() {
+        currentRotation = rotateEncoder.getPosition();
+        currentExtension = -extendEncoder.getPosition();
+        System.out.println("Rotate " + getRotationPosition() + "\t\t\tDesired" + desiredRotation + "\t\t\tExtention " + getExtensionPosition() + "\t\t\tDesired " + desiredExtension);//("Extent " + getExtensionPosition() + "\t\t\tDesired " + desiredExtension + "\t\t\tDiff " + Math.abs(desiredExtension - currentExtension));//"\t\t\tExtend " + getExtensionPosition());
+
         arcadeArm();   
 
-        //System.out.println("Rotate " + getRotationPosition() + "\t\t\tExtend " + getExtensionPosition());
-
         if (RobotState.isEnabled()){
-            if (rotateMotor.getOutputCurrent() < 1.5){
+            if (Math.abs(currentRotation-desiredRotation) < Arm_Constants.rotateMarginOfError){
                 rotateMotor.setIdleMode(IdleMode.kBrake);
+                //System.out.println("it's breaking\t\t\t" + Math.abs(currentRotation-desiredRotation));
             }
             else {
                 rotateMotor.setIdleMode(IdleMode.kCoast);
+                //System.out.println("it's coasting\t\t\t" + Math.abs(currentRotation-desiredRotation));
             }
 
-            if (extendMotor.getOutputCurrent() < 1.5){
+            if (extendMotor.getOutputCurrent() < 3.5){
                 extendMotor.setIdleMode(IdleMode.kBrake);
             }
             else {
@@ -117,6 +121,7 @@ public class Arm_Subsystem extends SubsystemBase {
     public void moveArm(double rotation, double extension) {
         desiredRotation = rotation;
         desiredExtension = extension;
+        System.out.println("move arm");
     }
 
     public void resetOverride() {
@@ -127,6 +132,7 @@ public class Arm_Subsystem extends SubsystemBase {
     public void stopArm() {
         desiredRotation = currentRotation;
         desiredExtension = currentExtension;
+        System.out.println("stom arm");
         rotateMotor.stopMotor();
         rotateMotor.stopMotor();
     }
@@ -144,7 +150,7 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     public double getExtensionPosition() {
-        return (extendEncoder.getPosition() *-1) ; /*/ -2237.521 +2)/*Arm_Constants.rawToInchesConversion*/
+        return (extendEncoder.getPosition()) ; /*/ -2237.521 +2)/*Arm_Constants.rawToInchesConversion*/
     }
 
     private void arcadeArm() {
@@ -153,19 +159,18 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     private void armRotate() {
-        currentRotation = rotateEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
         //System.out.println("arm encoder (deg)" + currentRotation);
         if (Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1 /*|| rotateOverride*/) {
             rotateMotor.set((-controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.armRotateSpeed);
             desiredRotation = currentRotation;
             rotateOverride = true;
         } else {
-            
-            if (Math.abs(currentRotation-desiredRotation) < rotateMargin) {
-                rotateMotor.set(0.0);
-            } else if (Math.abs((currentRotation-desiredRotation)) < rotateMargin) {
+             
+            if (Math.abs(desiredRotation - currentRotation) < Arm_Constants.rotateMarginOfError) {
+                rotateMotor.stopMotor();
+            } else if ((desiredRotation - currentRotation) < 0) {
                 rotateMotor.set(-Arm_Constants.armRotateSpeed);
-            } else if (Math.abs((currentRotation-desiredRotation)) > rotateMargin) {
+            } else if ((desiredRotation - currentRotation) > 0) {
                 rotateMotor.set(Arm_Constants.armRotateSpeed);
             } else {
                 rotateMotor.stopMotor();
@@ -174,23 +179,37 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     private void armExtend() {
-        currentExtension = extendEncoder.getPosition()*Arm_Constants.rawToDegreeConversion;
         if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1 /*|| extendOverride*/) {
             extendMotor.set((controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed);
             desiredExtension = currentExtension;
+            //System.out.println("arm extend");
             extendOverride = true;
         } else {
-            if (currentExtension > 15 || (Math.abs(currentExtension-desiredExtension) < extendMargin)) {
+            if (Math.abs(currentExtension) > Arm_Constants.armLimit) {
                 extendMotor.stopMotor();
+                //System.out.println("limit");
             } 
+            if (Math.abs(desiredExtension - currentExtension) < Arm_Constants.armIntakeExtension){
+                extendMotor.stopMotor();
+                //System.out.println("destination");
+            }
             //if arm is within the range to get penalties 
-            /*else if (((Arm_Constants.frontExtensionSafe > currentRotation) || (currentRotation > Arm_Constants.backExtensionSafe)) && currentExtension > extendMargin) {
+            /*else if (((Arm_Constants.frontExtensionSafe > currentRotation) || (currentRotation > Arm_Constants.backExtensionSafe)) && currentExtension > Arm_Constants.extendeMarginOfError) {
                 extendMotor.set(-Arm_Constants.armExtendSpeed);
+                System.out.println("its in range");
             }*/
-            else if ((currentExtension-desiredExtension) < extendMargin) { 
+            else if ((desiredExtension - currentExtension) < 0) { 
+                extendMotor.set(Arm_Constants.armExtendSpeed); 
+                if (Math.abs(currentExtension) > Arm_Constants.armLimit){
+                    extendMotor.stopMotor();
+                    //System.out.println("Back up killl");
+                }
+            } else if ((desiredExtension - currentExtension) > 0) {
                 extendMotor.set(-Arm_Constants.armExtendSpeed);
-            } else if ((currentExtension - desiredExtension) > extendMargin) {
-                extendMotor.set(Arm_Constants.armExtendSpeed);
+                if (Math.abs(currentExtension) > Arm_Constants.armLimit){
+                    extendMotor.stopMotor();
+                    //System.out.println("Back up kill");
+                }
             } else {
                 extendMotor.stopMotor();
             }

@@ -60,6 +60,10 @@ public class Pneumatics_Subsystem extends SubsystemBase {
     clampSolenoid.set(false);
   }
 
+  public void toggleClamp(){
+    clampSolenoid.toggle();
+  }
+
   public void enableFeet() {
     feetSolenoid.set(true);
   }
