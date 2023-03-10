@@ -115,7 +115,7 @@ public class Arm_Subsystem extends SubsystemBase {
         }
 
     
-
+        armExtendDirection();
     }
 
     public void moveArm(double rotation, double extension) {
@@ -185,63 +185,49 @@ public class Arm_Subsystem extends SubsystemBase {
             //System.out.println("arm extend");
             extendOverride = true;
         } else {
-            if (Math.abs(currentExtension) > Arm_Constants.armLimit) {
-                extendMotor.stopMotor();
-                //System.out.println("limit");
+            if (Math.abs(currentExtension) > Arm_Constants.armLimit || (!armExtendDirection() && currentExtension <= 0.1)) 
+            {
+                //Stops motor if extended too far or if trying to retract in too far
+                extendMotor.stopMotor(); 
             }
-
-            if(!armExtendDirection() && currentExtension < Arm_Constants.armRetractLimit){
-                extendMotor.stopMotor();
-            }
-            else if (armRotateDirection() && currentRotation < 153){
+            else if(currentRotation > Arm_Constants.frontExtensionSafe || currentRotation < Arm_Constants.backExtensionSafe) 
+            {
+                //Retracts extension when in danger zone for penalties
                 extendMotor.set(Arm_Constants.armExtendSpeed);
             }
-            else if (!armRotateDirection() && currentRotation > 153){
-                extendMotor.set(Arm_Constants.armExtendSpeed);
-            } 
-
-            if (Math.abs(desiredExtension - currentExtension) < Arm_Constants.armIntakeExtension){
-                extendMotor.stopMotor();
-                //System.out.println("destination");
+            else if ((desiredExtension - currentExtension) > 0) //Extends out if needed
+            {
+                extendMotor.set(-Arm_Constants.armExtendSpeed);
             }
-            //if arm is within the range to get penalties 
-            /*else if (((Arm_Constants.frontExtensionSafe > currentRotation) || (currentRotation > Arm_Constants.backExtensionSafe)) && currentExtension > Arm_Constants.extendeMarginOfError) {
-                extendMotor.set(-Arm_Constants.armExtendSpeed);
-                System.out.println("its in range");
-            }*/
-            else if ((desiredExtension - currentExtension) < 0) { 
-                extendMotor.set(Arm_Constants.armExtendSpeed); 
-                if (Math.abs(currentExtension) > Arm_Constants.armLimit){
-                    extendMotor.stopMotor();
-                    //System.out.println("Back up killl");
-                }
-            } else if ((desiredExtension - currentExtension) > 0) {
-                extendMotor.set(-Arm_Constants.armExtendSpeed);
-                if (Math.abs(currentExtension) > Arm_Constants.armLimit){
-                    extendMotor.stopMotor();
-                    //System.out.println("Back up kill");
-                }
-            } else {
+            else if ((desiredExtension - currentExtension) < 0) //Retracts if needed
+            { 
+                extendMotor.set(Arm_Constants.armExtendSpeed);  
+              
+            }  
+            else 
+            {
                 extendMotor.stopMotor();
             }
         }
     }
 
     private boolean armExtendDirection(){
-        if(extendMotor.get()<0){
-            return true; //arm out
+        if(extendMotor.get() < 0){
+            System.out.println("armExtendDirection" + true); 
+            return true;//If the intake is extending(negative is extending)
+          
         }
         else{
-            return false; //arm in
+            return false; //If the intake is retracting
         }
     }
 
     private boolean armRotateDirection(){
-        if(rotateMotor.get()>0){
-            return true;
+        if(rotateMotor.get() > 0){
+            return true; //If the arm is rotating towards scoring
         }
         else{
-            return false;
+            return false; //If the arm is rotating away from scoring
         }
     }
 }
