@@ -56,7 +56,7 @@ public class Drive_Subsystem extends SubsystemBase {
   public static DifferentialDrive jMoneyDrive;
 
   //Position Estimator
-  private DifferentialDrivePoseEstimator poseEstimator = new DifferentialDrivePoseEstimator(Drive_Constants.trackWidth, new Rotation2d(0), Drive_Constants.initialLeftDistance, Drive_Constants.initialRightDistance, new Pose2d());
+  public DifferentialDrivePoseEstimator poseEstimator = new DifferentialDrivePoseEstimator(Drive_Constants.trackWidth, new Rotation2d(0), Drive_Constants.initialLeftDistance, Drive_Constants.initialRightDistance, new Pose2d());
 
   //Controller
   Joystick controller;
@@ -269,11 +269,12 @@ public class Drive_Subsystem extends SubsystemBase {
   {
     double forwardSpeed = distanceController.calculate(PhotonUtils.getDistanceToPose(getPose(), targetPose), 0); //Calculates forward speed using PID
     double rotateSpeed =  -rotationController.calculate(PhotonUtils.getYawToPose(getPose(), targetPose).getDegrees(), 0.0);
-    jMoneyDrive.curvatureDrive(forwardSpeed, rotateSpeed, false);; //Sets the drivetraub to drive forward/backwards using PID speed
+    jMoneyDrive.curvatureDrive(forwardSpeed, rotateSpeed, true); //Sets the drivetraub to drive forward/backwards using PID speed
     return forwardSpeed;
   }
 
   //Rotate towards a given pose based on yaw using a PID
+  //not being used currently, hasn't been made a command yet 
   public double autoRotate(Pose2d targetPose)
   {
     double rotateSpeed =  -rotationController.calculate(PhotonUtils.getYawToPose(getPose(), targetPose).getDegrees(), 0.0);

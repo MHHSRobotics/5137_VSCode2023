@@ -75,9 +75,9 @@ public class Vision_Subsystem extends SubsystemBase {
 
     //Sets targets based on position on the field
     switch (targetName) {
-      case ("right"): {column = 0;}
+      case ("right"): {column = 2;}
       case ("middle"): {column = 1;}
-      case ("left"): {column = 2;}
+      case ("left"): {column = 0;}
       default: {column = 1;}
     }
 

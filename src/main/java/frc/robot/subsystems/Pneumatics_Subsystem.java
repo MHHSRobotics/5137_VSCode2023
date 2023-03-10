@@ -36,6 +36,7 @@ public class Pneumatics_Subsystem extends SubsystemBase {
 
   }
 
+  //These don't work atm
   public void enableCompressor() { //get rid of this if it refuses to compress 
     comp.enableDigital();
   }

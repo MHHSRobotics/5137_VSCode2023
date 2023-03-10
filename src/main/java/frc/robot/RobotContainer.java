@@ -47,6 +47,7 @@ public class RobotContainer {
   public static Arm_Commands arm_Commands;
   public static Clamp_Commands clamp_Commands;
   public static Pneumatics_Commands pneumatics_Commands;
+  public static Drive_Commands drive_Commands;
   
   //Controllers
   public static Joystick driverController;
@@ -84,6 +85,7 @@ public class RobotContainer {
     arm_Commands = new Arm_Commands(arm_Subsystem);
     clamp_Commands = new Clamp_Commands(clamp_Subsystem);
     pneumatics_Commands = new Pneumatics_Commands(pneumatics_Subsystem);
+    drive_Commands = new Drive_Commands(drive_Subsystem);
   }
 
   
@@ -106,7 +108,19 @@ public class RobotContainer {
 
     //Back button force stops the compresses 
     new JoystickButton(driverController, XBOX_Constants.Start) //usefull if working on some other component and don't want it running  
-    .onTrue(pneumatics_Commands.disableCompressor());
+    .onTrue(pneumatics_Commands.disableCompressor()); 
+
+    //Middle down dpad aligns to april tag
+    new POVButton(driverController, XBOX_Constants.DownDPad)
+    .onTrue(drive_Commands.tagDrive(vision_Subsystem.getNearestAlign("middle", drive_Subsystem.poseEstimator.getEstimatedPosition())));
+
+    //Left dpad aligns to cone left of april tag (from drivers pov not cameras)
+    new POVButton(driverController, XBOX_Constants.LeftDPad)
+    .onTrue(drive_Commands.tagDrive(vision_Subsystem.getNearestAlign("left", drive_Subsystem.poseEstimator.getEstimatedPosition())));
+
+    //Right dpad aligns to cone right of april tag (from drivers pov not camera)
+    new POVButton(driverController, XBOX_Constants.RightDPad)
+    .onTrue(drive_Commands.tagDrive(vision_Subsystem.getNearestAlign("right", drive_Subsystem.poseEstimator.getEstimatedPosition())));
 
     /*new JoystickButton(driverController, XBOX_Constants.AButton)
     .onTrue(clamp_Commands.clampToggle());*/
