@@ -165,14 +165,16 @@ public class Arm_Subsystem extends SubsystemBase {
             desiredRotation = currentRotation;
             rotateOverride = true;
         } else {
-             
             if (Math.abs(desiredRotation - currentRotation) < Arm_Constants.rotateMarginOfError) {
                 rotateMotor.stopMotor();
-            } else if ((desiredRotation - currentRotation) < 0) {
+            } 
+            else if ((desiredRotation - currentRotation) < 0) {
                 rotateMotor.set(-Arm_Constants.armRotateSpeed);
-            } else if ((desiredRotation - currentRotation) > 0) {
+            } 
+            else if ((desiredRotation - currentRotation) > 0) {
                 rotateMotor.set(Arm_Constants.armRotateSpeed);
-            } else {
+            } 
+            else {
                 rotateMotor.stopMotor();
             }
         }
@@ -185,27 +187,30 @@ public class Arm_Subsystem extends SubsystemBase {
             //System.out.println("arm extend");
             extendOverride = true;
         } else {
-            if (Math.abs(currentExtension) > Arm_Constants.armLimit || (!armExtendDirection() && currentExtension <= 0.1)) 
-            {
+            if (Math.abs(currentExtension) > Arm_Constants.armLimit || (!armExtendDirection() && currentExtension <= 0.1)) {
                 //Stops motor if extended too far or if trying to retract in too far
                 extendMotor.stopMotor(); 
             }
-            else if(currentRotation > Arm_Constants.frontExtensionSafe || currentRotation < Arm_Constants.backExtensionSafe) 
-            {
+            else if(currentRotation > Arm_Constants.frontExtensionSafe || currentRotation < Arm_Constants.backExtensionSafe) {
                 //Retracts extension when in danger zone for penalties
                 extendMotor.set(Arm_Constants.armExtendSpeed);
+                if ( currentExtension > Arm_Constants.armLimit){ //please don't delete these, sometimes the limit above doesn't always catch it
+                    extendMotor.stopMotor(); 
+                }
             }
-            else if ((desiredExtension - currentExtension) > 0) //Extends out if needed
-            {
+            else if ((desiredExtension - currentExtension) > 0){ //Extends out if needed
                 extendMotor.set(-Arm_Constants.armExtendSpeed);
+                if ( currentExtension > Arm_Constants.armLimit){ //please don't delete these, sometimes the limit above doesn't always catch it
+                    extendMotor.stopMotor(); 
+                }
             }
-            else if ((desiredExtension - currentExtension) < 0) //Retracts if needed
-            { 
+            else if ((desiredExtension - currentExtension) < 0){ //Retracts if needed
                 extendMotor.set(Arm_Constants.armExtendSpeed);  
-              
+                if ( currentExtension > Arm_Constants.armLimit){ //please don't delete these, sometimes the limit above doesn't always catch it
+                    extendMotor.stopMotor(); 
+                }
             }  
-            else 
-            {
+            else {
                 extendMotor.stopMotor();
             }
         }
