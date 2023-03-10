@@ -17,6 +17,8 @@ public class LED_Subsystem extends SubsystemBase {
     private static int speed;
     private static double amt;
 
+    //Middle led is 64
+
     public LED_Subsystem() {
         led = new AddressableLED(LED_Constants.Port);
         ledSim = new AddressableLEDSim(null);
@@ -82,6 +84,30 @@ public class LED_Subsystem extends SubsystemBase {
                     Color finalColor = new Color((int)red, (int)green, (int)blue);
                     ledBuffer.setLED((i+(pulse/50))%ledBuffer.getLength(), finalColor);
                 }
+            }
+        }
+        led.setData(ledBuffer);
+    }
+
+    public void waterfall(double spacing, int kSpeed, Color mainColor, Color secondColor) {
+        speed = kSpeed;
+        for (var i = 0; i < ledBuffer.getLength(); i++) {
+            if (i < 64) {
+                double dif = ((i%spacing))/spacing;
+                double posDif = ((spacing-i)%spacing)/spacing;
+                double red = (255*secondColor.red)*dif + (255*mainColor.red)*posDif;
+                double green = (255*secondColor.green)*dif + (255*mainColor.green)*posDif;
+                double blue = (255*secondColor.blue)*dif + (255*mainColor.blue)*posDif;
+                Color finalColor = new Color((int)red, (int)green, (int)blue);
+                ledBuffer.setLED((i+(pulse/50))%ledBuffer.getLength(), finalColor);
+            } else if (i > 63) {
+                double dif = ((i%spacing))/spacing;
+                double posDif = ((spacing-i)%spacing)/spacing;
+                double red = (255*secondColor.red)*dif + (255*mainColor.red)*posDif;
+                double green = (255*secondColor.green)*dif + (255*mainColor.green)*posDif;
+                double blue = (255*secondColor.blue)*dif + (255*mainColor.blue)*posDif;
+                Color finalColor = new Color((int)red, (int)green, (int)blue);
+                ledBuffer.setLED((i-(pulse/50))%ledBuffer.getLength(), finalColor);
             }
         }
         led.setData(ledBuffer);

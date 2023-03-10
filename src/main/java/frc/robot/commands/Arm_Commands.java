@@ -58,6 +58,7 @@ public class Arm_Commands {
     }
 
     public Command moveToTopCone() {
+        System.out.println("move arm -- command");
         return new FunctionalCommand(
             () -> {arm.resetOverride();},
             () -> {arm.moveArm(Arm_Constants.topConeRotation, Arm_Constants.topConeExtension);},

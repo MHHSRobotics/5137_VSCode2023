@@ -63,7 +63,7 @@ public class Arm_Subsystem extends SubsystemBase {
 
 
         isFinished = () -> {
-            if (((Math.abs(currentRotation-desiredRotation) < Arm_Constants.rotateMarginOfError) && (Math.abs(currentExtension-desiredExtension) < Arm_Constants.extendeMarginOfError)) || (rotateEncoder.getPosition() >= Arm_Constants.rotationIntakeSafe && RobotContainer.pneumatics_Subsystem.getIntakeEnabled())) {
+            if (((Math.abs(desiredRotation - currentRotation) < Arm_Constants.rotateMarginOfError)   && (Math.abs(currentExtension-desiredExtension) < Arm_Constants.extendeMarginOfError)) || (rotateEncoder.getPosition() >= Arm_Constants.rotationIntakeSafe && RobotContainer.pneumatics_Subsystem.getIntakeEnabled())) {
                 return true;
             } else {
                 return false;
@@ -87,8 +87,10 @@ public class Arm_Subsystem extends SubsystemBase {
     public void periodic() {
         currentRotation = rotateEncoder.getPosition();
         currentExtension = -extendEncoder.getPosition();
-        System.out.println("Rotate " + getRotationPosition() + "\t\t\tDesired" + desiredRotation + "\t\t\tExtention " + getExtensionPosition() + "\t\t\tDesired " + desiredExtension);//("Extent " + getExtensionPosition() + "\t\t\tDesired " + desiredExtension + "\t\t\tDiff " + Math.abs(desiredExtension - currentExtension));//"\t\t\tExtend " + getExtensionPosition());
-
+        //System.out.println("Rotate " + getRotationPosition() + "\t\t\tDesired" + desiredRotation + "\t\t\tExtention " + getExtensionPosition() + "\t\t\tDesired " + desiredExtension);//("Extent " + getExtensionPosition() + "\t\t\tDesired " + desiredExtension + "\t\t\tDiff " + Math.abs(desiredExtension - currentExtension));//"\t\t\tExtend " + getExtensionPosition());
+        System.out.println("CurExx " + currentExtension + "\t\t\tDesiredex" + desiredExtension);
+        System.out.println("diff" + (desiredExtension-currentExtension));
+        
         arcadeArm();   
 
         if (RobotState.isEnabled()){
@@ -121,7 +123,8 @@ public class Arm_Subsystem extends SubsystemBase {
     public void moveArm(double rotation, double extension) {
         desiredRotation = rotation;
         desiredExtension = extension;
-        System.out.println("move arm");
+        
+        System.out.println("/n/n/n/nMOVE ARM IS CALLED " + desiredExtension + "/n/n/n/n/n");
     }
 
     public void resetOverride() {
@@ -130,9 +133,9 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     public void stopArm() {
-        desiredRotation = currentRotation;
-        desiredExtension = currentExtension;
-        System.out.println("stom arm");
+       // desiredRotation = currentRotation;
+       // desiredExtension = currentExtension;
+        System.out.println("stop arm");
         rotateMotor.stopMotor();
         rotateMotor.stopMotor();
     }
@@ -184,30 +187,37 @@ public class Arm_Subsystem extends SubsystemBase {
         if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1 /*|| extendOverride*/) {
             extendMotor.set((controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed);
             desiredExtension = currentExtension;
-            //System.out.println("arm extend");
+            System.out.println("\t\t\t\tJOYSTICKS");
             extendOverride = true;
         } else {
             if (Math.abs(currentExtension) > Arm_Constants.armLimit || (!armExtendDirection() && currentExtension <= 0.1)) {
                 //Stops motor if extended too far or if trying to retract in too far
                 extendMotor.stopMotor(); 
+                System.out.println("limit reached");
             }
-            else if(currentRotation > Arm_Constants.frontExtensionSafe || currentRotation < Arm_Constants.backExtensionSafe) {
+            else if(currentRotation > Arm_Constants.frontExtensionSafe && currentRotation < Arm_Constants.backExtensionSafe) {
                 //Retracts extension when in danger zone for penalties
                 extendMotor.set(Arm_Constants.armExtendSpeed);
+                    System.out.println("retracting in zone");
                 if ( currentExtension > Arm_Constants.armLimit){ //please don't delete these, sometimes the limit above doesn't always catch it
                     extendMotor.stopMotor(); 
+                    System.out.println("kill backup");
                 }
             }
             else if ((desiredExtension - currentExtension) > 0){ //Extends out if needed
                 extendMotor.set(-Arm_Constants.armExtendSpeed);
+                System.out.println("extending");
                 if ( currentExtension > Arm_Constants.armLimit){ //please don't delete these, sometimes the limit above doesn't always catch it
                     extendMotor.stopMotor(); 
+                    System.out.println("kill backup 1");
                 }
             }
             else if ((desiredExtension - currentExtension) < 0){ //Retracts if needed
                 extendMotor.set(Arm_Constants.armExtendSpeed);  
+                System.out.println("retracing");
                 if ( currentExtension > Arm_Constants.armLimit){ //please don't delete these, sometimes the limit above doesn't always catch it
                     extendMotor.stopMotor(); 
+                    System.out.println("Kill backup 2");
                 }
             }  
             else {
@@ -217,12 +227,13 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     private boolean armExtendDirection(){
-        if(extendMotor.get() < 0){
-            System.out.println("armExtendDirection" + true); 
+        if(desiredExtension-currentExtension > 0){
+            System.out.println("arm is extending"); 
             return true;//If the intake is extending(negative is extending)
           
         }
         else{
+            System.out.println("arm is retracting");
             return false; //If the intake is retracting
         }
     }

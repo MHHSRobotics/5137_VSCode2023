@@ -192,6 +192,10 @@ public class RobotContainer {
     led_Subsystem.pulsingColors(150/7, 25, LED_Constants.None, LED_Constants.Purple, LED_Constants.Blue, LED_Constants.Cyan, LED_Constants.Green, LED_Constants.Yellow, LED_Constants.Orange, LED_Constants.Red);
   }
 
+  public void waterfallCG() {
+    led_Subsystem.waterfall(0, 0, LED_Constants.None, LED_Constants.Red);
+  }
+
   //required port is the joystick you are currecntly attempting to use 
   //dependent port is the joytick we're checking against, to make sure you're not breaking the robot 
   private BooleanSupplier createBooleanSupplier(Joystick controller, int requiredPort, int dependentPort) {
