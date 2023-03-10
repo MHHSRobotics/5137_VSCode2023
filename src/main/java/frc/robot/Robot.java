@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import frc.robot.systems.*;
@@ -28,7 +29,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_RobotContainer = new RobotContainer();
-    m_RobotContainer.pulsingRainbow();
   }
 
   /**
@@ -45,7 +45,6 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    m_RobotContainer.pulsingCG();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -53,7 +52,9 @@ public class Robot extends TimedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    m_RobotContainer.runLEDS();
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   public void autonomousInit() {
@@ -61,16 +62,22 @@ public class Robot extends TimedRobot {
   }
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    m_RobotContainer.runLEDSAuto();
+  }
 
   @Override
-  public void teleopInit() {
-    
-  }
+  public void teleopInit() {}
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if (Timer.getMatchTime() < 105) {
+      m_RobotContainer.runLEDSTeleOp();
+    } else {
+      m_RobotContainer.runLEDSEnd();
+    }
+  }
 
   @Override
   public void testInit() {

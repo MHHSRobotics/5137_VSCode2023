@@ -87,14 +87,7 @@ public class Drive_Subsystem extends SubsystemBase {
 
 
   public Drive_Subsystem(Joystick m_controller) {
-
-    score_mobility_chargeEngage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_chargeEngage", new PathConstraints(4, 3));
-    score_mobility_intake_score = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_intake_score", new PathConstraints(4, 3));
-    score_chargeEngage =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_chargeEngage", new PathConstraints(4, 3));
-    score_mobility_straightChargeEngage =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("score_mobility_straightChargeEngage", new PathConstraints(2, 1));
-    Goal_Path = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("Goal_Path", new PathConstraints(4, 3));
-
-    //Maps for the path groups
+    //left motors
     leftFrontTalon = new WPI_TalonFX(Drive_Constants.leftFrontTalonPort);
     leftBackTalon = new WPI_TalonFX(Drive_Constants.leftBackTalonPort);
     leftDrive = new MotorControllerGroup(leftFrontTalon, leftBackTalon);

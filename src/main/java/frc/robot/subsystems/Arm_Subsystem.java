@@ -124,7 +124,7 @@ public class Arm_Subsystem extends SubsystemBase {
         desiredRotation = rotation;
         desiredExtension = extension;
         
-        System.out.println("/n/n/n/nMOVE ARM IS CALLED " + desiredExtension + "/n/n/n/n/n");
+        //System.out.println("/n/n/n/nMOVE ARM IS CALLED " + desiredExtension + "/n/n/n/n/n");
     }
 
     public void resetOverride() {
@@ -200,7 +200,7 @@ public class Arm_Subsystem extends SubsystemBase {
                 }
             extendMotor.set((controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed);
             desiredExtension = currentExtension;
-            System.out.println("\t\t\t\tJOYSTICKS");
+            //System.out.println("\t\t\t\tJOYSTICKS");
             extendOverride = true;
         } 
     }
@@ -214,7 +214,7 @@ public class Arm_Subsystem extends SubsystemBase {
             if (Math.abs(currentExtension) > Arm_Constants.armLimit || (!armExtendDirection() && currentExtension <= 0.1)) {
                 //Stops motor if extended too far or if trying to retract in too far
                 extendMotor.stopMotor(); 
-                System.out.println("limit reached");
+                //System.out.println("limit reached");
             }
             else if((currentRotation > Arm_Constants.frontExtensionSafe && currentRotation < Arm_Constants.backExtensionSafe) /*|| Math.abs(desiredExtension- currentExtension) > 97*/) {
                 //Retracts extension when in danger zone for penalties
@@ -252,12 +252,12 @@ public class Arm_Subsystem extends SubsystemBase {
 
     private boolean armExtendDirection(){
         if(desiredExtension-currentExtension > 0){
-            System.out.println("arm is extending"); 
+            //System.out.println("arm is extending"); 
             return true;//If the intake is extending(negative is extending)
           
         }
         else{
-            System.out.println("arm is retracting");
+            //System.out.println("arm is retracting");
             return false; //If the intake is retracting
         }
     }

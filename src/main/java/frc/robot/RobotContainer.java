@@ -13,7 +13,10 @@ import com.pathplanner.lib.auto.RamseteAutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -164,36 +167,28 @@ public class RobotContainer {
     autoManager.runAuto(shuffleboard.getAuto());
   }
 
-  public void rainbow() {
-    LEDpulse += 1;
-    LEDpulse %= 350;
-    if (LEDpulse < 50) {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Red);
-    } else if (LEDpulse < 100) {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Orange);
-    } else if (LEDpulse < 150) {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Yellow);
-    } else if (LEDpulse < 200) {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Green);
-    } else if (LEDpulse < 250) {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Cyan);
-    } else if (LEDpulse < 300) {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Blue);
+  public void runLEDS() {
+    led_Subsystem.pulsingCG(25, 10);
+  }
+
+  public void runLEDSAuto() {
+    led_Subsystem.solidCG(1);
+  }
+
+  public void runLEDSTeleOp() {
+    if (DriverStation.getAlliance().equals(Alliance.Blue)) {
+      led_Subsystem.pulsingBlue(10, 25);
     } else {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Purple);
+      led_Subsystem.pulsingRed(10, 25);
     }
   }
 
-  public void pulsingCG() {
-    led_Subsystem.pulsingColors(25, 25, LED_Constants.None, LED_Constants.Red, LED_Constants.Gold);
-  }
-
-  public void pulsingRainbow() {
-    led_Subsystem.pulsingColors(150/7, 25, LED_Constants.None, LED_Constants.Purple, LED_Constants.Blue, LED_Constants.Cyan, LED_Constants.Green, LED_Constants.Yellow, LED_Constants.Orange, LED_Constants.Red);
-  }
-
-  public void waterfallCG() {
-    led_Subsystem.waterfall(0, 0, LED_Constants.None, LED_Constants.Red);
+  public void runLEDSEnd() {
+    if (DriverStation.getAlliance().equals(Alliance.Blue)) {
+      led_Subsystem.pulsingBlue(20, 25);
+    } else {
+      led_Subsystem.pulsingRed(20, 25);
+    }
   }
 
   //required port is the joystick you are currecntly attempting to use 
