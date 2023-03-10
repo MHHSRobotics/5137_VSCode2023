@@ -33,11 +33,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.Drive_Constants;
+import frc.robot.constants.Controller_Constants.XBOX_Constants;
 
 public class Drive_Subsystem extends SubsystemBase {
   //left motors
@@ -236,8 +238,15 @@ public class Drive_Subsystem extends SubsystemBase {
       rotate -= 0.4*speed;
     }
     //System.out.println(getWheelSpeeds());
+    if (controller.getRawButton(XboxController.Button.kRightBumper.value)){ //Need to find the number
+      jMoneyDrive.curvatureDrive(-speed/Drive_Constants.driveSensitivity, -rotate/Drive_Constants.turnSensitivity , true);
+    }
+    else if(controller.getRawButton(XboxController.Button.kLeftBumper.value)){
+      jMoneyDrive.curvatureDrive(speed/(Drive_Constants.driveSensitivity*5), rotate/(Drive_Constants.turnSensitivity*5) , true);
+    }
+    else{
     jMoneyDrive.curvatureDrive(speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
-
+    }
   }
 
   //Also not required but stops drifiting and gurantees max speed

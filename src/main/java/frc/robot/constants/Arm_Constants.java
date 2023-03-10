@@ -41,5 +41,6 @@ public final class Arm_Constants {
     public final static double backRotationSafe = 250.755 + newRotationOrigin;
     public final static double frontExtensionSafe = 97.28;
     public final static double backExtensionSafe = 205.33;
+    public static final double armRetractLimit = 0;
 
 }

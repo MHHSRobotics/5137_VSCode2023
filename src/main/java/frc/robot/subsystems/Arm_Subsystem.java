@@ -188,7 +188,18 @@ public class Arm_Subsystem extends SubsystemBase {
             if (Math.abs(currentExtension) > Arm_Constants.armLimit) {
                 extendMotor.stopMotor();
                 //System.out.println("limit");
+            }
+
+            if(!armExtendDirection() && currentExtension < Arm_Constants.armRetractLimit){
+                extendMotor.stopMotor();
+            }
+            else if (armRotateDirection() && currentRotation < 153){
+                extendMotor.set(Arm_Constants.armExtendSpeed);
+            }
+            else if (!armRotateDirection() && currentRotation > 153){
+                extendMotor.set(Arm_Constants.armExtendSpeed);
             } 
+
             if (Math.abs(desiredExtension - currentExtension) < Arm_Constants.armIntakeExtension){
                 extendMotor.stopMotor();
                 //System.out.println("destination");
@@ -213,6 +224,24 @@ public class Arm_Subsystem extends SubsystemBase {
             } else {
                 extendMotor.stopMotor();
             }
+        }
+    }
+
+    private boolean armExtendDirection(){
+        if(extendMotor.get()<0){
+            return true; //arm out
+        }
+        else{
+            return false; //arm in
+        }
+    }
+
+    private boolean armRotateDirection(){
+        if(rotateMotor.get()>0){
+            return true;
+        }
+        else{
+            return false;
         }
     }
 }
