@@ -199,8 +199,13 @@ public class RobotContainer {
     led_Subsystem.waterfall(0, 0, LED_Constants.None, LED_Constants.Red);
   }
 
-  public void runBackupAuto() {
-    drive_Commands.driveForward().schedule();
+  public void runBackupAuto(int stage) {
+    switch (stage) {
+      case(0): {intake_Commands.runIntakeReverse().schedule();}
+      case(1): {intake_Commands.stopIntake().schedule();}
+      case(2): {drive_Commands.driveForward().schedule();}
+      case(3): {drive_Commands.stop().schedule();}
+    }
   }
 
   //required port is the joystick you are currecntly attempting to use 

@@ -101,6 +101,7 @@ public class Arm_Subsystem extends SubsystemBase {
 
         if(Math.abs(desiredRotation-currentRotation) > 5 && currentRotation < Arm_Constants.rotationStartIntake ){
             RobotContainer.intake_Commands.justExtend(); //If the arm is preset to move significantly (not jittering) and is near intake, intake drops
+            //sn
         }
         else if((Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1) && (currentRotation < Arm_Constants.rotationStartIntake)){
             RobotContainer.intake_Commands.justExtend(); //If the arm is being moved manually and is near intake, intake dropped
@@ -240,7 +241,7 @@ public class Arm_Subsystem extends SubsystemBase {
     }
    
     private void armExtendPreset() {
-        if (Math.abs(currentExtension) > Arm_Constants.armExtentionLimit || (!armExtendDirection() && currentExtension <= 0.1) || Math.abs((desiredExtension -  currentExtension)) < Arm_Constants.extendeMarginOfError) {
+        if (Math.abs(currentExtension) > Arm_Constants.armExtentionLimit || (!armExtendDirection() && currentExtension <= 0.1)) {
             //Stops motor if extended too far or if trying to retract in too far
             extendMotor.stopMotor(); 
             //System.out.println("limit reached");
@@ -252,6 +253,11 @@ public class Arm_Subsystem extends SubsystemBase {
                 //System.out.println("retracting in zone");
             extendLimitFailSafe();  //please don't delete these, sometimes the limit above doesn't always catch it
 
+        }
+        else if (Math.abs((desiredExtension -  currentExtension)) < Arm_Constants.extendeMarginOfError){
+            //Stops it it's within our margin of error 
+            //Is seperate so it doesn't interfere with danger zone retraction (otherwise will at the desired not at 0)
+            extendMotor.stopMotor();
         }
         else if ((desiredExtension - currentExtension) > 0){ //Extends out if needed
             extendMotor.set(-Arm_Constants.armExtendSpeed);

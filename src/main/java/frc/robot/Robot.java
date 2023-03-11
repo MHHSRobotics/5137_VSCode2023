@@ -74,8 +74,15 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    if (!time.hasElapsed(8)) {
-      m_RobotContainer.runBackupAuto();
+    if (!time.hasElapsed(3)) {
+      m_RobotContainer.runBackupAuto(0);
+    } else if (!time.hasElapsed(4)) {
+      m_RobotContainer.runBackupAuto(1);
+    } else if (!time.hasElapsed(8)) {
+      m_RobotContainer.runBackupAuto(2);
+    } else {
+      m_RobotContainer.runBackupAuto(3);
+
     }
   }
 

@@ -60,7 +60,11 @@ public class Drive_Commands {
   }
 
   public Command driveForward() {
-    return new InstantCommand(() -> {drive.drive(0.5, 0.0);});
+    return new InstantCommand(() -> {drive.drive(0.2, 0.0);});
+  }
+
+  public Command stop() {
+    return new InstantCommand(() -> {drive.drive(0, 0);});
   }
 
 }
