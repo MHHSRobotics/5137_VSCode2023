@@ -31,4 +31,8 @@ public class Intake_Commands {
     public Command justRetract(){
         return new InstantCommand(() -> {intake.retractIntake();});
     }
+
+    public Command autoReverseIntake() {
+        return new InstantCommand(() -> {intake.extendIntake(); intake.runAutoReverse();});
+    }
 }

@@ -13,10 +13,10 @@ public final class Arm_Constants {
     public final static double rawToDegreeConversion = 275; //gear ratio for rotation moter
     public final static double rawToInchesConversion = 2091; //each rotation is 9.4 inches 
 
-    public final static double armExtendSpeed = 0.35; //needs testing
-    public final static double armRotateSpeed = 0.25; //needs testing
-    public final static double manualExtendSpeed = 0.1;
-    public final static double manualRotateSpeed = 0.1;
+    public final static double armExtendSpeed = 0.75; //needs testing
+    public final static double armRotateSpeed = 0.35; //needs testing
+    public final static double manualExtendSpeed = 0.4;
+    public final static double manualRotateSpeed = 0.35;
     
     public final static double armIntakeRotation = 7.8545; 
     public final static double armIntakeExtension = 10.0153;
@@ -44,7 +44,7 @@ public final class Arm_Constants {
 
     //to ensure the arm doesn't try to telescope to far in 
     public final static double frontExtensionSafe = 97.28;
-    public final static double backExtensionSafe = 205.33;
+    public final static double backExtensionSafe = 228.33;
     public static final double armRetractLimit = 0;
 
 }

@@ -244,7 +244,7 @@ public class Arm_Subsystem extends SubsystemBase {
     }
    
     private void armExtendPreset() {
-        if (Math.abs(currentExtension) > Arm_Constants.armExtentionLimit || (!armExtendDirection() && currentExtension <= 0.1)) {
+        if (Math.abs(currentExtension) > Arm_Constants.armExtentionLimit || (!armExtendDirection() && currentExtension <= 1.0)) {
             //Stops motor if extended too far or if trying to retract in too far
             extendMotor.stopMotor(); 
             //System.out.println("limit reached");

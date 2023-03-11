@@ -208,8 +208,8 @@ public class Drive_Subsystem extends SubsystemBase {
   public void setVolts(double leftVolts, double rightVolts)
   {
     System.out.println("Desired Volts - Left: " + leftVolts + " Right: " + rightVolts);
-    leftVolts *= .2;
-    rightVolts *= .2;
+    leftVolts *= .3;
+    rightVolts *= .3;
     leftVolts += 0.1*leftVolts;
     System.out.println("Actual Volts - Left: " + leftVolts + " Right: " + rightVolts);
     leftDrive.setVoltage(leftVolts);

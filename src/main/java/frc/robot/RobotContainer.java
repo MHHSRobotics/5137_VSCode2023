@@ -167,36 +167,16 @@ public class RobotContainer {
     autoManager.runAuto(shuffleboard.getAuto());
   }
 
-  public void rainbow() {
-    LEDpulse += 1;
-    LEDpulse %= 350;
-    if (LEDpulse < 50) {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Red);
-    } else if (LEDpulse < 100) {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Orange);
-    } else if (LEDpulse < 150) {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Yellow);
-    } else if (LEDpulse < 200) {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Green);
-    } else if (LEDpulse < 250) {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Cyan);
-    } else if (LEDpulse < 300) {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Blue);
-    } else {
-      led_Subsystem.pulsingColors(150, 50, LED_Constants.None, LED_Constants.Purple);
-    }
+  public void runLEDS() {
+    led_Subsystem.pulsingCG(25, 10);
   }
 
-  public void pulsingCG() {
-    led_Subsystem.pulsingColors(25, 25, LED_Constants.None, LED_Constants.Red, LED_Constants.Gold);
+  public void runLEDSAuto() {
+    led_Subsystem.solidCG(1);
   }
 
-  public void pulsingRainbow() {
-    led_Subsystem.pulsingColors(150/7, 25, LED_Constants.None, LED_Constants.Purple, LED_Constants.Blue, LED_Constants.Cyan, LED_Constants.Green, LED_Constants.Yellow, LED_Constants.Orange, LED_Constants.Red);
-  }
-
-  public void waterfallCG() {
-    led_Subsystem.waterfall(0, 0, LED_Constants.None, LED_Constants.Red);
+  public void runLEDSTeleOp() {
+    led_Subsystem.runLEDS();
   }
 
   public void runBackupAuto(int stage) {

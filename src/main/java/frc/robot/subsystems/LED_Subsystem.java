@@ -3,6 +3,10 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
 import edu.wpi.first.wpilibj.util.Color;
 
@@ -12,16 +16,14 @@ public class LED_Subsystem extends SubsystemBase {
     private static AddressableLED led;
     private static AddressableLEDSim ledSim;
     private static AddressableLEDBuffer ledBuffer;
-    private static int pulse;
-    private static int pulse2;
-    private static int speed;
-    private static double amt;
+    private static int pulse = 0;
+    private static String type = "normal";
 
     //Middle led is 64
 
     public LED_Subsystem() {
         led = new AddressableLED(LED_Constants.Port);
-        ledSim = new AddressableLEDSim(null);
+        ledSim = new AddressableLEDSim(led);
         ledBuffer = new AddressableLEDBuffer(LED_Constants.Length);
         led.setLength(ledBuffer.getLength());
         startLED();
@@ -37,87 +39,109 @@ public class LED_Subsystem extends SubsystemBase {
 
     //Everything here needs to be fixed
 
-    public void singleColor(Color color) {
+    public void solidColor(Color color) {
         for (int i = 0; i < ledBuffer.getLength(); i++) {
             ledBuffer.setLED(i, color);
         }
         led.setData(ledBuffer);
     }
 
-    public void multiColors(double spacing, Color... colors) {
-        amt = colors.length; //Amount of colors
-        for (var i = 0; i < ledBuffer.getLength(); i++) {
-            for (var x = 0; x < amt+1; x++) {
-                if ((i % (amt*spacing)) < x*spacing && (i % (amt*spacing)) > (x-1)*spacing) {
-                    ledBuffer.setLED(i, colors[x-1]);
-                }
-            }
-        }
-        led.setData(ledBuffer);
-    }
-
-    public void movingColors(double spacing, int kSpeed, Color... colors) {
-        speed = kSpeed;
-        amt = colors.length; //Amount of colors
-        for (var i = 0; i < ledBuffer.getLength(); i++) {
-            for (var x = 0; x < amt+1; x++) {
-                if ((i % (amt*spacing)) < x*spacing && (i % (amt*spacing)) > (x-1)*spacing) {
-                    ledBuffer.setLED((i+(pulse/50))%ledBuffer.getLength(), colors[x-1]);
-                }
-            }
-        }
-        led.setData(ledBuffer);
-    }
-
-    public void pulsingColors(double spacing, int kSpeed, Color mainColor, Color... colors) {
-        speed = kSpeed;
-        amt = colors.length; //Amount of colors
-        for (var i = 0; i < ledBuffer.getLength(); i++) {
-            for (var x = 0; x < amt+1; x++) {
-                if ((i % (amt*spacing)) < x*spacing && (i % (amt*spacing)) > (x-1)*spacing) {
-                    Color currentColor = colors[x-1];
-                    double dif = ((i%spacing))/spacing;
-                    double posDif = ((spacing-i)%spacing)/spacing;
-                    double red = (255*currentColor.red)*dif + (255*mainColor.red)*posDif;
-                    double green = (255*currentColor.green)*dif + (255*mainColor.green)*posDif;
-                    double blue = (255*currentColor.blue)*dif + (255*mainColor.blue)*posDif;
-                    Color finalColor = new Color((int)red, (int)green, (int)blue);
-                    ledBuffer.setLED((i+(pulse/50))%ledBuffer.getLength(), finalColor);
-                }
-            }
-        }
-        led.setData(ledBuffer);
-    }
-
-    public void waterfall(double spacing, int kSpeed, Color mainColor, Color secondColor) {
-        speed = kSpeed;
-        for (var i = 0; i < ledBuffer.getLength(); i++) {
-            if (i < 64) {
-                double dif = ((i%spacing))/spacing;
-                double posDif = ((spacing-i)%spacing)/spacing;
-                double red = (255*secondColor.red)*dif + (255*mainColor.red)*posDif;
-                double green = (255*secondColor.green)*dif + (255*mainColor.green)*posDif;
-                double blue = (255*secondColor.blue)*dif + (255*mainColor.blue)*posDif;
+    public void pulsingCG(double spacing, double speed) {
+        for (var i = 0; i < LED_Constants.Length; i++) {
+            if (Math.floor(i/spacing)%2 == 0) {
+                double red = 200*((i%spacing)/spacing);
+                double green = 0;
+                double blue = 0;
                 Color finalColor = new Color((int)red, (int)green, (int)blue);
-                ledBuffer.setLED((i+(pulse/50))%ledBuffer.getLength(), finalColor);
-            } else if (i > 63) {
-                double dif = ((i%spacing))/spacing;
-                double posDif = ((spacing-i)%spacing)/spacing;
-                double red = (255*secondColor.red)*dif + (255*mainColor.red)*posDif;
-                double green = (255*secondColor.green)*dif + (255*mainColor.green)*posDif;
-                double blue = (255*secondColor.blue)*dif + (255*mainColor.blue)*posDif;
+                ledBuffer.setLED((i+(pulse/50))%150, finalColor);
+            } else {
+                double red = 100*((i%spacing)/spacing);
+                double green = 40*((i%spacing)/spacing);
+                double blue = 0;
                 Color finalColor = new Color((int)red, (int)green, (int)blue);
-                ledBuffer.setLED((i-(pulse/50))%ledBuffer.getLength(), finalColor);
+                ledBuffer.setLED((i+(pulse/50))%150, finalColor);
             }
         }
-        led.setData(ledBuffer);
+        pulse += speed;
+    }
+
+    public void resetPulse() {
+        pulse = 0;
+    }
+
+    public void solidCG(double speed) {
+        if (pulse < 50) {
+            solidColor(LED_Constants.Red);
+        } else if (pulse < 100) {
+            solidColor(LED_Constants.None);
+        } else if (pulse < 150) {
+            solidColor(LED_Constants.Gold);
+        } else if (pulse < 200) {
+            solidColor(LED_Constants.None);
+        } else {
+            pulse = 0;
+        }
+        pulse += speed;
+    }
+
+    public void pulsingColor(double speed, double spacing, Color color) {
+        for (var i = 0; i < LED_Constants.Length; i++) {
+                double red = 255*color.red*((i%spacing)/spacing);
+                double green = 255*color.green*((i%spacing)/spacing);
+                double blue = 255*color.blue*((i%spacing)/spacing);
+                Color finalColor = new Color((int)red, (int)green, (int)blue);
+                ledBuffer.setLED((i+(pulse/50))%150, finalColor);
+        }
+        pulse += speed;
+    }
+
+    public void flashingColor(double speed, Color color) {
+        if (pulse < 50) {
+            solidColor(color);
+        } else if (pulse < 100) {
+            solidColor(LED_Constants.None);
+        } else {
+            pulse = 0;
+        }
+        pulse += speed;
+    }
+
+    public void setTeleOp(String typ) {
+        if (type == typ) {
+            type = "normal";
+        } else {
+            type = typ;
+        }
+    }
+
+    public void pulsingTele() {
+        int speed;
+
+        if (Timer.getMatchTime() < 105) {
+            speed = 10;
+        } else {
+            speed = 20;
+        }
+
+        if (DriverStation.getAlliance().equals(Alliance.Blue)) {
+            pulsingColor(speed, 25, LED_Constants.Blue);
+        } else {
+            pulsingColor(speed, 25, LED_Constants.Red);
+        }
+    }
+
+    public void runLEDS() {
+        if (type.equals("normal")) {
+            pulsingTele();
+        } else if (type.equals("cone")) {
+            flashingColor(8, LED_Constants.Yellow);
+        } else if (type.equals("cube")) {
+            flashingColor(8, LED_Constants.Purple);
+        }
     }
 
     @Override
     public void periodic() {
-        if (speed > 0 && ledBuffer.getLength() > 0) {
-            pulse += speed;
-            pulse %= 1000000;
-        }
+        led.setData(ledBuffer);
     }
 }

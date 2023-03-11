@@ -29,6 +29,11 @@ public class Intake_Subystem extends SubsystemBase {
     intakeOveride = true;
   }
 
+  public void runAutoReverse() {
+    intakeMotor.set(-Intake_Constants.Speed*0.5);
+    intakeOveride = true;
+  }
+
   public void stop() {
     intakeMotor.set(0.0);
     intakeOveride = false;
