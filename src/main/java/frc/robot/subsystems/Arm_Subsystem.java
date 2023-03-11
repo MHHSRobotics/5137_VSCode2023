@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
-import javax.lang.model.util.ElementScanner14;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
@@ -100,7 +99,7 @@ public class Arm_Subsystem extends SubsystemBase {
             RobotContainer.intake_Commands.justExtend();
            System.out.println("intake should extended");
         }
-        else if(rotateOverride && currentRotation < Arm_Constants.rotationStartIntake)
+        else if((Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1) && (currentRotation < Arm_Constants.rotationStartIntake))
         {
             System.out.println("supposed to extend");
             RobotContainer.intake_Commands.justExtend();
