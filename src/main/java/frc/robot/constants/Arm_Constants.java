@@ -36,7 +36,7 @@ public final class Arm_Constants {
     public final static double hybridRotation = 306.8378;
     public final static double hybridExtension = 6.2465;
 
-    public final static double rotationStartIntake = 90; //makes the intake go if it's within 0 - this range  
+    public final static double rotationStartIntake = 63; //makes the intake go if it's within 0 - this range  
     
     //to ensure the motor doesn't try to drive into the bot 
     public final static double frontRotationSafe = 0; // neds to be changed 

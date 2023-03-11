@@ -10,7 +10,8 @@ import frc.robot.constants.Intake_Constants;
 import frc.robot.objects.SparkMaxWrapper;
 
 public class Intake_Subystem extends SubsystemBase {
-  private static SparkMaxWrapper intakeMotor;
+  private static SparkMaxWrapper intakeMotor; 
+  public static boolean intakeOveride; //this will override the arm automatically extending/rectracting the intake 
 
   public Intake_Subystem() {
     intakeMotor = new SparkMaxWrapper(Intake_Constants.Port, MotorType.kBrushless);
@@ -19,14 +20,17 @@ public class Intake_Subystem extends SubsystemBase {
   //Wheels 
   public void runForward() {
     intakeMotor.set(Intake_Constants.Speed);
+    intakeOveride = true;
   }
  
   public void runReverse() {
     intakeMotor.set(-Intake_Constants.Speed);
+    intakeOveride = true;
   }
 
   public void stop() {
     intakeMotor.set(0.0);
+    intakeOveride = false;
   }
 
   //Pneumatics 

@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
+import javax.lang.model.util.ElementScanner14;
+
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -21,8 +23,8 @@ import frc.robot.objects.*;
 import frc.robot.RobotContainer;
 
 public class Arm_Subsystem extends SubsystemBase {
-    private static SparkMaxWrapper rotateMotor;
-    private static SparkMaxWrapper extendMotor;
+    private static CANSparkMax rotateMotor;
+    private static CANSparkMax extendMotor;
 
     private static RelativeEncoder rotateEncoder; //Switch to relatives encoders once arm actually works
     private static RelativeEncoder extendEncoder;
@@ -41,8 +43,8 @@ public class Arm_Subsystem extends SubsystemBase {
     private final Joystick controller;
 
     public Arm_Subsystem(Joystick controller) {
-        rotateMotor = new SparkMaxWrapper(Arm_Constants.armRotatePort, MotorType.kBrushless);
-        extendMotor = new SparkMaxWrapper(Arm_Constants.armExtendPort, MotorType.kBrushless);
+        rotateMotor = new CANSparkMax(Arm_Constants.armRotatePort, MotorType.kBrushless);
+        extendMotor = new CANSparkMax(Arm_Constants.armExtendPort, MotorType.kBrushless);
 
         rotateEncoder = rotateMotor.getEncoder();
         extendEncoder = extendMotor.getEncoder();
@@ -78,7 +80,7 @@ public class Arm_Subsystem extends SubsystemBase {
 
         };
 
-        rotateOverride = true;
+        rotateOverride = false;
         extendOverride = false;
 
         this.controller = controller;
@@ -88,9 +90,26 @@ public class Arm_Subsystem extends SubsystemBase {
     public void periodic() {
         currentRotation = rotateEncoder.getPosition();
         currentExtension = -extendEncoder.getPosition();
-        System.out.println("Rotate " + currentRotation + "\t\t\tDesired " + desiredRotation + "\t\t\tExtention " + currentExtension + "\t\t\tDesired " + desiredExtension + "\t\t\t\tDiff " + (desiredExtension - currentExtension));//("Extent " + getExtensionPosition() + "\t\t\tDesired " + desiredExtension + "\t\t\tDiff " + Math.abs(desiredExtension - currentExtension));//"\t\t\tExtend " + getExtensionPosition());
+        //System.out.println("Rotate " + currentRotation + "\t\t\tDesired " + desiredRotation + "\t\t\tExtention " + currentExtension + "\t\t\tDesired " + desiredExtension + "\t\t\t\tDiff " + (desiredExtension - currentExtension));//("Extent " + getExtensionPosition() + "\t\t\tDesired " + desiredExtension + "\t\t\tDiff " + Math.abs(desiredExtension - currentExtension));//"\t\t\tExtend " + getExtensionPosition());
         //System.out.println("CurExx " + currentExtension + "\t\t\tDesiredex" + desiredExtension);
         //System.out.println("diff" + (desiredExtension-currentExtension));
+        System.out.println(rotateOverride);
+
+
+        if(Math.abs(desiredRotation-currentRotation) > 5 && currentRotation < Arm_Constants.rotationStartIntake ){
+            RobotContainer.intake_Commands.justExtend();
+           System.out.println("intake should extended");
+        }
+        else if(rotateOverride && currentRotation < Arm_Constants.rotationStartIntake)
+        {
+            System.out.println("supposed to extend");
+            RobotContainer.intake_Commands.justExtend();
+        }
+        else if (!Intake_Subystem.intakeOveride) {
+            RobotContainer.intake_Commands.justRetract();
+            System.out.println("intake retracted");
+        }
+        
         
         arcadeArm();   
 
@@ -104,7 +123,7 @@ public class Arm_Subsystem extends SubsystemBase {
                 //System.out.println("it's coasting\t\t\t" + Math.abs(currentRotation-desiredRotation));
             }
 
-            if (extendMotor.getOutputCurrent() < 3.5){
+            if (Math.abs(desiredExtension-currentExtension) < Arm_Constants.extendeMarginOfError){
                 extendMotor.setIdleMode(IdleMode.kBrake);
             }
             else {
@@ -124,15 +143,6 @@ public class Arm_Subsystem extends SubsystemBase {
     public void moveArm(double rotation, double extension) {
         desiredRotation = rotation;
         desiredExtension = extension;
-
-        if(currentExtension < Arm_Constants.rotationStartIntake){
-            //RobotContainer.intake_Commands.justExtend();
-            //System.out.println("intake extended");
-        }
-        else{
-            //RobotContainer.intake_Commands.justRetract();
-            //System.out.println("intake retracted");
-        }
         
         //System.out.println("/n/n/n/nMOVE ARM IS CALLED " + desiredExtension + "/n/n/n/n/n");
     }
@@ -188,15 +198,19 @@ public class Arm_Subsystem extends SubsystemBase {
             rotateOverride = false;
         }
         
+        
     }
 
     private void armRotateManual() {
+        rotateOverride = true;
+
         //System.out.println("arm encoder (deg)" + currentRotation);
         if (Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1) {
             rotateMotor.set((-controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.armRotateSpeed);
             desiredRotation = currentRotation;
-            rotateOverride = true;
+            System.out.println("supposed to be true");
         }
+       
     }
     
     private void armRotatePresets() {
@@ -209,10 +223,10 @@ public class Arm_Subsystem extends SubsystemBase {
                 rotateMotor.stopMotor();
             } 
             else if ((desiredRotation - currentRotation) < 0) {
-                rotateMotor.set(-Arm_Constants.armRotateSpeed);
+                //rotateMotor.set(-Arm_Constants.armRotateSpeed);
             } 
             else if ((desiredRotation - currentRotation) > 0) {
-                rotateMotor.set(Arm_Constants.armRotateSpeed);
+                //rotateMotor.set(Arm_Constants.armRotateSpeed);
             } 
             else {
                 rotateMotor.stopMotor();
@@ -221,9 +235,18 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     private void armExtendManual() {
+        extendOverride = true;
+
         if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1) {
             if ( currentExtension > Arm_Constants.armLimit){ //please don't delete these, sometimes the limit above doesn't always catch it
-                    extendMotor.stopMotor(); 
+                   if (armExtendDirection()) { 
+                        extendMotor.stopMotor(); 
+                   }
+                   else if (!armExtendDirection()){
+                    extendMotor.set((controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed);
+                    desiredExtension = currentExtension;
+                    extendOverride = true;
+                   }
                     //System.out.println("kill in joysticks");
             }
             else {
@@ -242,7 +265,7 @@ public class Arm_Subsystem extends SubsystemBase {
             stopArm();
         }
         else{ 
-            if (Math.abs(currentExtension) > Arm_Constants.armLimit || (!armExtendDirection() && currentExtension <= 0.1)) {
+            if (Math.abs(currentExtension) > Arm_Constants.armLimit || (!armExtendDirection() && currentExtension <= 0.1) || Math.abs((desiredExtension -  currentExtension)) < Arm_Constants.extendeMarginOfError) {
                 //Stops motor if extended too far or if trying to retract in too far
                 extendMotor.stopMotor(); 
                 //System.out.println("limit reached");

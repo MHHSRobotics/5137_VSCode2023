@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -22,13 +25,17 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   private RobotContainer m_RobotContainer;
+  public static UsbCamera USBArCam;
 
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_RobotContainer = new RobotContainer();
-    m_RobotContainer.pulsingRainbow();
+    USBArCam = CameraServer.startAutomaticCapture();
+    USBArCam.setResolution(240, 180);
+    PortForwarder.add(1811, "LifeCam", 1811);
+    PortForwarder.add(1812, "AR1", 1812);
   }
 
   /**
@@ -45,7 +52,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    m_RobotContainer.pulsingCG();
+    //m_RobotContainer.pulsingCG();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

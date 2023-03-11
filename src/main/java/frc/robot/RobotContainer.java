@@ -122,8 +122,11 @@ public class RobotContainer {
     new POVButton(driverController, XBOX_Constants.RightDPad)
     .onTrue(drive_Commands.tagDrive(vision_Subsystem.getNearestAlign("right", drive_Subsystem.poseEstimator.getEstimatedPosition())));
 
-    /*new JoystickButton(driverController, XBOX_Constants.AButton)
-    .onTrue(clamp_Commands.clampToggle());*/
+    new JoystickButton(driverController, XBOX_Constants.AButton)
+    .onTrue(intake_Commands.justExtend());
+
+    /*new JoystickButton(driverController, XBOX_Constants.BButton)
+    .onTrue(intake_Commands.justRetract());*/
 
 
   //Assistant Controller
