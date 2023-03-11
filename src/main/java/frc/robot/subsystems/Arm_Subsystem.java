@@ -88,42 +88,32 @@ public class Arm_Subsystem extends SubsystemBase {
     @Override
     public void periodic() {
         currentRotation = rotateEncoder.getPosition();
-        currentExtension = -extendEncoder.getPosition();
-        //System.out.println("Rotate " + currentRotation + "\t\t\tDesired " + desiredRotation + "\t\t\tExtention " + currentExtension + "\t\t\tDesired " + desiredExtension + "\t\t\t\tDiff " + (desiredExtension - currentExtension));//("Extent " + getExtensionPosition() + "\t\t\tDesired " + desiredExtension + "\t\t\tDiff " + Math.abs(desiredExtension - currentExtension));//"\t\t\tExtend " + getExtensionPosition());
-        //System.out.println("CurExx " + currentExtension + "\t\t\tDesiredex" + desiredExtension);
-        //System.out.println("diff" + (desiredExtension-currentExtension));
-        System.out.println(rotateOverride);
-
+        currentExtension = -extendEncoder.getPosition(); //Negative because motor is inverted
+        arcadeArm(); //Method called to move arm with presets or manually
+        System.out.println("cRt " + currentRotation + " dRt " + desiredRotation + " cEx " + currentExtension + " dEx " + desiredExtension);
 
         if(Math.abs(desiredRotation-currentRotation) > 5 && currentRotation < Arm_Constants.rotationStartIntake ){
-            RobotContainer.intake_Commands.justExtend();
-           System.out.println("intake should extended");
+            RobotContainer.intake_Commands.justExtend(); //If the arm is set to move significantly and is near intake, intake drops
         }
         else if((Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1) && (currentRotation < Arm_Constants.rotationStartIntake))
         {
-            System.out.println("supposed to extend");
-            RobotContainer.intake_Commands.justExtend();
+            RobotContainer.intake_Commands.justExtend(); //If the arm is being moved manually and is near intake, intake dropped
         }
         else if (!Intake_Subystem.intakeOveride) {
-            RobotContainer.intake_Commands.justRetract();
-            System.out.println("intake retracted");
+            RobotContainer.intake_Commands.justRetract(); //If the intake is not being called elsewhere, retract in
         }
         
-        
-        arcadeArm();   
 
         if (RobotState.isEnabled()){
             if (Math.abs(currentRotation-desiredRotation) < Arm_Constants.rotateMarginOfError){
-                rotateMotor.setIdleMode(IdleMode.kBrake);
-                //System.out.println("it's breaking\t\t\t" + Math.abs(currentRotation-desiredRotation));
+                rotateMotor.setIdleMode(IdleMode.kBrake); //Brakes the arm when close enough to its desiredRotation
             }
             else {
                 rotateMotor.setIdleMode(IdleMode.kCoast);
-                //System.out.println("it's coasting\t\t\t" + Math.abs(currentRotation-desiredRotation));
             }
 
             if (Math.abs(desiredExtension-currentExtension) < Arm_Constants.extendeMarginOfError){
-                extendMotor.setIdleMode(IdleMode.kBrake);
+                extendMotor.setIdleMode(IdleMode.kBrake);//Brakes the arm when close enough to its desiredExtension
             }
             else {
                 extendMotor.setIdleMode(IdleMode.kCoast);
@@ -134,16 +124,11 @@ public class Arm_Subsystem extends SubsystemBase {
             rotateMotor.setIdleMode(IdleMode.kCoast);
             extendMotor.setIdleMode(IdleMode.kCoast);
         }
-
-    
-        armExtendDirection();
     }
 
     public void moveArm(double rotation, double extension) {
         desiredRotation = rotation;
         desiredExtension = extension;
-        
-        //System.out.println("/n/n/n/nMOVE ARM IS CALLED " + desiredExtension + "/n/n/n/n/n");
     }
  
     public void resetOverride() {
@@ -151,11 +136,9 @@ public class Arm_Subsystem extends SubsystemBase {
         extendOverride = false;
     }
     
-
     public void stopArm() {
        desiredRotation = currentRotation;
        desiredExtension = currentExtension;
-        //System.out.println("stop arm");
         rotateMotor.stopMotor();
         rotateMotor.stopMotor();
     }
@@ -169,11 +152,11 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     public double getRotationPosition() {
-        return (rotateEncoder.getPosition()) ; /*/ -211.84) -42.7458 /**Arm_Constants.rawToDegreeConversion */  //-48786.85844 -45.86875459; 
+        return (currentRotation) ; /*/ -211.84) -42.7458 /**Arm_Constants.rawToDegreeConversion */  //-48786.85844 -45.86875459; 
     }
 
     public double getExtensionPosition() {
-        return (extendEncoder.getPosition()) ; /*/ -2237.521 +2)/*Arm_Constants.rawToInchesConversion*/
+        return (currentExtension) ; /*/ -2237.521 +2)/*Arm_Constants.rawToInchesConversion*/
     }
 
     private void arcadeArm() {
