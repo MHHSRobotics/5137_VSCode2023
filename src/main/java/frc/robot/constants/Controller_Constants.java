@@ -16,9 +16,6 @@ public final class Controller_Constants {
         public static final int BButton = 2;
         public static final int XButton = 3;
         public static final int YButton = 4;
-
-
-        public static final int APort = 1;
         public static final int Start = 8;
         public static final int Back = 7;
     }

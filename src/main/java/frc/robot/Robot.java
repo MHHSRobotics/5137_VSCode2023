@@ -72,11 +72,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if (Timer.getMatchTime() < 105) {
-      m_RobotContainer.runLEDSTeleOp();
-    } else {
-      m_RobotContainer.runLEDSEnd();
-    }
+    m_RobotContainer.runLEDSTeleOp();
   }
 
   @Override

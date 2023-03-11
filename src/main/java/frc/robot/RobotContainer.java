@@ -51,6 +51,7 @@ public class RobotContainer {
   public static Clamp_Commands clamp_Commands;
   public static Pneumatics_Commands pneumatics_Commands;
   public static Drive_Commands drive_Commands;
+  public static LED_Commands led_Commands;
   
   //Controllers
   public static Joystick driverController;
@@ -89,6 +90,7 @@ public class RobotContainer {
     clamp_Commands = new Clamp_Commands(clamp_Subsystem);
     pneumatics_Commands = new Pneumatics_Commands(pneumatics_Subsystem);
     drive_Commands = new Drive_Commands(drive_Subsystem);
+    led_Commands = new LED_Commands(led_Subsystem);
   }
 
   
@@ -104,6 +106,14 @@ public class RobotContainer {
     new Trigger(createBooleanSupplier(driverController, XBOX_Constants.RTPort, XBOX_Constants.LTPort))
     .whileTrue(intake_Commands.runIntakeForward())
     .onFalse(intake_Commands.stopIntake());
+
+    //Cube leds for signaling
+    new JoystickButton(driverController, XBOX_Constants.XButton)
+    .onTrue(led_Commands.cubeLEDS());
+    
+    //Cone leds for signaling
+    new JoystickButton(driverController, XBOX_Constants.YButton)
+    .onTrue(led_Commands.coneLEDS());
 
     //Start button force compresses (won't work if already at 120 PSI)
     new JoystickButton(driverController, XBOX_Constants.Back)
@@ -146,6 +156,7 @@ public class RobotContainer {
     new POVButton(assistController, XBOX_Constants.DownDPad)
     .onTrue(arm_Commands.moveToHybrid());
 
+
     //B -- midle cube 
     new JoystickButton(assistController, XBOX_Constants.BButton)
     .onTrue(arm_Commands.moveToMiddleCube());
@@ -176,19 +187,7 @@ public class RobotContainer {
   }
 
   public void runLEDSTeleOp() {
-    if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-      led_Subsystem.pulsingBlue(10, 25);
-    } else {
-      led_Subsystem.pulsingRed(10, 25);
-    }
-  }
-
-  public void runLEDSEnd() {
-    if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-      led_Subsystem.pulsingBlue(20, 25);
-    } else {
-      led_Subsystem.pulsingRed(20, 25);
-    }
+    led_Subsystem.runLEDS();
   }
 
   //required port is the joystick you are currecntly attempting to use 

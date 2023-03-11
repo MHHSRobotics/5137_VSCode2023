@@ -3,8 +3,10 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
 import edu.wpi.first.wpilibj.util.Color;
 
@@ -15,6 +17,7 @@ public class LED_Subsystem extends SubsystemBase {
     private static AddressableLEDSim ledSim;
     private static AddressableLEDBuffer ledBuffer;
     private static int pulse = 0;
+    private static String type = "normal";
 
     //Middle led is 64
 
@@ -36,7 +39,7 @@ public class LED_Subsystem extends SubsystemBase {
 
     //Everything here needs to be fixed
 
-    public void singleColor(Color color) {
+    public void solidColor(Color color) {
         for (int i = 0; i < ledBuffer.getLength(); i++) {
             ledBuffer.setLED(i, color);
         }
@@ -68,44 +71,77 @@ public class LED_Subsystem extends SubsystemBase {
 
     public void solidCG(double speed) {
         if (pulse < 50) {
-            singleColor(LED_Constants.Red);
+            solidColor(LED_Constants.Red);
         } else if (pulse < 100) {
-            singleColor(LED_Constants.None);
+            solidColor(LED_Constants.None);
         } else if (pulse < 150) {
-            singleColor(LED_Constants.Gold);
+            solidColor(LED_Constants.Gold);
         } else if (pulse < 200) {
-            singleColor(LED_Constants.None);
+            solidColor(LED_Constants.None);
         } else {
             pulse = 0;
         }
         pulse += speed;
     }
 
-    public void pulsingRed(double speed, double spacing) {
+    public void pulsingColor(double speed, double spacing, Color color) {
         for (var i = 0; i < LED_Constants.Length; i++) {
-                double red = 200*((i%spacing)/spacing);
-                double green = 0;
-                double blue = 0;
+                double red = 255*color.red*((i%spacing)/spacing);
+                double green = 255*color.green*((i%spacing)/spacing);
+                double blue = 255*color.blue*((i%spacing)/spacing);
                 Color finalColor = new Color((int)red, (int)green, (int)blue);
                 ledBuffer.setLED((i+(pulse/50))%150, finalColor);
         }
         pulse += speed;
     }
 
-    public void pulsingBlue(double speed, double spacing) {
-        for (var i = 0; i < LED_Constants.Length; i++) {
-                double red = 0;
-                double green = 0;
-                double blue = 200*((i%spacing)/spacing);
-                Color finalColor = new Color((int)red, (int)green, (int)blue);
-                ledBuffer.setLED((i+(pulse/50))%150, finalColor);
+    public void flashingColor(double speed, Color color) {
+        if (pulse < 50) {
+            solidColor(color);
+        } else if (pulse < 100) {
+            solidColor(LED_Constants.None);
+        } else {
+            pulse = 0;
         }
         pulse += speed;
+    }
+
+    public void setTeleOp(String typ) {
+        if (type == typ) {
+            type = "normal";
+        } else {
+            type = typ;
+        }
+    }
+
+    public void pulsingTele() {
+        int speed;
+
+        if (Timer.getMatchTime() < 105) {
+            speed = 10;
+        } else {
+            speed = 20;
+        }
+
+        if (DriverStation.getAlliance().equals(Alliance.Blue)) {
+            pulsingColor(speed, 25, LED_Constants.Blue);
+        } else {
+            pulsingColor(speed, 25, LED_Constants.Red);
+        }
+    }
+
+    public void runLEDS() {
+        if (type.equals("normal")) {
+            pulsingTele();
+        } else if (type.equals("cone")) {
+            flashingColor(8, LED_Constants.Yellow);
+        } else if (type.equals("cube")) {
+            flashingColor(8, LED_Constants.Purple);
+        }
     }
 
     @Override
     public void periodic() {
-        double time = Timer.getMatchTime();
         led.setData(ledBuffer);
     }
 }
