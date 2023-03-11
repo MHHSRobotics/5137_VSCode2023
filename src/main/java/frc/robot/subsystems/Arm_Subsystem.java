@@ -219,29 +219,25 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     private void armExtendManual() {
-        //extendOverride = true;
 
-        if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1) {
+        if (controller.getRawAxis(XBOX_Constants.LYPort) > 0.1) {
             if ( currentExtension > Arm_Constants.armExtentionLimit){ //please don't delete these, sometimes the limit above doesn't always catch it
-                   if (armExtendDirection()) { 
-                        extendMotor.stopMotor(); 
-                   }
-                   else if (!armExtendDirection()){
-                    extendMotor.set((controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed);
-                    desiredExtension = currentExtension;
-                    //extendOverride = true;
-                   }
-                    //System.out.println("kill in joysticks");
+                extendMotor.stopMotor(); 
             }
-            else {
+            else{
+                extendMotor.set((controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed);
+                desiredExtension = currentExtension;
+                //System.out.println("\t\t\t\tJOYSTICKS");
+                }
+        }
+        else if (controller.getRawAxis(XBOX_Constants.LYPort) < -0.1){
             extendMotor.set((controller.getRawAxis(XBOX_Constants.LYPort))*Arm_Constants.armExtendSpeed);
             desiredExtension = currentExtension;
             //System.out.println("\t\t\t\tJOYSTICKS");
-            //extendOverride = true;
-            }
-            
-        } 
+        }
+        
     }
+
    
     private void armExtendPreset() {
         if (Math.abs(currentExtension) > Arm_Constants.armExtentionLimit || (!armExtendDirection() && currentExtension <= 1.0)) {
