@@ -27,7 +27,7 @@ public final class Drive_Constants {
 
 //PID
     //PID for right and left side
-    public final static PIDConstants drivePIDConstants = new PIDConstants(0.0001,0,0);
+    public final static PIDConstants drivePIDConstants = new PIDConstants(0.1,0,0);
 
     //Gains for FeedForward / Left+Right motor volts
     public final static double dKS = .55;
