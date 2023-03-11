@@ -55,6 +55,9 @@ public class Arm_Subsystem extends SubsystemBase {
         //rotateMotor.burnFlash();
         //extendMotor.burnFlash();
 
+        currentRotation = Arm_Constants.armIntakeRotation; //fixes null point error 
+        currentExtension = Arm_Constants.armIntakeExtension;
+
         desiredRotation = Arm_Constants.armIntakeRotation; //IF NOT THE SAME AS SETPOSITION WILL MOVE TO THIS AS SOON AS ROBOT IS ENABLES
         desiredExtension = Arm_Constants.armIntakeExtension; //arm will attempt to move to this position (if not already in it) when enabled 
 
