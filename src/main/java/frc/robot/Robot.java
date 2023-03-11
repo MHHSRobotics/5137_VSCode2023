@@ -8,6 +8,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import frc.robot.systems.*;
@@ -26,6 +27,7 @@ public class Robot extends TimedRobot {
    */
   private RobotContainer m_RobotContainer;
   public static UsbCamera USBArCam;
+  private Timer time;
 
   @Override
   public void robotInit() {
@@ -36,6 +38,7 @@ public class Robot extends TimedRobot {
     USBArCam.setResolution(240, 180);
     PortForwarder.add(1811, "LifeCam", 1811);
     PortForwarder.add(1812, "AR1", 1812);
+    time = new Timer();
   }
 
   /**
@@ -64,11 +67,17 @@ public class Robot extends TimedRobot {
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   public void autonomousInit() {
-    m_RobotContainer.runAuto();
+    //m_RobotContainer.runAuto();
+    time.reset();
+    time.start();
   }
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    if (!time.hasElapsed(8)) {
+      m_RobotContainer.runBackupAuto();
+    }
+  }
 
   @Override
   public void teleopInit() {

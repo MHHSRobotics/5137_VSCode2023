@@ -171,7 +171,7 @@ public class Drive_Subsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (controller != null) {
+    if (controller != null && RobotState.isTeleop()) {
       arcadeDrive(controller);
     }
     //Updates the position with gyro and encoder periodcally 
@@ -314,7 +314,11 @@ public class Drive_Subsystem extends SubsystemBase {
   {
     poseEstimator.resetPosition(new Rotation2d(gyro.getRoll()), 0, 0, pose);
   }
+
+  public void drive(double speed, double rotate) {
+    jMoneyDrive.curvatureDrive(speed, rotate, true);
   }
+}
 
 
 
