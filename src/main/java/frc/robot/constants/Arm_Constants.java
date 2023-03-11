@@ -3,7 +3,7 @@ package frc.robot.constants;
 public final class Arm_Constants {
     public final static int armRotatePort = 8; 
     public final static int armExtendPort = 9; 
-    public final static int armLimit = 20;
+    public final static int armExtentionLimit = 20; 
 
     public final static double rotateMarginOfError = 2;
     public final static double extendeMarginOfError = 1;

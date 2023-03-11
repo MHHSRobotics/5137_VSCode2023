@@ -49,17 +49,21 @@ public class Arm_Subsystem extends SubsystemBase {
         extendEncoder = extendMotor.getEncoder();
 
 
-        rotateEncoder.setPosition(Arm_Constants.armIntakeRotation);//Arm_Constants.armIntakeRotation)) /*/ (- 211.84 ))-42.7458)*/;
-        extendEncoder.setPosition(-Arm_Constants.armIntakeExtension);//Arm_Constants.armIntakeExtension);
+        rotateEncoder.setPosition(Arm_Constants.armIntakeRotation); //MEANS WE NEED TO START IN INTAKE POSITION
+        extendEncoder.setPosition(-Arm_Constants.armIntakeExtension); //IF WE CHANGE THIS CHANGE DESRIRED INSTANTIATION  
 
         //rotateMotor.burnFlash();
         //extendMotor.burnFlash();
 
-        desiredRotation = Arm_Constants.armIntakeRotation;//getRotationPosition();
-        desiredExtension = Arm_Constants.armIntakeExtension;// getExtensionPosition(); 
+        desiredRotation = Arm_Constants.armIntakeRotation; //IF NOT THE SAME AS SETPOSITION WILL MOVE TO THIS AS SOON AS ROBOT IS ENABLES
+        desiredExtension = Arm_Constants.armIntakeExtension; //arm will attempt to move to this position (if not already in it) when enabled 
 
 
+        rotateOverride = false;
+        extendOverride = false;
 
+
+        //Used to end the arm prests' functional commands 
         isFinished = () -> {
             if (extendOverride || rotateOverride){
                 return true;
@@ -72,15 +76,13 @@ public class Arm_Subsystem extends SubsystemBase {
             }
         };
 
+        //runs when arm preset commands are ending 
         endCommand = (finished) -> {
             if (finished) {
-                stopArm(); 
+                stopArm(); //sets desired = current so movement stops 
             }
 
         };
-
-        rotateOverride = false;
-        extendOverride = false;
 
         this.controller = controller;
     }
@@ -89,21 +91,23 @@ public class Arm_Subsystem extends SubsystemBase {
     public void periodic() {
         currentRotation = rotateEncoder.getPosition();
         currentExtension = -extendEncoder.getPosition(); //Negative because motor is inverted
+
         arcadeArm(); //Method called to move arm with presets or manually
+
         System.out.println("cRt " + currentRotation + " dRt " + desiredRotation + " cEx " + currentExtension + " dEx " + desiredExtension);
 
         if(Math.abs(desiredRotation-currentRotation) > 5 && currentRotation < Arm_Constants.rotationStartIntake ){
-            RobotContainer.intake_Commands.justExtend(); //If the arm is set to move significantly and is near intake, intake drops
+            RobotContainer.intake_Commands.justExtend(); //If the arm is preset to move significantly (not jittering) and is near intake, intake drops
         }
-        else if((Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1) && (currentRotation < Arm_Constants.rotationStartIntake))
-        {
+        else if((Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1) && (currentRotation < Arm_Constants.rotationStartIntake)){
             RobotContainer.intake_Commands.justExtend(); //If the arm is being moved manually and is near intake, intake dropped
         }
-        else if (!Intake_Subystem.intakeOveride) {
+        else if (!Intake_Subystem.intakeOveride) { //allows override from the driver controler 
             RobotContainer.intake_Commands.justRetract(); //If the intake is not being called elsewhere, retract in
         }
         
 
+        //Keeps arm in place when scoring, allows us to manhandle during testing 
         if (RobotState.isEnabled()){
             if (Math.abs(currentRotation-desiredRotation) < Arm_Constants.rotateMarginOfError){
                 rotateMotor.setIdleMode(IdleMode.kBrake); //Brakes the arm when close enough to its desiredRotation
@@ -131,13 +135,15 @@ public class Arm_Subsystem extends SubsystemBase {
         desiredExtension = extension;
     }
  
+
+    //called in preset commands 
     public void resetOverride() {
         rotateOverride = false;
         extendOverride = false;
     }
     
     public void stopArm() {
-       desiredRotation = currentRotation;
+       desiredRotation = currentRotation;   //Ensures preset rotation/extention will stop
        desiredExtension = currentExtension;
         rotateMotor.stopMotor();
         rotateMotor.stopMotor();
@@ -152,14 +158,16 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     public double getRotationPosition() {
-        return (currentRotation) ; /*/ -211.84) -42.7458 /**Arm_Constants.rawToDegreeConversion */  //-48786.85844 -45.86875459; 
+        return (currentRotation); 
     }
 
     public double getExtensionPosition() {
-        return (currentExtension) ; /*/ -2237.521 +2)/*Arm_Constants.rawToInchesConversion*/
+        return (currentExtension); 
     }
 
     private void arcadeArm() {
+
+        //Allows joystick to override preset 
         if(Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1 ){
             armExtendManual();
         }
@@ -170,6 +178,7 @@ public class Arm_Subsystem extends SubsystemBase {
             extendOverride = false;
         }
 
+        //Allows joystick to override preset 
         if (Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1){
             armRotateManual();
         }
@@ -220,7 +229,7 @@ public class Arm_Subsystem extends SubsystemBase {
         extendOverride = true;
 
         if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1) {
-            if ( currentExtension > Arm_Constants.armLimit){ //please don't delete these, sometimes the limit above doesn't always catch it
+            if ( currentExtension > Arm_Constants.armExtentionLimit){ //please don't delete these, sometimes the limit above doesn't always catch it
                    if (armExtendDirection()) { 
                         extendMotor.stopMotor(); 
                    }
@@ -247,63 +256,67 @@ public class Arm_Subsystem extends SubsystemBase {
             stopArm();
         }
         else{ 
-            if (Math.abs(currentExtension) > Arm_Constants.armLimit || (!armExtendDirection() && currentExtension <= 0.1) || Math.abs((desiredExtension -  currentExtension)) < Arm_Constants.extendeMarginOfError) {
+            if (Math.abs(currentExtension) > Arm_Constants.armExtentionLimit || (!armExtendDirection() && currentExtension <= 0.1) || Math.abs((desiredExtension -  currentExtension)) < Arm_Constants.extendeMarginOfError) {
                 //Stops motor if extended too far or if trying to retract in too far
                 extendMotor.stopMotor(); 
                 //System.out.println("limit reached");
             }
             else if((currentRotation > Arm_Constants.frontExtensionSafe && currentRotation < Arm_Constants.backExtensionSafe) || Math.abs(desiredRotation- currentRotation) > 97) {
                 //Retracts extension when in danger zone for penalties
+                //should not extend untill past danger zone
                 extendMotor.set(Arm_Constants.armExtendSpeed);
                     //System.out.println("retracting in zone");
-                if ( currentExtension > Arm_Constants.armLimit){ //please don't delete these, sometimes the limit above doesn't always catch it
-                    extendMotor.stopMotor();
-                    desiredExtension = currentExtension; 
-                    //System.out.println("kill backup");
-                }
+                extendLimitFailSafe();  //please don't delete these, sometimes the limit above doesn't always catch it
+
             }
             else if ((desiredExtension - currentExtension) > 0){ //Extends out if needed
                 extendMotor.set(-Arm_Constants.armExtendSpeed);
                 //System.out.println("extending");
-                if ( currentExtension > Arm_Constants.armLimit){ //please don't delete these, sometimes the limit above doesn't always catch it
-                    extendMotor.stopMotor(); 
-                    desiredExtension = currentExtension;
-                    //System.out.println("kill backup 1");
-                }
+                extendLimitFailSafe();  //please don't delete these, sometimes the limit above doesn't always catch it
             }
             else if ((desiredExtension - currentExtension) < 0){ //Retracts if needed
                 extendMotor.set(Arm_Constants.armExtendSpeed);  
                 //System.out.println("retracing");
-                if ( currentExtension > Arm_Constants.armLimit){ //please don't delete these, sometimes the limit above doesn't always catch it
-                    extendMotor.stopMotor(); 
-                    desiredExtension = currentExtension;
-                    //System.out.println("Kill backup 2");
-                }
+                extendLimitFailSafe();  //please don't delete these, sometimes the limit above doesn't always catch it
             }  
             else {
-                extendMotor.stopMotor();
+                extendMotor.stopMotor(); //failsafe, ensures motor stops incase "if ()" was passed over but difference is within margin of error
             }
         }
     }
 
+
+    //called during every preset to ensure we're not overextending 
+    private void extendLimitFailSafe(){
+        if ( currentExtension > Arm_Constants.armExtentionLimit){ 
+            extendMotor.stopMotor(); 
+            desiredExtension = currentExtension;
+            //System.out.println("Kill backup");
+        }
+    }
+
+
+    //true = extending -- false = retracting
     private boolean armExtendDirection(){
         if(desiredExtension-currentExtension > 0){
             //System.out.println("arm is extending"); 
-            return true;//If the intake is extending(negative is extending)
+            return true;//(negative is extending)
           
         }
         else{
             //System.out.println("arm is retracting");
-            return false; //If the intake is retracting
+            return false; 
         }
     }
 
+
+    //true = rotating back -- false = rotating towards intake (forward)
     private boolean armRotateDirection(){
         if(rotateMotor.get() > 0){
-            return true; //If the arm is rotating towards scoring
+            return true; 
         }
         else{
-            return false; //If the arm is rotating away from scoring
+            return false; 
         }
     }
 }
