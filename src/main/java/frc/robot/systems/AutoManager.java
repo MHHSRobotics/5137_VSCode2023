@@ -23,32 +23,32 @@ import frc.robot.commands.Arm_Commands;
 import frc.robot.commands.Clamp_Commands;
 
 public class AutoManager extends SubsystemBase {
-    private final Drive_Subsystem drive;
-    private final Intake_Commands intake_Commands;
-    private final Arm_Commands arm_Commands;
-    private final Clamp_Commands clamp_Commands;
+    private  Drive_Subsystem drive;
+    private  Intake_Commands intake_Commands;
+    private  Arm_Commands arm_Commands;
+    private  Clamp_Commands clamp_Commands;
     
-    private final double maxVelo;
-    private final double maxAccel;
+    private  double maxVelo;
+    private  double maxAccel;
 
-    private final SequentialCommandGroup scoreTopCone;
-    private final SequentialCommandGroup scoreTopCube;
-    private final SequentialCommandGroup intakeObject;
+    private  SequentialCommandGroup scoreTopCone;
+    private  SequentialCommandGroup scoreTopCube;
+    private  SequentialCommandGroup intakeObject;
 
-    private final HashMap<String, Command> eventMap; //Maps out events during autoPath
-    private final RamseteAutoBuilder autoBuilder; //Allows auto to drive a path
+    private  HashMap<String, Command> eventMap; //Maps out events during autoPath
+    private  RamseteAutoBuilder autoBuilder; //Allows auto to drive a path
     
-    private final ArrayList<PathPlannerTrajectory> left_mobility;
-    private final ArrayList<PathPlannerTrajectory> left_engage;
-    private final ArrayList<PathPlannerTrajectory> left_mobility_engage;
-    private final ArrayList<PathPlannerTrajectory> left_doubleScore;
-    private final ArrayList<PathPlannerTrajectory> left_doubleScore_engage;
-    private final ArrayList<PathPlannerTrajectory> middle_engage;
-    private final ArrayList<PathPlannerTrajectory> right_mobility;
-    private final ArrayList<PathPlannerTrajectory> right_engage;
-    private final ArrayList<PathPlannerTrajectory> right_mobility_engage;
-    private final ArrayList<PathPlannerTrajectory> right_doubleScore;
-    private final ArrayList<PathPlannerTrajectory> right_doubleScore_engage;
+    private  ArrayList<PathPlannerTrajectory> left_mobility;
+    private  ArrayList<PathPlannerTrajectory> left_engage;
+    private  ArrayList<PathPlannerTrajectory> left_mobility_engage;
+    private  ArrayList<PathPlannerTrajectory> left_doubleScore;
+    private  ArrayList<PathPlannerTrajectory> left_doubleScore_engage;
+    private  ArrayList<PathPlannerTrajectory> middle_engage;
+    private  ArrayList<PathPlannerTrajectory> right_mobility;
+    private  ArrayList<PathPlannerTrajectory> right_engage;
+    private  ArrayList<PathPlannerTrajectory> right_mobility_engage;
+    private  ArrayList<PathPlannerTrajectory> right_doubleScore;
+    private  ArrayList<PathPlannerTrajectory> right_doubleScore_engage;
 
     
 
@@ -137,6 +137,7 @@ public class AutoManager extends SubsystemBase {
 
         System.out.println("Auto Selected: "+autoNumber);
 
+        /* 
         if (autoInfo.getType() == "SingleScore")
             eventMap.put("ScoreCone", scoreTopCone);
         else if (autoInfo.getType() == "DoubleScore") {
@@ -144,6 +145,7 @@ public class AutoManager extends SubsystemBase {
             eventMap.put("Intake", intakeObject);
             eventMap.put("ScoreCube", scoreTopCube);
         }
-        autoBuilder.fullAuto(autoPath);
+        */
+        autoBuilder.fullAuto(autoPath).schedule();
     }
 }
