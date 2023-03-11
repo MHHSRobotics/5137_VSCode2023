@@ -14,6 +14,7 @@ public class Intake_Subystem extends SubsystemBase {
   public static boolean intakeOveride; //this will override the arm automatically extending/rectracting the intake 
 
   public Intake_Subystem() {
+    intakeOveride = false;
     intakeMotor = new SparkMaxWrapper(Intake_Constants.Port, MotorType.kBrushless);
   }
 

@@ -97,17 +97,20 @@ public class Arm_Subsystem extends SubsystemBase {
 
         arcadeArm(); //Method called to move arm with presets or manually
 
-        System.out.println("cRt " + currentRotation + " dRt " + desiredRotation + " cEx " + currentExtension + " dEx " + desiredExtension);
+        //System.out.println("cRt " + currentRotation + " dRt " + desiredRotation + " cEx " + currentExtension + " dEx " + desiredExtension);
 
         if(Math.abs(desiredRotation-currentRotation) > 5 && currentRotation < Arm_Constants.rotationStartIntake ){
-            RobotContainer.intake_Commands.justExtend(); //If the arm is preset to move significantly (not jittering) and is near intake, intake drops
-
+            //.schedule() is needed when commands aren't being button binded
+            RobotContainer.intake_Commands.justExtend().schedule(); //If the arm is preset to move significantly (not jittering) and is near intake, intake drops
+            //System.out.println("intake should be extended");
         }
         else if((Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1) && (currentRotation < Arm_Constants.rotationStartIntake)){
-            RobotContainer.intake_Commands.justExtend(); //If the arm is being moved manually and is near intake, intake dropped
+            RobotContainer.intake_Commands.justExtend().schedule(); //If the arm is being moved manually and is near intake, intake dropped
+            //System.out.println("intake should be extended 2.0");
         }
-        else if (!Intake_Subystem.intakeOveride) { //allows override from the driver controler 
-            RobotContainer.intake_Commands.justRetract(); //If the intake is not being called elsewhere, retract in
+        else if (Math.abs(RobotContainer.driverController.getRawAxis(XBOX_Constants.RTPort)) < 0.1 && Math.abs(RobotContainer.driverController.getRawAxis(XBOX_Constants.LTPort)) < 0.1) { //allows override from the driver controler 
+            RobotContainer.intake_Commands.justRetract().schedule(); //If the intake is not being called elsewhere, retract in
+            //System.out.println("intake should retracted");
         }
         
 

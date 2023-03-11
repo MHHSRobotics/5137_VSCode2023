@@ -24,6 +24,7 @@ public class Intake_Commands {
     } 
 
     public Command justExtend(){
+        //System.out.println("command is being called");
         return new InstantCommand (() -> {intake.extendIntake();});
     }
 
