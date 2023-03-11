@@ -73,13 +73,6 @@ public class Drive_Subsystem extends SubsystemBase {
   public Consumer<Boolean> balanceEndCommand;
   public Consumer<Boolean> tagDriveEndCommands;  
 
-  //Paths
-  public ArrayList<PathPlannerTrajectory> score_mobility_chargeEngage;
-  public ArrayList<PathPlannerTrajectory> score_mobility_intake_score;
-  public ArrayList<PathPlannerTrajectory> score_chargeEngage;
-  public ArrayList<PathPlannerTrajectory> score_mobility_straightChargeEngage;
-  public ArrayList<PathPlannerTrajectory> Goal_Path;
-
   //rate limiter
   private final SlewRateLimiter rateLimiter = new SlewRateLimiter(1); //1.2
   private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(3); //4
@@ -96,7 +89,7 @@ public class Drive_Subsystem extends SubsystemBase {
     rightFrontTalon = new WPI_TalonFX(Drive_Constants.rightFrontPort);
     rightBackTalon = new WPI_TalonFX(Drive_Constants.rightBackPort);
     rightDrive = new MotorControllerGroup(rightFrontTalon, rightBackTalon);
-    rightDrive.setInverted(true);
+    //rightDrive.setInverted(true);
 
     
     this.controller = m_controller;
@@ -164,7 +157,7 @@ public class Drive_Subsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (controller != null) {
+    if (controller != null && RobotState.isTeleop()) {
       arcadeDrive(controller);
     }
     //Updates the position with gyro and encoder periodcally 
@@ -173,6 +166,7 @@ public class Drive_Subsystem extends SubsystemBase {
     addVisionMeasurement(Vision_Subsystem.lifeCamPoseEstimator);
 
     //Used to coast when the robot is moving / disabled -- breaks when stationary 
+    
     if (RobotState.isEnabled()){
       //checks that we aren't using power and that speed is low so it's not an abrupt stops 
       if (leftBackTalon.getMotorOutputVoltage() < 3 & (leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10 < 0.1)){
@@ -203,6 +197,10 @@ public class Drive_Subsystem extends SubsystemBase {
     double leftSpeed = leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10 ; //Speed = sensor count per 100 ms * distance per count * 10 (converts 100 ms to s)
     double rightSpeed = rightFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10;
     return new DifferentialDriveWheelSpeeds(leftSpeed, rightSpeed);
+  }
+
+  public void drive(double speed, double rotate) {
+    jMoneyDrive.curvatureDrive(speed, rotate, true);
   }
 
   //Sets the volts of each motor 

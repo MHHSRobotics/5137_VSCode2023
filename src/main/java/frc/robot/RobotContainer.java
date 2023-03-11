@@ -178,6 +178,10 @@ public class RobotContainer {
     autoManager.runAuto(shuffleboard.getAuto());
   }
 
+  public void runBackupAuto() {
+    drive_Commands.driveForward().schedule();
+  }
+
   public void runLEDS() {
     led_Subsystem.pulsingCG(25, 10);
   }

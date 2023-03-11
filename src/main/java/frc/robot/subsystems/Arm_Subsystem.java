@@ -87,7 +87,7 @@ public class Arm_Subsystem extends SubsystemBase {
     public void periodic() {
         currentRotation = rotateEncoder.getPosition();
         currentExtension = -extendEncoder.getPosition();
-        System.out.println("Rotate " + getRotationPosition() + "\t\t\tDesired" + desiredRotation + "\t\t\tExtention " + getExtensionPosition() + "\t\t\tDesired " + desiredExtension);//("Extent " + getExtensionPosition() + "\t\t\tDesired " + desiredExtension + "\t\t\tDiff " + Math.abs(desiredExtension - currentExtension));//"\t\t\tExtend " + getExtensionPosition());
+        //System.out.println("Rotate " + getRotationPosition() + "\t\t\tDesired" + desiredRotation + "\t\t\tExtention " + getExtensionPosition() + "\t\t\tDesired " + desiredExtension);//("Extent " + getExtensionPosition() + "\t\t\tDesired " + desiredExtension + "\t\t\tDiff " + Math.abs(desiredExtension - currentExtension));//"\t\t\tExtend " + getExtensionPosition());
         //System.out.println("CurExx " + currentExtension + "\t\t\tDesiredex" + desiredExtension);
         //System.out.println("diff" + (desiredExtension-currentExtension));
         

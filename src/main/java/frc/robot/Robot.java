@@ -24,11 +24,14 @@ public class Robot extends TimedRobot {
    */
   private RobotContainer m_RobotContainer;
 
+  private Timer time;
+
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_RobotContainer = new RobotContainer();
+    time = new Timer();
   }
 
   /**
@@ -58,12 +61,17 @@ public class Robot extends TimedRobot {
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   public void autonomousInit() {
-    m_RobotContainer.runAuto();
+    //m_RobotContainer.runAuto();
+    time.reset();
+    time.start();
   }
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
     m_RobotContainer.runLEDSAuto();
+    if (!time.hasElapsed(8)) {
+      m_RobotContainer.runBackupAuto();
+    }
   }
 
   @Override

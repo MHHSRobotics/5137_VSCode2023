@@ -59,4 +59,8 @@ public class Drive_Commands {
         drive);
   }
 
+  public Command driveForward() {
+    return new InstantCommand(() -> {System.out.println("Running auto drive"); drive.drive(0.5, 0.0);});
+  }
+
 }

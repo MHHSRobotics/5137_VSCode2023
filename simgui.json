@@ -30,12 +30,12 @@
           "open": true
         }
       },
-      "SparkMax[8]": {
+      "Talon FX[1]": {
         "header": {
           "open": true
         }
       },
-      "SparkMax[9]": {
+      "Talon FX[3]": {
         "header": {
           "open": true
         }
@@ -54,9 +54,6 @@
         "header": {
           "open": true
         }
-      },
-      "window": {
-        "visible": false
       }
     },
     "Solenoids": {
