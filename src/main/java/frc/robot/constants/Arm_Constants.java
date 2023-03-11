@@ -6,20 +6,20 @@ public final class Arm_Constants {
     public final static int armLimit = 20;
 
     public final static double rotateMarginOfError = 2;
-    public final static double extendeMarginOfError = 0.25;
+    public final static double extendeMarginOfError = 1;
 
     public final static int newRotationOrigin = 63;
 
     public final static double rawToDegreeConversion = 275; //gear ratio for rotation moter
     public final static double rawToInchesConversion = 2091; //each rotation is 9.4 inches 
 
-    public final static double armExtendSpeed = 0.35/1.5; //needs testing
-    public final static double armRotateSpeed = 0.30/2; //needs testing
+    public final static double armExtendSpeed = 0.35; //needs testing
+    public final static double armRotateSpeed = 0.25; //needs testing
     public final static double manualExtendSpeed = 0.1;
     public final static double manualRotateSpeed = 0.1;
     
-    public final static double armIntakeRotation = 4; //-59 + newRotationOrigin;
-    public final static double armIntakeExtension = 8.75;
+    public final static double armIntakeRotation = 7.8545; 
+    public final static double armIntakeExtension = 10.0153;
 
     public final static double topConeRotation = 231.0139;
     public final static double topConeExtension = 18.83027;
@@ -36,7 +36,7 @@ public final class Arm_Constants {
     public final static double hybridRotation = 306.8378;
     public final static double hybridExtension = 6.2465;
 
-    public final static double rotationIntakeSafe = -20 + newRotationOrigin; //the minimum degrees at which rotation is safe 
+    public final static double rotationStartIntake = 90; //makes the intake go if it's within 0 - this range  
     
     //to ensure the motor doesn't try to drive into the bot 
     public final static double frontRotationSafe = 0; // neds to be changed 

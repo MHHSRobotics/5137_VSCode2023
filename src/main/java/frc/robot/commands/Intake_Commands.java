@@ -21,5 +21,13 @@ public class Intake_Commands {
 
     public Command stopIntake() {
         return new InstantCommand(() -> {intake.stop(); intake.retractIntake();});
+    } 
+
+    public Command justExtend(){
+        return new InstantCommand (() -> {intake.extendIntake();});
+    }
+
+    public Command justRetract(){
+        return new InstantCommand(() -> {intake.retractIntake();});
     }
 }
