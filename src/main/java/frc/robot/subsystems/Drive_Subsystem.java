@@ -210,10 +210,10 @@ public class Drive_Subsystem extends SubsystemBase {
     System.out.println("Desired Volts - Left: " + leftVolts + " Right: " + rightVolts);
     leftVolts *= .2;
     rightVolts *= .2;
-    leftVolts -= 0.1*leftVolts;
+    leftVolts += 0.1*leftVolts;
     System.out.println("Actual Volts - Left: " + leftVolts + " Right: " + rightVolts);
-    leftDrive.setVoltage(-leftVolts);
-    rightDrive.setVoltage(-rightVolts);
+    leftDrive.setVoltage(leftVolts);
+    rightDrive.setVoltage(rightVolts);
    // System.out.println(getWheelSpeeds());
   }
 

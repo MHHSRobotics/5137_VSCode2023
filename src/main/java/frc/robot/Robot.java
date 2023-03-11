@@ -67,10 +67,12 @@ public class Robot extends TimedRobot {
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   public void autonomousInit() {
-    m_RobotContainer.runAuto();
-   /* 
     time.reset();
     time.start();
+    m_RobotContainer.intake_Commands.runIntakeReverse().schedule();
+    m_RobotContainer.runAuto();
+   /* 
+    
     */
   }
   /** This function is called periodically during autonomous. */

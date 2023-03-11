@@ -101,7 +101,7 @@ public class Arm_Subsystem extends SubsystemBase {
 
         if(Math.abs(desiredRotation-currentRotation) > 5 && currentRotation < Arm_Constants.rotationStartIntake ){
             RobotContainer.intake_Commands.justExtend(); //If the arm is preset to move significantly (not jittering) and is near intake, intake drops
-            //sn
+
         }
         else if((Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1) && (currentRotation < Arm_Constants.rotationStartIntake)){
             RobotContainer.intake_Commands.justExtend(); //If the arm is being moved manually and is near intake, intake dropped
