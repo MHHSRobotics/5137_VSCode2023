@@ -54,11 +54,11 @@ public class Pneumatics_Subsystem extends SubsystemBase {
   }
 
   public void enableClamp() {
-    clampSolenoid.set(true);
+    clampSolenoid.set(false); //worked before cause inverted triggers, this is proper fix
   }
 
   public void disableClamp() {
-    clampSolenoid.set(false);
+    clampSolenoid.set(true);
   }
 
   public void toggleClamp(){

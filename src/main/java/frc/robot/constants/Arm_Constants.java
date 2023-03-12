@@ -13,7 +13,7 @@ public final class Arm_Constants {
     public final static double rawToDegreeConversion = 275; //gear ratio for rotation moter
     public final static double rawToInchesConversion = 2091; //each rotation is 9.4 inches 
 
-    public final static double armExtendSpeed = 0.75; //needs testing
+    public final static double armExtendSpeed = 0.75 -0.1; //needs testing
     public final static double armRotateSpeed = 0.35; //needs testing
     public final static double manualExtendSpeed = 0.4;
     public final static double manualRotateSpeed = 0.35;

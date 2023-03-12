@@ -31,9 +31,9 @@ public class AutoManager extends SubsystemBase {
     private  double maxVelo;
     private  double maxAccel;
 
-    private  SequentialCommandGroup scoreTopCone;
-    private  SequentialCommandGroup scoreTopCube;
-    private  SequentialCommandGroup intakeObject;
+    public  SequentialCommandGroup scoreTopCone;
+    public  SequentialCommandGroup scoreTopCube;
+    public  SequentialCommandGroup intakeObject;
 
     private  HashMap<String, Command> eventMap; //Maps out events during autoPath
     private  RamseteAutoBuilder autoBuilder; //Allows auto to drive a path

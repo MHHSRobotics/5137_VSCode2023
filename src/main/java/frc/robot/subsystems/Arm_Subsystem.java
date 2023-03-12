@@ -71,7 +71,7 @@ public class Arm_Subsystem extends SubsystemBase {
             if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1 || Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1){
                 return true;
             }
-            else if (((Math.abs(desiredRotation - currentRotation) < Arm_Constants.rotateMarginOfError)  && (Math.abs(currentExtension-desiredExtension) < Arm_Constants.extendeMarginOfError)) || (rotateEncoder.getPosition() > Arm_Constants.rotationStartIntake) ) { /* >= Arm_Constants.rotationIntakeSafe && RobotContainer.pneumatics_Subsystem.getIntakeEnabled())*/ 
+            else if (((Math.abs(desiredRotation - currentRotation) < Arm_Constants.rotateMarginOfError)  && (Math.abs(currentExtension-desiredExtension) < Arm_Constants.extendeMarginOfError))/*  || (rotateEncoder.getPosition() > Arm_Constants.rotationStartIntake)*/ ) { /* >= Arm_Constants.rotationIntakeSafe && RobotContainer.pneumatics_Subsystem.getIntakeEnabled())*/ 
                 return true;
             }
             else {

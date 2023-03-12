@@ -138,18 +138,18 @@ public class RobotContainer {
     new JoystickButton(driverController, XBOX_Constants.YButton)
     .onTrue(led_Commands.coneLEDS());
 
-    /*new JoystickButton(driverController, XBOX_Constants.BButton)
-    .onTrue(intake_Commands.justRetract());*/
+    new JoystickButton(driverController, XBOX_Constants.BButton)
+    .onTrue(autoManager.scoreTopCone);
 
 
   //Assistant Controller
-    //right trigger clamps
+    //right trigger opens clamp
     new Trigger(createBooleanSupplier(assistController, XBOX_Constants.RTPort, XBOX_Constants.LTPort))  //right trigger 
-    .whileTrue(clamp_Commands.clamp());
-
-    //left trigger releases clamp
-    new Trigger(createBooleanSupplier(assistController, XBOX_Constants.LTPort, XBOX_Constants.RTPort))  //left trigger 
     .whileTrue(clamp_Commands.clampRelease());
+
+    //left trigger closes clamp
+    new Trigger(createBooleanSupplier(assistController, XBOX_Constants.LTPort, XBOX_Constants.RTPort))  //left trigger 
+    .whileTrue(clamp_Commands.clamp());
 
     //Up on Dpad moves to intake 
     new POVButton(assistController, XBOX_Constants.UpDPad)

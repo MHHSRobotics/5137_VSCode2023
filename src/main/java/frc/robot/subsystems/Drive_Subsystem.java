@@ -165,6 +165,7 @@ public class Drive_Subsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    System.out.println(getWheelSpeeds());
     // This method will be called once per scheduler run
     if (controller != null && RobotState.isTeleop()) {
       arcadeDrive(controller);
@@ -195,14 +196,12 @@ public class Drive_Subsystem extends SubsystemBase {
       
     }
     else{
-      leftFrontTalon.setNeutralMode(NeutralMode.Coast);
-      leftBackTalon.setNeutralMode(NeutralMode.Coast);
-      rightBackTalon.setNeutralMode(NeutralMode.Coast);
-      rightFrontTalon.setNeutralMode(NeutralMode.Coast);      
-    }
-
-  
+      leftFrontTalon.setNeutralMode(NeutralMode.Brake);
+      leftBackTalon.setNeutralMode(NeutralMode.Brake);
+      rightBackTalon.setNeutralMode(NeutralMode.Brake);
+      rightFrontTalon.setNeutralMode(NeutralMode.Brake);
   }
+}
 
 
   //Returns wheel speeds of motors in meters per second
@@ -217,12 +216,12 @@ public class Drive_Subsystem extends SubsystemBase {
   public void setVolts(double leftVolts, double rightVolts)
   {
     System.out.println("Desired Volts - Left: " + leftVolts + " Right: " + rightVolts);
-    leftVolts *= .3;
-    rightVolts *= .3;
-    leftVolts += 0.1*leftVolts;
+    leftVolts *= .6;
+    rightVolts *= .6;
+    leftVolts -= 0.1*leftVolts;
     System.out.println("Actual Volts - Left: " + leftVolts + " Right: " + rightVolts);
-    leftDrive.setVoltage(leftVolts);
-    rightDrive.setVoltage(rightVolts);
+    leftDrive.setVoltage(-leftVolts);
+    rightDrive.setVoltage(-rightVolts);
    // System.out.println(getWheelSpeeds());
   }
 
