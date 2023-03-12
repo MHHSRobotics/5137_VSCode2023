@@ -77,7 +77,7 @@ public class Drive_Subsystem extends SubsystemBase {
   
 
   //rate limiter
-  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(1); //1.2
+  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(2); //1.2
   private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(3); //4
 
 
@@ -107,13 +107,17 @@ public class Drive_Subsystem extends SubsystemBase {
     poseEstimator = new DifferentialDrivePoseEstimator(Drive_Constants.trackWidth, new Rotation2d(gyro.getRoll()),Drive_Constants.initialLeftDistance, Drive_Constants.initialRightDistance, new Pose2d());
 
 
+    leftFrontTalon.setNeutralMode(NeutralMode.Coast);
+    leftBackTalon.setNeutralMode(NeutralMode.Coast);
+    rightBackTalon.setNeutralMode(NeutralMode.Coast);
+    rightFrontTalon.setNeutralMode(NeutralMode.Coast);
     //Encoders 
     leftFrontTalon.setSelectedSensorPosition(0);
     rightFrontTalon.setSelectedSensorPosition(0);
 
     //DriveTrain
     jMoneyDrive = new DifferentialDrive(leftDrive, rightDrive);
-    jMoneyDrive.setMaxOutput(0.9);
+    jMoneyDrive.setMaxOutput(1);
     
 
     //PID
@@ -173,7 +177,9 @@ public class Drive_Subsystem extends SubsystemBase {
     //Used to coast when the robot is moving / disabled -- breaks when stationary 
     if (RobotState.isEnabled()){
       //checks that we aren't using power and that speed is low so it's not an abrupt stops 
-      if (leftBackTalon.getMotorOutputVoltage() < 3 & (leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10 < 0.1)){
+       
+      if (/*leftBackTalon.getMotorOutputVoltage() < 3 & (leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10*/
+      Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) < 0.1 && Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) < 0.1/*Math.abs(leftFrontTalon.get()) < 0.1 && Math.abs(rightFrontTalon.get()) < 0.1)*/){
           leftFrontTalon.setNeutralMode(NeutralMode.Brake);
           leftBackTalon.setNeutralMode(NeutralMode.Brake);
           rightBackTalon.setNeutralMode(NeutralMode.Brake);
@@ -185,13 +191,16 @@ public class Drive_Subsystem extends SubsystemBase {
         rightBackTalon.setNeutralMode(NeutralMode.Coast);
         rightFrontTalon.setNeutralMode(NeutralMode.Coast);      
       }
+      
+      
     }
-    else {
-        leftFrontTalon.setNeutralMode(NeutralMode.Coast);
-        leftBackTalon.setNeutralMode(NeutralMode.Coast);
-        rightBackTalon.setNeutralMode(NeutralMode.Coast);
-        rightFrontTalon.setNeutralMode(NeutralMode.Coast);  
+    else{
+      leftFrontTalon.setNeutralMode(NeutralMode.Coast);
+      leftBackTalon.setNeutralMode(NeutralMode.Coast);
+      rightBackTalon.setNeutralMode(NeutralMode.Coast);
+      rightFrontTalon.setNeutralMode(NeutralMode.Coast);      
     }
+
   
   }
 
@@ -309,6 +318,20 @@ public class Drive_Subsystem extends SubsystemBase {
 
   public void drive(double speed, double rotate) {
     jMoneyDrive.curvatureDrive(speed, rotate, true);
+  }
+
+  public void driveBrake(){
+    leftFrontTalon.setNeutralMode(NeutralMode.Brake);
+    leftBackTalon.setNeutralMode(NeutralMode.Brake);
+    rightBackTalon.setNeutralMode(NeutralMode.Brake);
+    rightFrontTalon.setNeutralMode(NeutralMode.Brake);
+  }
+
+  public void driveCoast(){
+    leftFrontTalon.setNeutralMode(NeutralMode.Coast);
+    leftBackTalon.setNeutralMode(NeutralMode.Coast);
+    rightBackTalon.setNeutralMode(NeutralMode.Coast);
+    rightFrontTalon.setNeutralMode(NeutralMode.Coast);
   }
 }
 

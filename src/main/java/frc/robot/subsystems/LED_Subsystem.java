@@ -4,13 +4,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotState;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
 import edu.wpi.first.wpilibj.util.Color;
 
 import frc.robot.constants.LED_Constants;
+import frc.robot.Robot;
 
 public class LED_Subsystem extends SubsystemBase {
     private static AddressableLED led;
@@ -117,16 +116,21 @@ public class LED_Subsystem extends SubsystemBase {
     public void pulsingTele() {
         int speed;
 
-        if (Timer.getMatchTime() < 105) {
-            speed = 10;
-        } else {
+        if (Robot.time.hasElapsed(105)) {
+            speed = 50;
+        } else if (Robot.time.hasElapsed(90)) {
+            speed = 40;
+        } else if (Robot.time.hasElapsed(60)) {
+            speed = 30;
+        } else if (Robot.time.hasElapsed(30)) {
             speed = 20;
-        }
-
-        if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-            pulsingColor(speed, 25, LED_Constants.Blue);
         } else {
-            pulsingColor(speed, 25, LED_Constants.Red);
+            speed = 10;
+        }
+        if (DriverStation.getAlliance().equals(Alliance.Blue)) {
+            pulsingColor(speed, 150, LED_Constants.Blue);
+        } else {
+            pulsingColor(speed, 150, LED_Constants.Red);
         }
     }
 

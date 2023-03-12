@@ -14,6 +14,7 @@ import com.pathplanner.lib.auto.RamseteAutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -48,6 +49,7 @@ public class RobotContainer {
   public static Clamp_Commands clamp_Commands;
   public static Pneumatics_Commands pneumatics_Commands;
   public static Drive_Commands drive_Commands;
+  public static LED_Commands led_Commands;
   
   //Controllers
   public static Joystick driverController;
@@ -86,6 +88,7 @@ public class RobotContainer {
     clamp_Commands = new Clamp_Commands(clamp_Subsystem);
     pneumatics_Commands = new Pneumatics_Commands(pneumatics_Subsystem);
     drive_Commands = new Drive_Commands(drive_Subsystem);
+    led_Commands = new LED_Commands(led_Subsystem);
   }
 
   
@@ -122,8 +125,18 @@ public class RobotContainer {
     new POVButton(driverController, XBOX_Constants.RightDPad)
     .onTrue(drive_Commands.tagDrive(vision_Subsystem.getNearestAlign("right", drive_Subsystem.poseEstimator.getEstimatedPosition())));
 
+    
     new JoystickButton(driverController, XBOX_Constants.AButton)
-    .onTrue(intake_Commands.justExtend());
+    .onTrue(new InstantCommand(() -> drive_Subsystem.driveBrake()))
+    .onFalse(new InstantCommand(() -> drive_Subsystem.driveCoast()));
+
+    //Cube leds for signaling
+    new JoystickButton(driverController, XBOX_Constants.XButton)
+    .onTrue(led_Commands.cubeLEDS());
+    
+    //Cone leds for signaling
+    new JoystickButton(driverController, XBOX_Constants.YButton)
+    .onTrue(led_Commands.coneLEDS());
 
     /*new JoystickButton(driverController, XBOX_Constants.BButton)
     .onTrue(intake_Commands.justRetract());*/
@@ -177,15 +190,6 @@ public class RobotContainer {
 
   public void runLEDSTeleOp() {
     led_Subsystem.runLEDS();
-  }
-
-  public void runBackupAuto(int stage) {
-    switch (stage) {
-      case(0): {intake_Commands.runIntakeReverse().schedule();}
-      case(1): {intake_Commands.stopIntake().schedule();}
-      case(2): {drive_Commands.driveForward().schedule();}
-      case(3): {drive_Commands.stop().schedule();}
-    }
   }
 
   //required port is the joystick you are currecntly attempting to use 

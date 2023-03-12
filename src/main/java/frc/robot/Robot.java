@@ -27,15 +27,15 @@ public class Robot extends TimedRobot {
    */
   private RobotContainer m_RobotContainer;
   public static UsbCamera USBArCam;
-  private Timer time;
+  public static Timer time;
 
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_RobotContainer = new RobotContainer();
-    USBArCam = CameraServer.startAutomaticCapture();
-    USBArCam.setResolution(240, 180);
+    //USBArCam = CameraServer.startAutomaticCapture();
+    //USBArCam.setResolution(240, 180);
     PortForwarder.add(1811, "LifeCam", 1811);
     PortForwarder.add(1812, "AR1", 1812);
     time = new Timer();
@@ -71,11 +71,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     time.reset();
     time.start();
-    m_RobotContainer.intake_Commands.autoReverseIntake().schedule();
     m_RobotContainer.runAuto();
-   /* 
-    
-    */
   }
   /** This function is called periodically during autonomous. */
   @Override
@@ -97,7 +93,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    
+    time.reset();
   }
 
   /** This function is called periodically during operator control. */

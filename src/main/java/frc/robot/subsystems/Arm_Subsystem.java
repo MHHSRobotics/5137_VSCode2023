@@ -97,7 +97,7 @@ public class Arm_Subsystem extends SubsystemBase {
 
         arcadeArm(); //Method called to move arm with presets or manually
 
-        //System.out.println("cRt " + currentRotation + " dRt " + desiredRotation + " cEx " + currentExtension + " dEx " + desiredExtension);
+        System.out.println("cRt " + currentRotation + " dRt " + desiredRotation + " cEx " + currentExtension + " dEx " + desiredExtension);
 
         if(Math.abs(desiredRotation-currentRotation) > 5 && currentRotation < Arm_Constants.rotationStartIntake ){
             //.schedule() is needed when commands aren't being button binded
