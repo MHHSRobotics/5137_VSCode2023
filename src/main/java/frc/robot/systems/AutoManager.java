@@ -141,7 +141,7 @@ public class AutoManager extends SubsystemBase {
 
         
         if (autoInfo.getType() == "SingleScore")
-            eventMap.put("ScoreCone", scoreTopCube);
+            eventMap.put("ScoreCone", scoreTopCone);
         else if (autoInfo.getType() == "DoubleScore") {
             eventMap.put("ScoreCone", scoreTopCone);
             eventMap.put("Intake", intakeObject);
