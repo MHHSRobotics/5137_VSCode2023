@@ -27,12 +27,12 @@ public final class Drive_Constants {
 
 //PID
     //PID for right and left side
-    public final static PIDConstants drivePIDConstants = new PIDConstants(0.1,0,0);
+    public final static PIDConstants drivePIDConstants = new PIDConstants(0.5,0,0);
 
     //Gains for FeedForward / Left+Right motor volts
-    public final static double dKS = .55;
-    public final static double dKV = 2.6;
-    public final static double dKA = .3;
+    public final static double dKS = 6;//1st derivative
+    public final static double dKV = 3;//2nd
+    public final static double dKA = 1.7;//3rd - higher a means more overshoot
 
     //pid for forward speed/vision
     public final static double dKP = 0.2;

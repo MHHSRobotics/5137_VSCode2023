@@ -99,7 +99,10 @@ public class Arm_Subsystem extends SubsystemBase {
 
         System.out.println("cRt " + currentRotation + " dRt " + desiredRotation + " cEx " + currentExtension + " dEx " + desiredExtension);
 
-        if(Math.abs(desiredRotation-currentRotation) > 5 && currentRotation < Arm_Constants.rotationStartIntake ){
+        if(Math.abs(RobotContainer.driverController.getRawAxis(XBOX_Constants.RTPort)) > 0.1 && Math.abs(RobotContainer.driverController.getRawAxis(XBOX_Constants.LTPort)) > 0.1){
+
+        }
+        else if(Math.abs(desiredRotation-currentRotation) > 5 && currentRotation < Arm_Constants.rotationStartIntake ){
             //.schedule() is needed when commands aren't being button binded
             RobotContainer.intake_Commands.justExtend().schedule(); //If the arm is preset to move significantly (not jittering) and is near intake, intake drops
             //System.out.println("intake should be extended");

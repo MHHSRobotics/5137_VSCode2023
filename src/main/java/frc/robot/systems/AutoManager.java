@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -19,6 +20,7 @@ import frc.robot.objects.AutoData;
 import frc.robot.subsystems.Drive_Subsystem;
 
 import frc.robot.commands.Intake_Commands;
+import frc.robot.RobotContainer;
 import frc.robot.commands.Arm_Commands;
 import frc.robot.commands.Clamp_Commands;
 
@@ -65,7 +67,7 @@ public class AutoManager extends SubsystemBase {
         maxAccel = Auto_Constants.maxAccel;
 
         scoreTopCone = new SequentialCommandGroup(clamp_Commands.clamp(), arm_Commands.moveToTopCone(), clamp_Commands.clampRelease());
-        scoreTopCube = new SequentialCommandGroup(clamp_Commands.clamp(), arm_Commands.moveToTopCube(), clamp_Commands.clampRelease());
+        scoreTopCube = new SequentialCommandGroup(clamp_Commands.clamp(), arm_Commands.moveToTopCube(), clamp_Commands.clampRelease()/*,new InstantCommand(() -> runAuto(RobotContainer.shuffleboard.getAuto())) */);
         intakeObject = new SequentialCommandGroup(intake_Commands.runIntakeForward(), arm_Commands.moveToIntake());
 
         eventMap = new HashMap<>();
@@ -137,15 +139,15 @@ public class AutoManager extends SubsystemBase {
 
         System.out.println("Auto Selected: "+autoNumber);
 
-        /* 
+        
         if (autoInfo.getType() == "SingleScore")
-            eventMap.put("ScoreCone", scoreTopCone);
+            eventMap.put("ScoreCone", scoreTopCube);
         else if (autoInfo.getType() == "DoubleScore") {
             eventMap.put("ScoreCone", scoreTopCone);
             eventMap.put("Intake", intakeObject);
             eventMap.put("ScoreCube", scoreTopCube);
         }
-        */
+        
         autoBuilder.fullAuto(autoPath).schedule();
     }
 }

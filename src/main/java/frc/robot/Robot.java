@@ -71,6 +71,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     time.reset();
     time.start();
+    //RobotContainer.autoManager.scoreTopCube.schedule();
     m_RobotContainer.runAuto();
   }
   /** This function is called periodically during autonomous. */

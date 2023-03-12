@@ -77,8 +77,8 @@ public class Drive_Subsystem extends SubsystemBase {
   
 
   //rate limiter
-  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(2); //1.2
-  private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(3); //4
+  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(8); //1.2
+  private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(4); //4
 
 
 
@@ -194,6 +194,7 @@ public class Drive_Subsystem extends SubsystemBase {
       }
       
       
+      
     }
     else{
       leftFrontTalon.setNeutralMode(NeutralMode.Brake);
@@ -242,7 +243,7 @@ public class Drive_Subsystem extends SubsystemBase {
       jMoneyDrive.curvatureDrive(-speed/Drive_Constants.driveSensitivity, -rotate/Drive_Constants.turnSensitivity , true);
     }
     else if(controller.getRawButton(XboxController.Button.kLeftBumper.value)){
-      jMoneyDrive.curvatureDrive(speed/(Drive_Constants.driveSensitivity*5), rotate/(Drive_Constants.turnSensitivity*5) , true);
+      jMoneyDrive.curvatureDrive(speed/(Drive_Constants.driveSensitivity*5), rotate/(Drive_Constants.turnSensitivity*2) , true);
     }
     else{
     jMoneyDrive.curvatureDrive(speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);

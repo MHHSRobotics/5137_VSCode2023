@@ -147,7 +147,7 @@ public class RobotContainer {
     new Trigger(createBooleanSupplier(assistController, XBOX_Constants.RTPort, XBOX_Constants.LTPort))  //right trigger 
     .whileTrue(clamp_Commands.clampRelease());
 
-    //left trigger closes clamp
+    //left trigger closes cla
     new Trigger(createBooleanSupplier(assistController, XBOX_Constants.LTPort, XBOX_Constants.RTPort))  //left trigger 
     .whileTrue(clamp_Commands.clamp());
 
