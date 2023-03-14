@@ -18,7 +18,8 @@ public final class Main {
    * Main initialization function. Do not perform any initialization here.
    *
    * <p>If you change your main robot class, change the parameter type.
-   */
+   */ //IF RUNNING SIMULATION ON MAC OS AND IT I CRASHING WITHOUT THROWING A CODE EXCEPTION THEN RUN ./gradlew clean  
+
   public static void main(String... args) {
     RobotBase.startRobot(Robot::new);
   }

@@ -7,20 +7,14 @@ package frc.robot;
 import frc.robot.subsystems.*;
 import frc.robot.systems.*;
 
-import java.util.function.BooleanSupplier;
 
-import com.pathplanner.lib.auto.RamseteAutoBuilder;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.commands.*;
-import frc.robot.constants.*;
 import frc.robot.constants.Controller_Constants.*;
 
 /**
@@ -135,6 +129,8 @@ public class RobotContainer {
     led_Subsystem.runLEDS();
   }
 
+
+  /* 
   //required port is the joystick you are currecntly attempting to use 
   //dependent port is the joytick we're checking against, to make sure you're not breaking the robot 
   private BooleanSupplier createBooleanSupplier(Joystick controller, int requiredPort, int dependentPort) {
@@ -152,4 +148,5 @@ public class RobotContainer {
     };
     return supply;
   }
+  */
 }

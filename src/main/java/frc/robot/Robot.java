@@ -4,14 +4,12 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-import frc.robot.systems.*;
 
 
 /**
@@ -28,6 +26,9 @@ public class Robot extends TimedRobot {
   private RobotContainer m_RobotContainer;
   public static UsbCamera USBArCam;
   public static Timer time;
+
+
+  //IF RUNNING SIMULATION ON MAC OS AND IT I CRASHING WITHOUT THROWING A CODE EXCEPTION THEN RUN ./gradlew clean  
 
   @Override
   public void robotInit() {
