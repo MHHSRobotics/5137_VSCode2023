@@ -8,18 +8,18 @@ import frc.robot.subsystems.Drive_Subsystem;
 import frc.robot.objects.AutoData;
 
 public class Shuffleboard extends SubsystemBase {
-    SendableChooser<String> autoPosition = new SendableChooser<>();
+    SendableChooser<String> autoColumn = new SendableChooser<>();
     SendableChooser<String> autoChoice = new SendableChooser<>();
     SendableChooser<Boolean> autoMobility = new SendableChooser<>();
     SendableChooser<Boolean> autoEngage = new SendableChooser<>();
 
     public Shuffleboard() {
-        configureSendableString(autoPosition, "Middle", "Left", "Middle", "Right");
-        configureSendableString(autoChoice, "None", "None", "SingleScore", "DoubleScore");
+        configureSendableString(autoColumn, "Middle", "Left", "Middle", "Right");
+        configureSendableString(autoChoice, "None", "None", "SingleScore");
         configureSendableBoolean(autoMobility, false);
         configureSendableBoolean(autoEngage, false);
 
-        SmartDashboard.putData("Auto Position", autoPosition);
+        SmartDashboard.putData("Auto Position", autoColumn);
         SmartDashboard.putData("Auto Choice", autoChoice);
         SmartDashboard.putData("Mobility", autoMobility);
         SmartDashboard.putData("Engage", autoEngage);
@@ -34,17 +34,11 @@ public class Shuffleboard extends SubsystemBase {
     }
 
     public AutoData getAuto() {
-       return new AutoData(autoPosition.getSelected(), autoChoice.getSelected(), autoMobility.getSelected(), autoEngage.getSelected());
+       return new AutoData(autoColumn.getSelected(), autoChoice.getSelected(), autoMobility.getSelected(), autoEngage.getSelected());
     }
 
     private void update() {
-        SmartDashboard.putNumber("Intake Motor", RobotContainer.intake_Subsystem.getIntakeSpeed());
-        SmartDashboard.putNumber("Arm Rotate Motor", RobotContainer.arm_Subsystem.getRotationSpeed());
-        SmartDashboard.putNumber("Arm Extend Motor", RobotContainer.arm_Subsystem.getExtensionSpeed());
-        SmartDashboard.putNumber("Arm Rotate Position", RobotContainer.arm_Subsystem.getRotationPosition());
-        SmartDashboard.putNumber("Arm Extend Position", RobotContainer.arm_Subsystem.getExtensionPosition());
-        SmartDashboard.putBoolean("Intake Solenoid", RobotContainer.pneumatics_Subsystem.getIntakeEnabled());
-        SmartDashboard.putBoolean("Clamp Solenoid", RobotContainer.pneumatics_Subsystem.getClampEnabled());
+        //SmartDashboard.putNumber("Arm Rotate Motor", RobotContainer.arm_Subsystem.getRotationSpeed());
     }
 
     private void configureSendableString(SendableChooser<String> chooser, String kDefault, String... kOptions) {

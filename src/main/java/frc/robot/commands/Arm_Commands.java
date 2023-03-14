@@ -12,62 +12,22 @@ public class Arm_Commands {
         this.arm = arm;
     }
 
-    public Command moveToIntake() {
+    public Command moveToStart() {
         return new FunctionalCommand(
             () -> {},
-            () -> {arm.moveArm(Arm_Constants.armIntakeRotation, Arm_Constants.armIntakeExtension);},
+            () -> {arm.moveArm(Arm_Constants.startPosition);},
             arm.endCommand,
             arm.isFinished,
             arm);
     }
 
-    public Command moveToHybrid() {
+    public Command fling() {
         return new FunctionalCommand(
             () -> {},
-            () -> {arm.moveArm(Arm_Constants.hybridRotation, Arm_Constants.hybridExtension);},
+            () -> {arm.moveArm(Arm_Constants.flingEndPosition);},
             arm.endCommand,
             arm.isFinished,
             arm);
     }
 
-    public Command moveToMiddleCube() {
-        return new FunctionalCommand(
-            () -> {},
-            () -> {arm.moveArm(Arm_Constants.middleCubeRotation, Arm_Constants.middleCubeExtension);},
-            arm.endCommand,
-            arm.isFinished,
-            arm);
-    }
-
-    public Command moveToMiddleCone() {
-        return new FunctionalCommand(
-            () -> {},
-            () -> {arm.moveArm(Arm_Constants.middleConeRotation, Arm_Constants.middleConeExtension);},
-            arm.endCommand,
-            arm.isFinished,
-            arm);
-    }
-
-    public Command moveToTopCube() {
-        return new FunctionalCommand(
-            () -> {},
-            () -> {arm.moveArm(Arm_Constants.topCubeRotation, Arm_Constants.topCubeExtension);},
-            arm.endCommand,
-            arm.isFinished,
-            arm);
-    }
-
-    public Command moveToTopCone() {
-        System.out.println("move arm -- command");
-        return new FunctionalCommand(
-            () -> {},
-            () -> {arm.moveArm(Arm_Constants.topConeRotation, Arm_Constants.topConeExtension);},
-            arm.endCommand,
-            arm.isFinished,
-            arm);
-    }
-
-    public Command stopArm() {
-        return new InstantCommand(() -> {arm.stopArm();});
-    }
 }

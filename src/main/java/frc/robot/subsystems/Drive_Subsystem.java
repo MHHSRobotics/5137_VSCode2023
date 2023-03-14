@@ -13,6 +13,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -57,6 +58,7 @@ public class Drive_Subsystem extends SubsystemBase {
 
   //Position Estimator
   public DifferentialDrivePoseEstimator poseEstimator = new DifferentialDrivePoseEstimator(Drive_Constants.trackWidth, new Rotation2d(0), Drive_Constants.initialLeftDistance, Drive_Constants.initialRightDistance, new Pose2d());
+
 
   //Controller
   Joystick controller;
@@ -106,14 +108,20 @@ public class Drive_Subsystem extends SubsystemBase {
     //position estimator 
     poseEstimator = new DifferentialDrivePoseEstimator(Drive_Constants.trackWidth, new Rotation2d(gyro.getRoll()),Drive_Constants.initialLeftDistance, Drive_Constants.initialRightDistance, new Pose2d());
 
-
     leftFrontTalon.setNeutralMode(NeutralMode.Coast);
     leftBackTalon.setNeutralMode(NeutralMode.Coast);
     rightBackTalon.setNeutralMode(NeutralMode.Coast);
     rightFrontTalon.setNeutralMode(NeutralMode.Coast);
+
     //Encoders 
-    leftFrontTalon.setSelectedSensorPosition(0);
-    rightFrontTalon.setSelectedSensorPosition(0);
+    //the selected feedback sensor needs to be looked into
+    //do we need to attach it to pid like the example???
+    leftFrontTalon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);   //needs to be set regardless if using closed loop 
+    rightFrontTalon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);  //looking into wether we want closed looping 
+
+    leftFrontTalon.setSelectedSensorPosition(0); //zeros encoders when it connects to robot code 
+    rightFrontTalon.setSelectedSensorPosition(0); 
+
 
     //DriveTrain
     jMoneyDrive = new DifferentialDrive(leftDrive, rightDrive);

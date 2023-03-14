@@ -19,21 +19,17 @@ import frc.robot.constants.Auto_Constants;
 import frc.robot.objects.AutoData;
 import frc.robot.subsystems.Drive_Subsystem;
 
-import frc.robot.commands.Intake_Commands;
 import frc.robot.RobotContainer;
 import frc.robot.commands.Arm_Commands;
-import frc.robot.commands.Clamp_Commands;
 
 public class AutoManager extends SubsystemBase {
     private  Drive_Subsystem drive;
-    private  Intake_Commands intake_Commands;
     private  Arm_Commands arm_Commands;
-    private  Clamp_Commands clamp_Commands;
     
     private  double maxVelo;
     private  double maxAccel;
 
-    public  SequentialCommandGroup scoreTopCone;
+    public  SequentialCommandGroup autoFling;
     public  SequentialCommandGroup scoreTopCube;
     public  SequentialCommandGroup intakeObject;
 
@@ -56,19 +52,16 @@ public class AutoManager extends SubsystemBase {
 
     
 
-    public AutoManager(Drive_Subsystem drive, Intake_Commands intake_Commands, Arm_Commands arm_Commands, Clamp_Commands clamp_Commands) {
+    public AutoManager(Drive_Subsystem drive, Arm_Commands arm_Commands) {
         this.drive = drive;
 
-        this.intake_Commands = intake_Commands;
         this.arm_Commands = arm_Commands;
-        this.clamp_Commands = clamp_Commands;
 
         maxVelo = Auto_Constants.maxVelo;
         maxAccel = Auto_Constants.maxAccel;
 
-        scoreTopCone = new SequentialCommandGroup(clamp_Commands.clamp(), arm_Commands.moveToTopCone(), clamp_Commands.clampRelease());
-        scoreTopCube = new SequentialCommandGroup(clamp_Commands.clamp(), arm_Commands.moveToTopCube(), clamp_Commands.clampRelease()/*,new InstantCommand(() -> runAuto(RobotContainer.shuffleboard.getAuto())) */);
-        intakeObject = new SequentialCommandGroup(intake_Commands.runIntakeForward(), arm_Commands.moveToIntake());
+        autoFling = new SequentialCommandGroup( arm_Commands.moveToStart(), arm_Commands.fling());
+        
 
         eventMap = new HashMap<>();
 
@@ -89,14 +82,14 @@ public class AutoManager extends SubsystemBase {
         left_mobility = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("leftPos_mobility", new PathConstraints(maxVelo, maxAccel));
         left_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("leftPos_engage", new PathConstraints(maxVelo, maxAccel));
         left_mobility_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("leftPos_mobility_engage", new PathConstraints(maxVelo, maxAccel));
-        left_doubleScore =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("leftPos_doubleScore", new PathConstraints(maxVelo, maxAccel));
-        left_doubleScore_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("leftPos_doubleScore_engage", new PathConstraints(maxVelo, maxAccel));
+        //left_doubleScore =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("leftPos_doubleScore", new PathConstraints(maxVelo, maxAccel));
+        //left_doubleScore_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("leftPos_doubleScore_engage", new PathConstraints(maxVelo, maxAccel));
         middle_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("middlePos_engage", new PathConstraints(maxVelo, maxAccel));
         right_mobility = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_mobility", new PathConstraints(maxVelo, maxAccel));
         right_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_engage", new PathConstraints(maxVelo, maxAccel));
         right_mobility_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_mobility_engage", new PathConstraints(maxVelo, maxAccel));
-        right_doubleScore =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_doubleScore", new PathConstraints(maxVelo, maxAccel));
-        right_doubleScore_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_doubleScore_engage", new PathConstraints(maxVelo, maxAccel));
+        //right_doubleScore =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_doubleScore", new PathConstraints(maxVelo, maxAccel));
+        //right_doubleScore_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_doubleScore_engage", new PathConstraints(maxVelo, maxAccel));
     }
 
     public void runAuto(AutoData autoInfo) {
@@ -141,12 +134,8 @@ public class AutoManager extends SubsystemBase {
 
         
         if (autoInfo.getType() == "SingleScore")
-            eventMap.put("ScoreCone", scoreTopCone);
-        else if (autoInfo.getType() == "DoubleScore") {
-            eventMap.put("ScoreCone", scoreTopCone);
-            eventMap.put("Intake", intakeObject);
-            eventMap.put("ScoreCube", scoreTopCube);
-        }
+            eventMap.put("ScoreCone", autoFling);
+        
         
         autoBuilder.fullAuto(autoPath).schedule();
     }
