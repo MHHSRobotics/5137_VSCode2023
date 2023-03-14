@@ -83,8 +83,6 @@ public class RobotContainer {
   
   public void configureBindings() { 
   //Driver Controller 
-    //Right trigger intakes / extends -- retracts when released 
-
     //Middle down dpad aligns to april tag
     new POVButton(driverController, XBOX_Constants.DownDPad)
     .onTrue(drive_Commands.tagDrive(vision_Subsystem.getNearestAlign("middle", drive_Subsystem.poseEstimator.getEstimatedPosition())));
@@ -102,18 +100,6 @@ public class RobotContainer {
     .onTrue(new InstantCommand(() -> drive_Subsystem.driveBrake()))
     .onFalse(new InstantCommand(() -> drive_Subsystem.driveCoast()));
 
-    //Cube leds for signaling
-    new JoystickButton(driverController, XBOX_Constants.XButton)
-    .onTrue(led_Commands.cubeLEDS());
-    
-    //Cone leds for signaling
-    new JoystickButton(driverController, XBOX_Constants.YButton)
-    .onTrue(led_Commands.coneLEDS());
-
-    new JoystickButton(driverController, XBOX_Constants.BButton)
-    .onTrue(autoManager.autoFling);
-
-
   //Assistant Controller
     //moves to start/intake position
     new JoystickButton(assistController, XBOX_Constants.YButton)
@@ -123,6 +109,13 @@ public class RobotContainer {
     new JoystickButton(assistController, XBOX_Constants.AButton)
     .onTrue(arm_Commands.fling());
 
+     //Cube leds for signaling
+     new JoystickButton(assistController, XBOX_Constants.XButton)
+     .onTrue(led_Commands.cubeLEDS());
+     
+     //Cone leds for signaling
+     new JoystickButton(assistController, XBOX_Constants.YButton)
+     .onTrue(led_Commands.coneLEDS());
   }  
 
    

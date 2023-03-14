@@ -79,7 +79,7 @@ public class Drive_Subsystem extends SubsystemBase {
   
 
   //rate limiter
-  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(8); //1.2
+  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(4); //1.2
   private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(4); //4
 
 
@@ -187,8 +187,8 @@ public class Drive_Subsystem extends SubsystemBase {
     if (RobotState.isEnabled()){
       //checks that we aren't using power and that speed is low so it's not an abrupt stops 
        
-      if (/*leftBackTalon.getMotorOutputVoltage() < 3 & (leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10*/
-      Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) < 0.1 && Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) < 0.1/*Math.abs(leftFrontTalon.get()) < 0.1 && Math.abs(rightFrontTalon.get()) < 0.1)*/){
+      if (
+      Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) < 0.1 && Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) < 0.1){
           leftFrontTalon.setNeutralMode(NeutralMode.Brake);
           leftBackTalon.setNeutralMode(NeutralMode.Brake);
           rightBackTalon.setNeutralMode(NeutralMode.Brake);
@@ -216,7 +216,8 @@ public class Drive_Subsystem extends SubsystemBase {
   //Returns wheel speeds of motors in meters per second
   public DifferentialDriveWheelSpeeds getWheelSpeeds()
   {
-    double leftSpeed = leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10 ; //Speed = sensor count per 100 ms * distance per count * 10 (converts 100 ms to s)
+    //Speed = sensor count per 100 ms * distance per count * 10 (converts 100 ms to s) 
+    double leftSpeed = leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10 ; 
     double rightSpeed = rightFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10;
     return new DifferentialDriveWheelSpeeds(leftSpeed, rightSpeed);
   }

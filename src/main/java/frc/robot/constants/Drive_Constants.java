@@ -23,8 +23,8 @@ public final class Drive_Constants {
     public static final double initialRightDistance = 0;
 
     //vision stuff
-    public static final double distancePerPulse_TalonFX = (wheelDiameter * Math.PI) / 2048.0/10; //2048 is the ticks per rotation for TalonFX integrated sensor 
-                                                                                                 //10 because the the selected sensor position is *10. 
+    public static final double distancePerPulse_TalonFX = (wheelDiameter * Math.PI) /2048.0/9.76; //2048 is the ticks per rotation for TalonFX integrated sensor 
+                                                                                                 //9.76 because the the  gear ratio 9.76:1 on the drivebase
 
 //PID
     //PID for right and left side
