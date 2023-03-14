@@ -243,15 +243,17 @@ public class Drive_Subsystem extends SubsystemBase {
     rotate = adjust(rotate);
     speed = rateLimiter.calculate(speed);
     rotate = rotateLimiter.calculate(rotate);
-    if(speed!=0.0){
-      rotate -= 0.4*speed;
+
+   if (rotate < 1 && speed!=0.0){ //when driving straight 
+      rotate -= 0.4*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
     }
+
     //System.out.println(getWheelSpeeds());
     if (controller.getRawButton(XboxController.Button.kRightBumper.value)){ //Need to find the number
       jMoneyDrive.curvatureDrive(-speed/Drive_Constants.driveSensitivity, -rotate/Drive_Constants.turnSensitivity , true);
     }
     else if(controller.getRawButton(XboxController.Button.kLeftBumper.value)){
-      jMoneyDrive.curvatureDrive(speed/(Drive_Constants.driveSensitivity*5), rotate/(Drive_Constants.turnSensitivity*2) , true);
+      jMoneyDrive.curvatureDrive(speed/(Drive_Constants.driveSensitivity*5), rotate/(Drive_Constants.turnSensitivity * 2) , true);
     }
     else{
     jMoneyDrive.curvatureDrive(speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
