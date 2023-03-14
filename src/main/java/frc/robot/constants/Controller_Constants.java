@@ -2,6 +2,9 @@ package frc.robot.constants;
 
 public final class Controller_Constants {
     public final class XBOX_Constants {
+      
+        //For Xbox360 Controller - Use WPILIB Simulation GUI to check (simulate robot code)
+      
         public static final int LXPort = 0;
         public static final int LYPort = 1;
         public static final int LTPort = 2;
@@ -16,8 +19,6 @@ public final class Controller_Constants {
         public static final int BButton = 2;
         public static final int XButton = 3;
         public static final int YButton = 4;
-
-
         public static final int APort = 1;
         public static final int Start = 8;
         public static final int Back = 7;

@@ -8,20 +8,21 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
 public class Vision_Constants {
-    public final static double pi = Math.PI;
-    public final static double nodeSpacing = Units.inchesToMeters(22);
-    public final static double scoreDistance = Units.inchesToMeters(17.25); //blue line is 14.25 inches from tag, want to be another 3 inches
+    public final static double pi = Math.PI; //PI Constant 
+    public final static double nodeSpacing = Units.inchesToMeters(22); //Distance between the center of cone and cube nodes
+    public final static double scoreDistance = Units.inchesToMeters(30); //blue line is 14.25 inches from tag, want to be 14.25+half of robot length
 
+    //Position of the Cameras on the robot 
     public static final Transform3d robotToAR1Cam = new Transform3d(new Translation3d(-Units.inchesToMeters(0), -Units.inchesToMeters(0), -Units.inchesToMeters(0)), new Rotation3d(0, 0, 0));
     public static final Transform3d robotToAR2Cam = new Transform3d(new Translation3d(-Units.inchesToMeters(0), -Units.inchesToMeters(0), -Units.inchesToMeters(0)), new Rotation3d(0, 0, 0));
 
-    //Red Alliance
+    //Red Alliance tags
     public final static Pose2d tag1 = new Pose2d(15.513558, 1.071626, new Rotation2d(pi));
     public final static Pose2d tag2 = new Pose2d(15.513558, 2.748026, new Rotation2d(pi));
     public final static Pose2d tag3 = new Pose2d(15.513558,4.424426, new Rotation2d(pi));
     public final static Pose2d tag4 = new Pose2d(16.178784, 6.749796, new Rotation2d(pi));
 
-    //Blue Alliance 
+    //Blue Alliance  tags
     public final static Pose2d tag5 = new Pose2d(0.36195, 6.749796, new Rotation2d(0));
     public final static Pose2d tag6 = new Pose2d(1.02743, 4.424426, new Rotation2d(0));
     public final static Pose2d tag7 = new Pose2d(1.02743, 2.748026, new Rotation2d(0));
@@ -40,7 +41,6 @@ public class Vision_Constants {
     private final static Pose2d pose3b = new Pose2d(15.513558 - scoreDistance,4.424426, new Rotation2d(pi));
     private final static Pose2d pose3c = new Pose2d(15.513558 - scoreDistance,4.424426 + nodeSpacing, new Rotation2d(pi));
     
-
     //Loading stations
     private final static Pose2d pose4 = new Pose2d(16.178784 - scoreDistance, 6.749796, new Rotation2d(pi));
     private final static Pose2d pose5 = new Pose2d(0.36195 + scoreDistance, 6.749796, new Rotation2d(0));

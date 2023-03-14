@@ -16,8 +16,8 @@ public final class Arm_Constants {
 
     //Motor Speeds
         //Edit all for testing
-        public final static double flingSpeed = 0.8; //Speed to catapult piece
-        public final static double reloadSpeed = 0.4; //Speed to move arm otherwise
-        public final static double manualRotateSpeed = 0.8;
+        public final static double flingSpeed = 0.2; //Speed to catapult piece .8
+        public final static double reloadSpeed = 0.2; //Speed to move arm otherwise .6
+        public final static double manualRotateSpeed = 0.2; //.8
  
 }

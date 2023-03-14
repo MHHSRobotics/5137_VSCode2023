@@ -113,15 +113,12 @@ public class Drive_Subsystem extends SubsystemBase {
     rightBackTalon.setNeutralMode(NeutralMode.Coast);
     rightFrontTalon.setNeutralMode(NeutralMode.Coast);
 
-    //Encoders 
-    //the selected feedback sensor needs to be looked into
-    //do we need to attach it to pid like the example???
-    leftFrontTalon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);   //needs to be set regardless if using closed loop 
-    rightFrontTalon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);  //looking into wether we want closed looping 
+    //Sets the talon to return integrated encoder values
+    leftFrontTalon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);  
+    rightFrontTalon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor); 
 
     leftFrontTalon.setSelectedSensorPosition(0); //zeros encoders when it connects to robot code 
     rightFrontTalon.setSelectedSensorPosition(0); 
-
 
     //DriveTrain
     jMoneyDrive = new DifferentialDrive(leftDrive, rightDrive);
@@ -173,7 +170,6 @@ public class Drive_Subsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(getWheelSpeeds());
     // This method will be called once per scheduler run
     if (controller != null && RobotState.isTeleop()) {
       arcadeDrive(controller);
