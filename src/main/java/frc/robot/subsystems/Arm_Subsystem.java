@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
+import org.ejml.ops.SortCoupledArray_F32;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
@@ -41,7 +42,8 @@ public class Arm_Subsystem extends SubsystemBase {
 
         currentRotation = Arm_Constants.startPosition; //fixes null point error 
         desiredRotation = Arm_Constants.startPosition; //IF NOT THE SAME AS SETPOSITION WILL MOVE TO THIS AS SOON AS ROBOT IS ENABLES
-
+        
+        stopArm();
 
         //Used to end the arm prests' functional commands 
         isFinished = () -> {
@@ -71,14 +73,20 @@ public class Arm_Subsystem extends SubsystemBase {
     public void periodic() {
         currentRotation = rotateEncoder.getPosition();
         arcadeArm(); //keeping just for overiding with joysticks 
-
+        if(Math.abs(desiredRotation-currentRotation) > Arm_Constants.rotateMarginOfError || Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1)
+        {
+         rotateMotor.setIdleMode(IdleMode.kCoast);
+        }
+        else
+        {
+            rotateMotor.setIdleMode(IdleMode.kBrake);  
+        }
     }
 
         
 
     public void moveArm(double rotation) {
         desiredRotation = rotation;
-        rotateMotor.setIdleMode(IdleMode.kCoast);
     }
  
     
@@ -101,25 +109,26 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     private void armRotateManual() {
-        rotateMotor.setIdleMode(IdleMode.kCoast);
 
         if (Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1) {
-            rotateMotor.set((-controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.flingSpeed);
+            rotateMotor.set((-controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.manualRotateSpeed);
             desiredRotation = currentRotation;
+        }
+        else{
+            stopArm();
         }
        
     }
     
     private void armRotatePresets() { 
-        rotateMotor.setIdleMode(IdleMode.kCoast);
 
         if (Math.abs(desiredRotation - currentRotation) < Arm_Constants.rotateMarginOfError) {
             stopArm();
         } 
-        else if ((desiredRotation - currentRotation) > 0) {
+        else if ((desiredRotation - currentRotation) > Arm_Constants.rotateMarginOfError) {
             rotateMotor.set(Arm_Constants.flingSpeed);
         } 
-        else if ((desiredRotation - currentRotation) < 0) {
+        else if ((desiredRotation - currentRotation) <  -Arm_Constants.rotateMarginOfError) {
             rotateMotor.set(-Arm_Constants.reloadSpeed);
         } 
         else {

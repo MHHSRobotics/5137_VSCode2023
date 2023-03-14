@@ -15,7 +15,7 @@ public final class Arm_Constants {
     public final static double flingSpeed = 0.8; //needs testing
     public final static double reloadSpeed = 0.6; //needs testing
     //public final static double autoFling = 0; eventually create new ones for each level if needed 
-    public final static double manualRotateSpeed = 0.6;
+    public final static double manualRotateSpeed = 1;//was 0.6
  
    
     
