@@ -8,7 +8,7 @@ import com.pathplanner.lib.auto.PIDConstants;
 
 public final class Drive_Constants {
     public static final double driveSensitivity = 1.0;
-    public static final double turnSensitivity = 4.0;
+    public static final double turnSensitivity = 2;
     public final static double errormargin = 0.1; 
     
     public static final int leftFrontTalonPort = 1;
