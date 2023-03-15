@@ -74,6 +74,7 @@ public class Arm_Subsystem extends SubsystemBase {
     public void periodic() {
         currentRotation = rotateEncoder.getPosition(); //Sets currentRotation to the current encoder reading
         arcadeArm(); //Calls method that splits up tasks for manual or preset movement
+       
     }
 
     //Called by commands to set a desired rotation
@@ -152,16 +153,17 @@ public class Arm_Subsystem extends SubsystemBase {
         }
         else
         {
-                if ((currentRotation > Arm_Constants.flingCoastPosition ))
-                  {
-                    coastArm();
-                } 
-                else if ((desiredRotation - currentRotation) > Arm_Constants.rotateMarginOfError) {
+            if ((desiredRotation - currentRotation) < -Arm_Constants.rotateMarginOfError) {
+                rotateMotor.set(rotatePID.calculate(currentRotation, desiredRotation)*Arm_Constants.reloadSpeed);
+            } 
+            else if ((currentRotation > Arm_Constants.flingCoastPosition ))
+            {
+                coastArm();
+            } 
+            else if ((desiredRotation - currentRotation) >  Arm_Constants.rotateMarginOfError) 
+            {
                     rotateMotor.set(rotatePID.calculate(currentRotation, desiredRotation)*Arm_Constants.reloadSpeed);
-                } 
-                else if ((desiredRotation - currentRotation) <  -Arm_Constants.rotateMarginOfError) {
-                    rotateMotor.set(rotatePID.calculate(currentRotation, desiredRotation)*Arm_Constants.reloadSpeed);
-                } 
+            } 
         }
 
      
