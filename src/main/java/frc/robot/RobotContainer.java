@@ -112,21 +112,12 @@ public class RobotContainer {
      .onTrue(led_Commands.coneLEDS());
   }  
 
-   
   public void runAuto() {
     autoManager.runAuto(shuffleboard.getAuto());
   }
 
-  public void runLEDS() {
-    led_Subsystem.pulsingCG(25, 10);
-  }
-
-  public void runLEDSAuto() {
-    led_Subsystem.solidCG(1);
-  }
-
-  public void runLEDSTeleOp() {
-    led_Subsystem.runLEDS();
+  public void startTimers() {
+    led_Subsystem.startTimer();
   }
 
 

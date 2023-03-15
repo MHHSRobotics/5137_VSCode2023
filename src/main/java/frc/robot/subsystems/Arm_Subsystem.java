@@ -133,9 +133,4 @@ public class Arm_Subsystem extends SubsystemBase {
             rotateMotor.set(-Arm_Constants.reloadSpeed);
         } 
     }
-
-    
-
-  
-
 }
