@@ -4,19 +4,24 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
 import edu.wpi.first.wpilibj.util.Color;
 
 import frc.robot.constants.LED_Constants;
 import frc.robot.Robot;
+import frc.robot.commands.LED_Commands;
 
 public class LED_Subsystem extends SubsystemBase {
     private static AddressableLED led;
     private static AddressableLEDSim ledSim;
     private static AddressableLEDBuffer ledBuffer;
     private static int pulse = 0;
-    private static String type = "normal";
+    private static String type = "None";
+    private static String stage = "None";
+    private static Timer time;
 
     //Middle led is 64
 
@@ -25,6 +30,7 @@ public class LED_Subsystem extends SubsystemBase {
         ledSim = new AddressableLEDSim(led);
         ledBuffer = new AddressableLEDBuffer(LED_Constants.Length);
         led.setLength(ledBuffer.getLength());
+        time = new Timer();
         startLED();
     }
 
@@ -45,7 +51,7 @@ public class LED_Subsystem extends SubsystemBase {
         led.setData(ledBuffer);
     }
 
-    public void pulsingCG(double spacing, double speed) {
+    public void pulsingCG(double speed, double spacing) {
         for (var i = 0; i < LED_Constants.Length; i++) {
             if (Math.floor(i/spacing)%2 == 0) {
                 double red = 200*((i%spacing)/spacing);
@@ -64,25 +70,6 @@ public class LED_Subsystem extends SubsystemBase {
         pulse += speed;
     }
 
-    public void resetPulse() {
-        pulse = 0;
-    }
-
-    public void solidCG(double speed) {
-        if (pulse < 50) {
-            solidColor(LED_Constants.Red);
-        } else if (pulse < 100) {
-            solidColor(LED_Constants.None);
-        } else if (pulse < 150) {
-            solidColor(LED_Constants.Gold);
-        } else if (pulse < 200) {
-            solidColor(LED_Constants.None);
-        } else {
-            pulse = 0;
-        }
-        pulse += speed;
-    }
-
     public void pulsingColor(double speed, double spacing, Color color) {
         for (var i = 0; i < LED_Constants.Length; i++) {
                 double red = 255*color.red*((i%spacing)/spacing);
@@ -94,58 +81,70 @@ public class LED_Subsystem extends SubsystemBase {
         pulse += speed;
     }
 
-    public void flashingColor(double speed, Color color) {
-        if (pulse < 50) {
-            solidColor(color);
-        } else if (pulse < 100) {
-            solidColor(LED_Constants.None);
-        } else {
-            pulse = 0;
-        }
-        pulse += speed;
-    }
-
-    public void setTeleOp(String typ) {
-        if (type == typ) {
-            type = "normal";
-        } else {
-            type = typ;
-        }
-    }
-
-    public void pulsingTele() {
-        int speed;
-
-        if (Robot.time.hasElapsed(105)) {
-            speed = 50;
-        } else if (Robot.time.hasElapsed(90)) {
-            speed = 40;
-        } else if (Robot.time.hasElapsed(60)) {
-            speed = 30;
-        } else if (Robot.time.hasElapsed(30)) {
-            speed = 20;
-        } else {
-            speed = 10;
-        }
+    public void allianceColor(double speed, double spacing) {
         if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-            pulsingColor(speed, 150, LED_Constants.Blue);
+            pulsingColor(speed, spacing, LED_Constants.Blue);
         } else {
-            pulsingColor(speed, 150, LED_Constants.Red);
+            pulsingColor(speed, spacing, LED_Constants.Red);
+        }
+    }
+
+    public void stopLight() {
+        if (stage.equals("Loaded")) {
+            solidColor(LED_Constants.Red);
+        } else if (stage.equals("InPos")) {
+            solidColor(LED_Constants.Yellow);
+        } else if (stage.equals("GO")) {
+            solidColor(LED_Constants.Green);
+        }
+    }
+
+    public void endGame() {
+        pulsingColor(20, 25, LED_Constants.Green);
+    }
+
+    public void signal(String kType) {
+        if (type.equals(kType)) {
+            type = "None";
+        } else {
+            type = kType;
+        }
+
+        if (type.equals("Cone")) {
+            solidColor(LED_Constants.Yellow);
+        } else if (type.equals("Cube")) {
+            solidColor(LED_Constants.Purple);
         }
     }
 
     public void runLEDS() {
-        if (type.equals("normal")) {
-            pulsingTele();
-        } else if (type.equals("cone")) {
-            flashingColor(8, LED_Constants.Yellow);
-        } else if (type.equals("cube")) {
-            flashingColor(8, LED_Constants.Purple);
+        if (time.hasElapsed(105)) {
+            if (type == "None") {
+                endGame();
+            }   
+        } else {
+            if (type == "None" && stage == "None") {
+                allianceColor(20, 25);
+            } else if (!(stage == "None")) {
+                stopLight();
+            }
         }
+    }
+
+    public void startTimer() {
+        time.reset();
+        time.start();
     }
 
     @Override
     public void periodic() {
+        if (RobotState.isDisabled()) {
+            pulsingCG(20, 25);
+        } else if (RobotState.isAutonomous()) {
+            allianceColor(20, 150);
+        } else if (RobotState.isTeleop()) {
+            runLEDS();
+        }
         led.setData(ledBuffer);
     }
 }

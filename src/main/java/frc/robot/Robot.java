@@ -64,21 +64,18 @@ public class Robot extends TimedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {
-    m_RobotContainer.runLEDS();
-  }
+  public void disabledPeriodic() {}
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   public void autonomousInit() {
-    time.reset();
-    time.start();
+    //time.reset();
+    //time.start();
     //RobotContainer.autoManager.scoreTopCube.schedule();
     m_RobotContainer.runAuto();
   }
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    m_RobotContainer.runLEDSAuto();
     /* 
     if (!time.hasElapsed(3)) {
       m_RobotContainer.runBackupAuto(0);
@@ -95,14 +92,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    time.reset();
+    m_RobotContainer.startTimers();
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    m_RobotContainer.runLEDSTeleOp();
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {
