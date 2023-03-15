@@ -69,11 +69,6 @@ public class Drive_Subsystem extends SubsystemBase {
   public Consumer<Boolean> balanceEndCommand;
   public Consumer<Boolean> tagDriveEndCommands;  
 
-  private boolean tagDriving; 
-  private boolean balancing; 
-
-  private Pose2d targetPose; 
-
   //Paths
   
 
@@ -97,8 +92,6 @@ public class Drive_Subsystem extends SubsystemBase {
     rightDrive = new MotorControllerGroup(rightFrontTalon, rightBackTalon);
     rightDrive.setInverted(true);
 
-    tagDriving = false; 
-    balancing = true; 
     
     this.controller = m_controller;
     
@@ -146,14 +139,12 @@ public class Drive_Subsystem extends SubsystemBase {
 
     balanceEndCommand = (balanceIsFinished) -> {
       jMoneyDrive.curvatureDrive(0, 0, false);
-      balancing = false;
     };
 
     
 
     tagDriveEndCommands = (tagDriveriveIsFinished) -> {
       jMoneyDrive.curvatureDrive(0, 0, false);
-      tagDriving = false;
     };
 
     
@@ -258,20 +249,6 @@ public class Drive_Subsystem extends SubsystemBase {
     else{
     jMoneyDrive.curvatureDrive(speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
     }
-
-    if( balancing)
-    {
-      double forwardSpeed = balanceController.calculate(gyro.getPitch(), 0); //Calculates forward speed using PID
-      jMoneyDrive.curvatureDrive(forwardSpeed, 0, false); //Sets the drivetraub to drive forward/backwards using PID speed)
-    }
-
-    if(tagDriving)
-    {
-      double forwardSpeed = distanceController.calculate(PhotonUtils.getDistanceToPose(getPose(), targetPose), 0); //Calculates forward speed using PID
-      double rotateSpeed =  -rotationController.calculate(PhotonUtils.getYawToPose(getPose(), targetPose).getDegrees(), 0.0);
-      jMoneyDrive.curvatureDrive(forwardSpeed, rotateSpeed, true); //Sets the drivetraub to drive forward/backwards using PID speed
-    }
-     
   }
 
   //Also not required but stops drifiting and gurantees max speed
@@ -282,16 +259,20 @@ public class Drive_Subsystem extends SubsystemBase {
   }
 
   //Automatically Balances on charge station using gyro measurements
-  public void balance()
+  public double balance()
   {
-   balancing = true;
+    double forwardSpeed = balanceController.calculate(gyro.getPitch(), 0); //Calculates forward speed using PID
+    jMoneyDrive.curvatureDrive(forwardSpeed, 0, false);; //Sets the drivetraub to drive forward/backwards using PID speed
+    return forwardSpeed;
   }
 
   //Drives towards and rotates towards a given position based on distance and yaw using PIDs
-  public void tagDrive(Pose2d targetPose) 
+  public double tagDrive(Pose2d targetPose) 
   {
-    tagDriving = true;
-    this.targetPose = targetPose;
+    double forwardSpeed = distanceController.calculate(PhotonUtils.getDistanceToPose(getPose(), targetPose), 0); //Calculates forward speed using PID
+    double rotateSpeed =  -rotationController.calculate(PhotonUtils.getYawToPose(getPose(), targetPose).getDegrees(), 0.0);
+    jMoneyDrive.curvatureDrive(forwardSpeed, rotateSpeed, true); //Sets the drivetraub to drive forward/backwards using PID speed
+    return forwardSpeed;
   }
 
   //Rotate towards a given pose based on yaw using a PID
