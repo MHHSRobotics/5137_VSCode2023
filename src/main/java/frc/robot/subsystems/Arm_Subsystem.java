@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,11 +24,14 @@ public class Arm_Subsystem extends SubsystemBase {
 
     private static Double desiredRotation;
     private static Double currentRotation;
+    private boolean isFlinging; 
 
     public BooleanSupplier isFinished;
     public Consumer<Boolean> endCommand;
 
-    private final Joystick controller;
+    private Joystick controller;
+
+    private PIDController rotatePID;
 
     public Arm_Subsystem(Joystick controller) {
        
@@ -39,6 +43,9 @@ public class Arm_Subsystem extends SubsystemBase {
         desiredRotation = Arm_Constants.startPosition; //Makes sure it matches the start position
         stopArm(); // To ensure that current rotation and desired are equal
 
+        isFlinging = false; 
+
+        rotatePID = new PIDController(Arm_Constants.rKP, Arm_Constants.rKI, Arm_Constants.rKD);
         //Used to end the arm prests' functional commands 
         isFinished = () -> {
             if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1 || Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1){
@@ -72,6 +79,12 @@ public class Arm_Subsystem extends SubsystemBase {
     //Called by commands to set a desired rotation
     public void moveArm(double rotation) {
         desiredRotation = rotation; 
+    }
+
+    public void flingArm()
+    {
+    isFlinging = true;
+    desiredRotation = Arm_Constants.flingEndPosition;
     }
  
     //Brakes the arm and makes sure it will no longer try to move anywhere
@@ -122,17 +135,38 @@ public class Arm_Subsystem extends SubsystemBase {
 
     //Will rotate to a desired position based on a set desiredrotation value. If approaching the catapult position will instead coast to ensure that the motor does not try to move into stopper 
     private void armRotatePresets() { 
+        if(isFlinging)
+        {
+            if(Math.abs(desiredRotation-currentRotation) < Arm_Constants.rotateMarginOfError)
+            {
+                isFlinging = false;
+            }
+                else if(desiredRotation - currentRotation < 0)
+            {
+                isFlinging = false; 
+            }
+            else
+            {
+                rotateMotor.set(Arm_Constants.flingSpeed);
+            }
+        }
+        else
+        {
+                if ((currentRotation > Arm_Constants.flingCoastPosition ))
+                  {
+                    coastArm();
+                } 
+                else if ((desiredRotation - currentRotation) > Arm_Constants.rotateMarginOfError) {
+                    rotateMotor.set(rotatePID.calculate(currentRotation, desiredRotation)*Arm_Constants.reloadSpeed);
+                } 
+                else if ((desiredRotation - currentRotation) <  -Arm_Constants.rotateMarginOfError) {
+                    rotateMotor.set(rotatePID.calculate(currentRotation, desiredRotation)*Arm_Constants.reloadSpeed);
+                } 
+        }
 
-        if ((desiredRotation - currentRotation) > Arm_Constants.rotateMarginOfError && currentRotation > Arm_Constants.flingCoastPosition ) {
-            coastArm();
-        } 
-        else if ((desiredRotation - currentRotation) > Arm_Constants.rotateMarginOfError) {
-            rotateMotor.set(Arm_Constants.flingSpeed);
-        } 
-        else if ((desiredRotation - currentRotation) <  -Arm_Constants.rotateMarginOfError) {
-            rotateMotor.set(-Arm_Constants.reloadSpeed);
-        } 
+     
     }
+
 
     
 

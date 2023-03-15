@@ -12,6 +12,7 @@ public final class Arm_Constants {
         public final static double flingEndPosition = 45; //Used to determine when the command for preset is finished. 
       
 
+  
 
 
     //Motor Speeds
@@ -19,5 +20,10 @@ public final class Arm_Constants {
         public final static double flingSpeed = 0.2; //Speed to catapult piece .8
         public final static double reloadSpeed = 0.2; //Speed to move arm otherwise .6
         public final static double manualRotateSpeed = 0.2; //.8
+
+          //PID
+        public final static double rKP = reloadSpeed/2.0; // 
+        public final static double rKI = 0;
+        public final static double rKD = 0;
  
 }

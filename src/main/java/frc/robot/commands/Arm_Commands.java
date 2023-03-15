@@ -24,7 +24,7 @@ public class Arm_Commands {
     public Command fling() {
         return new FunctionalCommand(
             () -> {},
-            () -> {arm.moveArm(Arm_Constants.flingEndPosition);},
+            () -> {arm.flingArm();;},
             arm.endCommand,
             arm.isFinished,
             arm);

@@ -94,9 +94,9 @@ public class RobotContainer {
     .onTrue(new InstantCommand(() -> drive_Subsystem.driveBrake()))
     .onFalse(new InstantCommand(() -> drive_Subsystem.driveCoast()));
 
-  //Assistant Controller
+  //Assistant Controller 
     //moves to start/intake position
-    new JoystickButton(assistController, XBOX_Constants.YButton)
+    new JoystickButton(assistController, XBOX_Constants.BButton)
     .onTrue(arm_Commands.moveToStart());
 
     //flings it 
