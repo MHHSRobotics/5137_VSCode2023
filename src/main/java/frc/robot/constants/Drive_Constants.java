@@ -37,10 +37,10 @@ public final class Drive_Constants {
         //Gains for FeedForward (Used in autobuilder)
         public final static double dKS = 6;//Position (Volts)
         public final static double dKV = 3;//Velocity (Volts*Seconds/Distance)
-        public final static double dKA = 1.7;//Acceleration (Volts*Seonds^2/Distance)
+        public final static double dKA = 1.7;//Acceleration (Volts*Seonds^2/Distance) should probably be higher. 
 
         //pid for forward speed/vision (driving forward)
-        public final static double dKP = 0.2;
+        public final static double dKP = 0.1;
         public final static double dKD = 0.0;
         public final static double dKI = 0.0;
 

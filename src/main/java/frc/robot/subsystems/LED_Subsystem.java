@@ -138,6 +138,8 @@ public class LED_Subsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        /* 
+        
         if (RobotState.isDisabled()) {
             pulsingCG(20, 25);
         } else if (RobotState.isAutonomous()) {
@@ -146,5 +148,6 @@ public class LED_Subsystem extends SubsystemBase {
             runLEDS();
         }
         led.setData(ledBuffer);
+        */
     }
 }

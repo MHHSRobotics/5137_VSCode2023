@@ -15,7 +15,7 @@ public class Arm_Commands {
     public Command moveToStart() {
         return new FunctionalCommand(
             () -> {},
-            () -> {arm.moveArm(Arm_Constants.startPosition);},
+            () -> {arm.moveArm(0);},
             arm.endCommand,
             arm.isFinished,
             arm);
