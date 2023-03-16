@@ -27,7 +27,7 @@ public class RobotContainer {
   //Subsystems
   public static LED_Subsystem led_Subsystem;
   public static Drive_Subsystem drive_Subsystem;
-  public static Vision_Subsystem vision_Subsystem;
+  public static Punch_Subsystem punch_Subsystem;
 
   //Other Systems
   public static Shuffleboard shuffleboard;
@@ -36,6 +36,7 @@ public class RobotContainer {
   //Commands
   public static Drive_Commands drive_Commands;
   public static LED_Commands led_Commands;
+  public static Punch_Commands punch_Commands;
   
   //Controllers
   public static Joystick driverController;
@@ -61,43 +62,21 @@ public class RobotContainer {
   public void configureSubsystems() {
     led_Subsystem = new LED_Subsystem();
     drive_Subsystem = new Drive_Subsystem(driverController);
-    vision_Subsystem = new Vision_Subsystem();
+    punch_Subsystem = new Punch_Subsystem();
   }
 
   public void configureCommands() {
     drive_Commands = new Drive_Commands(drive_Subsystem);
     led_Commands = new LED_Commands(led_Subsystem);
+    punch_Commands = new Punch_Commands(punch_Subsystem);
   }
-
   
-  
-  public void configureBindings() { 
-  //Driver Controller 
-    //Middle down dpad aligns to april tag
-    new POVButton(driverController, XBOX_Constants.DownDPad)
-    .onTrue(drive_Commands.tagDrive(vision_Subsystem.getNearestAlign("middle", drive_Subsystem.poseEstimator.getEstimatedPosition())));
-
-    //Left dpad aligns to cone left of april tag (from drivers pov not cameras)
-    new POVButton(driverController, XBOX_Constants.LeftDPad)
-    .onTrue(drive_Commands.tagDrive(vision_Subsystem.getNearestAlign("left", drive_Subsystem.poseEstimator.getEstimatedPosition())));
-
-    //Right dpad aligns to cone right of april tag (from drivers pov not camera)
-    new POVButton(driverController, XBOX_Constants.RightDPad)
-    .onTrue(drive_Commands.tagDrive(vision_Subsystem.getNearestAlign("right", drive_Subsystem.poseEstimator.getEstimatedPosition())));
-
-    
+  public void configureBindings() {
+    /*
     new JoystickButton(driverController, XBOX_Constants.AButton)
-    .onTrue(new InstantCommand(() -> drive_Subsystem.driveBrake()))
-    .onFalse(new InstantCommand(() -> drive_Subsystem.driveCoast()));
-
-  //Assistant Controller 
-    //moves to start/intake position
-    //new JoystickButton(assistController, XBOX_Constants.BButton)
-    //.onTrue(arm_Commands.moveToParallel());
-
-    //flings it 
-    //new JoystickButton(assistController, XBOX_Constants.AButton)
-    //.onTrue(arm_Commands.fling());
+    .onTrue(drive_Commands.setBrake(true))
+    .onFalse(drive_Commands.setBrake(false));
+    */
 
      //Cube leds for signaling
      new JoystickButton(assistController, XBOX_Constants.XButton)
@@ -106,6 +85,9 @@ public class RobotContainer {
      //Cone leds for signaling
      new JoystickButton(assistController, XBOX_Constants.YButton)
      .onTrue(led_Commands.coneLEDS());
+
+     new JoystickButton(assistController, XBOX_Constants.AButton)
+     .onTrue(punch_Commands.Punch());
   }  
 
   public void runAuto() {

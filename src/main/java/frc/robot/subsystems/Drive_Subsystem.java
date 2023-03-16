@@ -53,7 +53,6 @@ public class Drive_Subsystem extends SubsystemBase {
   //Position Estimator
   public DifferentialDrivePoseEstimator poseEstimator = new DifferentialDrivePoseEstimator(Drive_Constants.trackWidth, new Rotation2d(0), Drive_Constants.initialLeftDistance, Drive_Constants.initialRightDistance, new Pose2d());
 
-
   //Controller
   Joystick controller;
   PIDController distanceController;
@@ -150,58 +149,40 @@ public class Drive_Subsystem extends SubsystemBase {
     
   }
 
-  public BooleanSupplier tagDriveriveIsFinished(Pose2d targetPose) {
-    double distance = distanceController.calculate(PhotonUtils.getDistanceToPose(getPose(), targetPose));
-    double rotation = rotationController.calculate(PhotonUtils.getDistanceToPose(getPose(), targetPose));
-
-      if (distance < 0.1 && rotation < 3){
-        return () -> true;
-      }
-      else {
-        return () -> false;
-      }
-    }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     if (controller != null && RobotState.isTeleop()) {
       arcadeDrive(controller);
     }
-    //Updates the position with gyro and encoder periodcally 
-    updatePoseEstimator();
-    addVisionMeasurement(Vision_Subsystem.ar1CamPoseEstimator);
-    addVisionMeasurement(Vision_Subsystem.lifeCamPoseEstimator);
 
     //Used to coast when the robot is moving / disabled -- breaks when stationary 
     if (RobotState.isEnabled()){
       //checks that we aren't using power and that speed is low so it's not an abrupt stops 
-       
-      if (
-      Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) < 0.1 && Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) < 0.1){
-          leftFrontTalon.setNeutralMode(NeutralMode.Brake);
-          leftBackTalon.setNeutralMode(NeutralMode.Brake);
-          rightBackTalon.setNeutralMode(NeutralMode.Brake);
-          rightFrontTalon.setNeutralMode(NeutralMode.Brake);
+      if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) < 0.1 && Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) < 0.1) {
+          setBrake(true);
       }
       else {
-        leftFrontTalon.setNeutralMode(NeutralMode.Coast);
-        leftBackTalon.setNeutralMode(NeutralMode.Coast);
-        rightBackTalon.setNeutralMode(NeutralMode.Coast);
-        rightFrontTalon.setNeutralMode(NeutralMode.Coast);      
+        setBrake(false);      
       }
-      
-      
-      
     }
     else{
+      setBrake(true);
+  }
+}
+
+  public void setBrake(Boolean brake) {
+    if (brake) {
       leftFrontTalon.setNeutralMode(NeutralMode.Brake);
       leftBackTalon.setNeutralMode(NeutralMode.Brake);
       rightBackTalon.setNeutralMode(NeutralMode.Brake);
       rightFrontTalon.setNeutralMode(NeutralMode.Brake);
+    }
+      leftFrontTalon.setNeutralMode(NeutralMode.Coast);
+      leftBackTalon.setNeutralMode(NeutralMode.Coast);
+      rightBackTalon.setNeutralMode(NeutralMode.Coast);
+      rightFrontTalon.setNeutralMode(NeutralMode.Coast); 
   }
-}
-
 
   //Returns wheel speeds of motors in meters per second
   public DifferentialDriveWheelSpeeds getWheelSpeeds()
@@ -265,24 +246,6 @@ public class Drive_Subsystem extends SubsystemBase {
     jMoneyDrive.curvatureDrive(forwardSpeed, 0, false);; //Sets the drivetraub to drive forward/backwards using PID speed
     return forwardSpeed;
   }
-
-  //Drives towards and rotates towards a given position based on distance and yaw using PIDs
-  public double tagDrive(Pose2d targetPose) 
-  {
-    double forwardSpeed = distanceController.calculate(PhotonUtils.getDistanceToPose(getPose(), targetPose), 0); //Calculates forward speed using PID
-    double rotateSpeed =  -rotationController.calculate(PhotonUtils.getYawToPose(getPose(), targetPose).getDegrees(), 0.0);
-    jMoneyDrive.curvatureDrive(forwardSpeed, rotateSpeed, true); //Sets the drivetraub to drive forward/backwards using PID speed
-    return forwardSpeed;
-  }
-
-  //Rotate towards a given pose based on yaw using a PID
-  //not being used currently, hasn't been made a command yet 
-  public double autoRotate(Pose2d targetPose)
-  {
-    double rotateSpeed =  -rotationController.calculate(PhotonUtils.getYawToPose(getPose(), targetPose).getDegrees(), 0.0);
-    jMoneyDrive.curvatureDrive(0, rotateSpeed, true);
-    return rotateSpeed;
-  }
   
   //Returns the current global pose estimate of robot
   public Pose2d getPose()
@@ -290,27 +253,6 @@ public class Drive_Subsystem extends SubsystemBase {
     return poseEstimator.getEstimatedPosition(); 
   }
 
-  //Updates the pose estimator with current encoder values and gyro readings
-  public void updatePoseEstimator(){
-    //Make sure timer delay is added if needed, could need because of motor delays from inversion
-    double leftFrontEncoder = leftFrontTalon.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
-    double rightFrontEncoder = rightFrontTalon.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
-    //System.out.println("leftFrontEncoder" + leftFrontEncoder);
-    //System.out.println("rightFrontEncoder" + rightFrontEncoder);
-    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), new Rotation2d((double)gyro.getRoll()), leftFrontEncoder, rightFrontEncoder); //ad gyro value
-  } 
-   
-  //Uses a PhotonPoseEstimator object to add a vision measurement to the Diff.Drive pose estimator if it has a valid result (detecting)
-  public void addVisionMeasurement(PhotonPoseEstimator camEstimator)
-  {
-    Optional<EstimatedRobotPose> camResult = Vision_Subsystem.getPoseFromCamera(camEstimator, poseEstimator.getEstimatedPosition());
-    if(camResult.isPresent())
-    {
-      Pose2d estimatedPose = camResult.get().estimatedPose.toPose2d();
-      double timestamp = camResult.get().timestampSeconds;
-      poseEstimator.addVisionMeasurement(estimatedPose, timestamp);
-    }
-  }
   //Resets global pose estimator based on a position parameter, gyro and encoder have no effect - used by auto
   public void resetPose(Pose2d pose)
   {
@@ -319,20 +261,6 @@ public class Drive_Subsystem extends SubsystemBase {
 
   public void drive(double speed, double rotate) {
     jMoneyDrive.curvatureDrive(speed, rotate, true);
-  }
-
-  public void driveBrake(){
-    leftFrontTalon.setNeutralMode(NeutralMode.Brake);
-    leftBackTalon.setNeutralMode(NeutralMode.Brake);
-    rightBackTalon.setNeutralMode(NeutralMode.Brake);
-    rightFrontTalon.setNeutralMode(NeutralMode.Brake);
-  }
-
-  public void driveCoast(){
-    leftFrontTalon.setNeutralMode(NeutralMode.Coast);
-    leftBackTalon.setNeutralMode(NeutralMode.Coast);
-    rightBackTalon.setNeutralMode(NeutralMode.Coast);
-    rightFrontTalon.setNeutralMode(NeutralMode.Coast);
   }
 }
 
