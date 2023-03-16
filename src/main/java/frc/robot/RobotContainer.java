@@ -27,7 +27,6 @@ public class RobotContainer {
   //Subsystems
   public static LED_Subsystem led_Subsystem;
   public static Drive_Subsystem drive_Subsystem;
-  public static Arm_Subystem arm_Subsystem;
   public static Vision_Subsystem vision_Subsystem;
 
   //Other Systems
@@ -35,7 +34,6 @@ public class RobotContainer {
   public static AutoManager autoManager;
 
   //Commands
-  public static Arm_Commands arm_Commands;
   public static Drive_Commands drive_Commands;
   public static LED_Commands led_Commands;
   
@@ -57,18 +55,16 @@ public class RobotContainer {
     configureSubsystems();
     configureCommands();
     shuffleboard = new Shuffleboard();
-    autoManager = new AutoManager(drive_Subsystem, arm_Commands);
+    autoManager = new AutoManager(drive_Subsystem);
   }
 
   public void configureSubsystems() {
     led_Subsystem = new LED_Subsystem();
     drive_Subsystem = new Drive_Subsystem(driverController);
-    arm_Subsystem = new Arm_Subystem(assistController);
     vision_Subsystem = new Vision_Subsystem();
   }
 
   public void configureCommands() {
-    arm_Commands = new Arm_Commands(arm_Subsystem);
     drive_Commands = new Drive_Commands(drive_Subsystem);
     led_Commands = new LED_Commands(led_Subsystem);
   }
@@ -96,12 +92,12 @@ public class RobotContainer {
 
   //Assistant Controller 
     //moves to start/intake position
-    new JoystickButton(assistController, XBOX_Constants.BButton)
-    .onTrue(arm_Commands.moveToParallel());
+    //new JoystickButton(assistController, XBOX_Constants.BButton)
+    //.onTrue(arm_Commands.moveToParallel());
 
     //flings it 
-    new JoystickButton(assistController, XBOX_Constants.AButton)
-    .onTrue(arm_Commands.fling());
+    //new JoystickButton(assistController, XBOX_Constants.AButton)
+    //.onTrue(arm_Commands.fling());
 
      //Cube leds for signaling
      new JoystickButton(assistController, XBOX_Constants.XButton)

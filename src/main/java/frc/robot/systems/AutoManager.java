@@ -16,11 +16,9 @@ import frc.robot.constants.Auto_Constants;
 import frc.robot.objects.AutoData;
 import frc.robot.subsystems.Drive_Subsystem;
 
-import frc.robot.commands.Arm_Commands;
 
 public class AutoManager extends SubsystemBase {
     private  Drive_Subsystem drive;
-    private  Arm_Commands arm_Commands;
     
     private  double maxVelo;
     private  double maxAccel;
@@ -48,15 +46,13 @@ public class AutoManager extends SubsystemBase {
 
     
 
-    public AutoManager(Drive_Subsystem drive, Arm_Commands arm_Commands) {
+    public AutoManager(Drive_Subsystem drive) {
         this.drive = drive;
 
-        this.arm_Commands = arm_Commands;
 
         maxVelo = Auto_Constants.maxVelo;
         maxAccel = Auto_Constants.maxAccel;
 
-        autoFling = new SequentialCommandGroup( arm_Commands.moveToParallel(), arm_Commands.fling());
         
 
         eventMap = new HashMap<>();
