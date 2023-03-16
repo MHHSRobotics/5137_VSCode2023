@@ -27,7 +27,7 @@ public class RobotContainer {
   //Subsystems
   public static LED_Subsystem led_Subsystem;
   public static Drive_Subsystem drive_Subsystem;
-  public static Arm_Subsystem arm_Subsystem;
+  public static Arm_Subystem arm_Subsystem;
   public static Vision_Subsystem vision_Subsystem;
 
   //Other Systems
@@ -63,7 +63,7 @@ public class RobotContainer {
   public void configureSubsystems() {
     led_Subsystem = new LED_Subsystem();
     drive_Subsystem = new Drive_Subsystem(driverController);
-    arm_Subsystem = new Arm_Subsystem(assistController);
+    arm_Subsystem = new Arm_Subystem(assistController);
     vision_Subsystem = new Vision_Subsystem();
   }
 
@@ -97,7 +97,7 @@ public class RobotContainer {
   //Assistant Controller 
     //moves to start/intake position
     new JoystickButton(assistController, XBOX_Constants.BButton)
-    .onTrue(arm_Commands.moveToStart());
+    .onTrue(arm_Commands.moveToParallel());
 
     //flings it 
     new JoystickButton(assistController, XBOX_Constants.AButton)
@@ -120,7 +120,7 @@ public class RobotContainer {
     led_Subsystem.startTimer();
   }
 
-
+ 
   /* 
   //required port is the joystick you are currecntly attempting to use 
   //dependent port is the joytick we're checking against, to make sure you're not breaking the robot 

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotState;
@@ -17,8 +18,8 @@ import frc.robot.constants.Arm_Constants;
 import frc.robot.constants.Controller_Constants.XBOX_Constants;
 import frc.robot.objects.*;
 
-public class Arm_Subsystem extends SubsystemBase {
-    private static SparkMaxWrapper rotateMotor;
+public class Arm_Subystem extends SubsystemBase {
+    private static CANSparkMax rotateMotor;
 
     private static RelativeEncoder rotateEncoder; //Switch to relatives encoders once arm actually works
 
@@ -32,10 +33,11 @@ public class Arm_Subsystem extends SubsystemBase {
     private Joystick controller;
 
     private PIDController rotatePID;
+    private ArmFeedforward arm;
 
-    public Arm_Subsystem(Joystick controller) {
+    public Arm_Subystem(Joystick controller) {
        
-        rotateMotor = new SparkMaxWrapper(Arm_Constants.armRotatePort, MotorType.kBrushless); //creates motor with proper CAN id
+        rotateMotor = new CANSparkMax(Arm_Constants.armRotatePort, MotorType.kBrushless); //creates motor with proper CAN id
         rotateEncoder = rotateMotor.getEncoder(); //creates encoder
         
         rotateEncoder.setPosition(Arm_Constants.startPosition); //Relative encoder start position
@@ -43,15 +45,20 @@ public class Arm_Subsystem extends SubsystemBase {
         desiredRotation = Arm_Constants.startPosition; //Makes sure it matches the start position
         stopArm(); // To ensure that current rotation and desired are equal
 
+         arm = new ArmFeedforward(0, 2, 0);
         isFlinging = false; 
 
         rotatePID = new PIDController(Arm_Constants.rKP, Arm_Constants.rKI, Arm_Constants.rKD);
+        //rotatePID.setTolerance(Arm_Constants.rotateMarginOfError, 0.15 * 3.33333);
+
         //Used to end the arm prests' functional commands 
         isFinished = () -> {
-            if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1 || Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1){
+            if (Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1){
+                System.out.println("finish joystick");
                 return true;
             }
             else if ((Math.abs(desiredRotation - currentRotation) < Arm_Constants.rotateMarginOfError)){
+                System.out.println("finish preset");
                 return true;
             }
             else {
@@ -62,7 +69,8 @@ public class Arm_Subsystem extends SubsystemBase {
         //runs when arm preset commands are ending 
         endCommand = (finished) -> {
             if (finished) {
-                stopArm(); //sets desired = current so movement stops 
+                //stopArm(); //sets desired = current so movement stops 
+                desiredRotation = 0.0;
             }
 
         };
@@ -74,7 +82,8 @@ public class Arm_Subsystem extends SubsystemBase {
     public void periodic() {
         currentRotation = rotateEncoder.getPosition(); //Sets currentRotation to the current encoder reading
         arcadeArm(); //Calls method that splits up tasks for manual or preset movement
-       
+        System.out.println("current " + currentRotation + "\t\t\tdesired " + desiredRotation + "\t\t\tvelocity " + rotateEncoder.getVelocity());
+       System.out.println(arm.calculate(60, 0, 0)*2);
     }
 
     //Called by commands to set a desired rotation
@@ -118,10 +127,10 @@ public class Arm_Subsystem extends SubsystemBase {
             armRotatePresets();
         }
         //If the arm is not trying to move and is in the catapult stopping zone the motor will coast
-        else if(currentRotation > Arm_Constants.flingCoastPosition)
-        {
+        //we're removing this because if it goes past fling position then it will just drop, which doesn't seem right..
+        /*else if(currentRotation > Arm_Constants.flingCoastPosition){
             coastArm();
-        }
+        }*/
         //Otherwise will brake
         else{
             stopArm();
@@ -129,8 +138,15 @@ public class Arm_Subsystem extends SubsystemBase {
     }
 
     private void armRotateManual() {
-            rotateMotor.set((-controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.manualRotateSpeed);
-            desiredRotation = currentRotation;
+        if (controller.getRawAxis(XBOX_Constants.RXPort) < 0){ //positive velocity is towards intake 
+            rotateMotor.set(0.15); 
+        }
+        else{
+            rotateMotor.set(-Arm_Constants.manualRotateSpeed);
+        }
+
+            //rotateMotor.set((-controller.getRawAxis(XBOX_Constants.RXPort))*Arm_Constants.manualRotateSpeed);
+        desiredRotation = currentRotation;
     }
     
 
@@ -138,33 +154,28 @@ public class Arm_Subsystem extends SubsystemBase {
     private void armRotatePresets() { 
         if(isFlinging)
         {
-            if(Math.abs(desiredRotation-currentRotation) < Arm_Constants.rotateMarginOfError)
-            {
+            if(Math.abs(desiredRotation-currentRotation) < Arm_Constants.rotateMarginOfError){
                 isFlinging = false;
             }
-                else if(desiredRotation - currentRotation < 0)
-            {
+                else if(desiredRotation - currentRotation < 0){
                 isFlinging = false; 
             }
-            else
-            {
+            else{
                 rotateMotor.set(Arm_Constants.flingSpeed);
             }
         }
-        else
-        {
+        else{
             if ((desiredRotation - currentRotation) < -Arm_Constants.rotateMarginOfError) {
                 rotateMotor.set(rotatePID.calculate(currentRotation, desiredRotation)*Arm_Constants.reloadSpeed);
             } 
-            else if ((currentRotation > Arm_Constants.flingCoastPosition ))
-            {
+            else if ((currentRotation > Arm_Constants.flingCoastPosition )){
                 coastArm();
             } 
-            else if ((desiredRotation - currentRotation) >  Arm_Constants.rotateMarginOfError) 
-            {
+            else if ((desiredRotation - currentRotation) >  Arm_Constants.rotateMarginOfError) {
                     rotateMotor.set(rotatePID.calculate(currentRotation, desiredRotation)*Arm_Constants.reloadSpeed);
             } 
         }
+        
 
      
     }

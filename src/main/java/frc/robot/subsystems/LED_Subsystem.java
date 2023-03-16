@@ -138,16 +138,16 @@ public class LED_Subsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        /* 
         
-        if (RobotState.isDisabled()) {
+        
+        /*if (RobotState.isDisabled()) {
             pulsingCG(20, 25);
         } else if (RobotState.isAutonomous()) {
             allianceColor(20, 150);
         } else if (RobotState.isTeleop()) {
             runLEDS();
         }
-        led.setData(ledBuffer);
-        */
+        led.setData(ledBuffer);*/
+        
     }
 }

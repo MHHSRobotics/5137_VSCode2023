@@ -2,17 +2,17 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.*;
 
-import frc.robot.subsystems.Arm_Subsystem;
+import frc.robot.subsystems.Arm_Subystem;
 import frc.robot.constants.Arm_Constants;
 
 public class Arm_Commands {
-    private final Arm_Subsystem arm;
+    private final Arm_Subystem arm;
     
-    public Arm_Commands(Arm_Subsystem arm) {
+    public Arm_Commands(Arm_Subystem arm) {
         this.arm = arm;
     }
 
-    public Command moveToStart() {
+    public Command moveToParallel() {
         return new FunctionalCommand(
             () -> {},
             () -> {arm.moveArm(0);},
@@ -24,7 +24,7 @@ public class Arm_Commands {
     public Command fling() {
         return new FunctionalCommand(
             () -> {},
-            () -> {arm.flingArm();;},
+            () -> {arm.flingArm();},
             arm.endCommand,
             arm.isFinished,
             arm);

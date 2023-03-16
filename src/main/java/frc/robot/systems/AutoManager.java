@@ -56,7 +56,7 @@ public class AutoManager extends SubsystemBase {
         maxVelo = Auto_Constants.maxVelo;
         maxAccel = Auto_Constants.maxAccel;
 
-        autoFling = new SequentialCommandGroup( arm_Commands.moveToStart(), arm_Commands.fling());
+        autoFling = new SequentialCommandGroup( arm_Commands.moveToParallel(), arm_Commands.fling());
         
 
         eventMap = new HashMap<>();

@@ -7,9 +7,9 @@ public final class Arm_Constants {
     
     //Degree Values
         public final static double rotateMarginOfError = 2;
-        public final static double startPosition = -60; //The start position of the arm 
-        public final static double flingCoastPosition = 40; //Used to determine when to cut motors for catapult.
-        public final static double flingEndPosition = 45; //Used to determine when the command for preset is finished. 
+        public final static double startPosition = -53; //The start position of the arm 
+        public final static double flingCoastPosition = 49; //Used to determine when to cut motors for catapult.
+        public final static double flingEndPosition = 52; //Used to determine when the command for preset is finished. 
       
 
   
@@ -17,13 +17,13 @@ public final class Arm_Constants {
 
     //Motor Speeds
         //Edit all for testing
-        public final static double flingSpeed = 0.4; //Speed to catapult piece .8
-        public final static double reloadSpeed = 0.2; //Speed to move arm otherwise .6
-        public final static double manualRotateSpeed = 0.2; //.8
+        public final static double flingSpeed = 0.6; //Speed to catapult piece .8
+        public final static double reloadSpeed = 0.3; //Speed to move arm otherwise .6
+        public final static double manualRotateSpeed = 0.3; //CANNOT BE TRUSTED
 
           //PID
         public final static double rKP = reloadSpeed/8; // 
         public final static double rKI = 0;
         public final static double rKD = 0;
  
-}
+} 
