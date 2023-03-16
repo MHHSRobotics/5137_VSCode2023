@@ -11,10 +11,14 @@ public class LED_Commands {
     }
 
     public Command coneLEDS() {
-        return new InstantCommand(() -> {leds.setTeleOp("cone");});
+        return new InstantCommand(() -> {
+            leds.signal("Cone");
+        });
     }
 
     public Command cubeLEDS() {
-        return new InstantCommand(() -> {leds.setTeleOp("cube");;});
+        return new InstantCommand(() -> {
+            leds.signal("Cube");
+        });
     }
 }

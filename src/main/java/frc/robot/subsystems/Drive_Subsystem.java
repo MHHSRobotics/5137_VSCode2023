@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -16,12 +15,7 @@ import org.photonvision.PhotonUtils;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -79,7 +73,7 @@ public class Drive_Subsystem extends SubsystemBase {
   
 
   //rate limiter
-  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(8); //1.2
+  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(4); //1.2
   private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(4); //4
 
 
@@ -113,15 +107,12 @@ public class Drive_Subsystem extends SubsystemBase {
     rightBackTalon.setNeutralMode(NeutralMode.Coast);
     rightFrontTalon.setNeutralMode(NeutralMode.Coast);
 
-    //Encoders 
-    //the selected feedback sensor needs to be looked into
-    //do we need to attach it to pid like the example???
-    leftFrontTalon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);   //needs to be set regardless if using closed loop 
-    rightFrontTalon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);  //looking into wether we want closed looping 
+    //Sets the talon to return integrated encoder values
+    leftFrontTalon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);  
+    rightFrontTalon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor); 
 
     leftFrontTalon.setSelectedSensorPosition(0); //zeros encoders when it connects to robot code 
     rightFrontTalon.setSelectedSensorPosition(0); 
-
 
     //DriveTrain
     jMoneyDrive = new DifferentialDrive(leftDrive, rightDrive);
@@ -173,7 +164,6 @@ public class Drive_Subsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(getWheelSpeeds());
     // This method will be called once per scheduler run
     if (controller != null && RobotState.isTeleop()) {
       arcadeDrive(controller);
@@ -187,8 +177,8 @@ public class Drive_Subsystem extends SubsystemBase {
     if (RobotState.isEnabled()){
       //checks that we aren't using power and that speed is low so it's not an abrupt stops 
        
-      if (/*leftBackTalon.getMotorOutputVoltage() < 3 & (leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10*/
-      Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) < 0.1 && Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) < 0.1/*Math.abs(leftFrontTalon.get()) < 0.1 && Math.abs(rightFrontTalon.get()) < 0.1)*/){
+      if (
+      Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) < 0.1 && Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) < 0.1){
           leftFrontTalon.setNeutralMode(NeutralMode.Brake);
           leftBackTalon.setNeutralMode(NeutralMode.Brake);
           rightBackTalon.setNeutralMode(NeutralMode.Brake);
@@ -216,7 +206,8 @@ public class Drive_Subsystem extends SubsystemBase {
   //Returns wheel speeds of motors in meters per second
   public DifferentialDriveWheelSpeeds getWheelSpeeds()
   {
-    double leftSpeed = leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10 ; //Speed = sensor count per 100 ms * distance per count * 10 (converts 100 ms to s)
+    //Speed = sensor count per 100 ms * distance per count * 10 (converts 100 ms to s) 
+    double leftSpeed = leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10 ; 
     double rightSpeed = rightFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10;
     return new DifferentialDriveWheelSpeeds(leftSpeed, rightSpeed);
   }

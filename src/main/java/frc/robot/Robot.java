@@ -4,14 +4,12 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-import frc.robot.systems.*;
 
 
 /**
@@ -28,6 +26,9 @@ public class Robot extends TimedRobot {
   private RobotContainer m_RobotContainer;
   public static UsbCamera USBArCam;
   public static Timer time;
+
+
+  //IF RUNNING SIMULATION ON MAC OS AND IT I CRASHING WITHOUT THROWING A CODE EXCEPTION THEN RUN ./gradlew clean  
 
   @Override
   public void robotInit() {
@@ -63,21 +64,18 @@ public class Robot extends TimedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {
-    m_RobotContainer.runLEDS();
-  }
+  public void disabledPeriodic() {}
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   public void autonomousInit() {
-    time.reset();
-    time.start();
+    //time.reset();
+    //time.start();
     //RobotContainer.autoManager.scoreTopCube.schedule();
     m_RobotContainer.runAuto();
   }
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    m_RobotContainer.runLEDSAuto();
     /* 
     if (!time.hasElapsed(3)) {
       m_RobotContainer.runBackupAuto(0);
@@ -94,14 +92,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    time.reset();
+    //m_RobotContainer.startTimers();
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    m_RobotContainer.runLEDSTeleOp();
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {

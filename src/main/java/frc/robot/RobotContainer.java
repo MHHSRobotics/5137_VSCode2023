@@ -7,20 +7,14 @@ package frc.robot;
 import frc.robot.subsystems.*;
 import frc.robot.systems.*;
 
-import java.util.function.BooleanSupplier;
 
-import com.pathplanner.lib.auto.RamseteAutoBuilder;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.commands.*;
-import frc.robot.constants.*;
 import frc.robot.constants.Controller_Constants.*;
 
 /**
@@ -33,7 +27,6 @@ public class RobotContainer {
   //Subsystems
   public static LED_Subsystem led_Subsystem;
   public static Drive_Subsystem drive_Subsystem;
-  public static Arm_Subsystem arm_Subsystem;
   public static Vision_Subsystem vision_Subsystem;
 
   //Other Systems
@@ -41,7 +34,6 @@ public class RobotContainer {
   public static AutoManager autoManager;
 
   //Commands
-  public static Arm_Commands arm_Commands;
   public static Drive_Commands drive_Commands;
   public static LED_Commands led_Commands;
   
@@ -63,18 +55,16 @@ public class RobotContainer {
     configureSubsystems();
     configureCommands();
     shuffleboard = new Shuffleboard();
-    autoManager = new AutoManager(drive_Subsystem, arm_Commands);
+    autoManager = new AutoManager(drive_Subsystem);
   }
 
   public void configureSubsystems() {
     led_Subsystem = new LED_Subsystem();
     drive_Subsystem = new Drive_Subsystem(driverController);
-    arm_Subsystem = new Arm_Subsystem(assistController);
     vision_Subsystem = new Vision_Subsystem();
   }
 
   public void configureCommands() {
-    arm_Commands = new Arm_Commands(arm_Subsystem);
     drive_Commands = new Drive_Commands(drive_Subsystem);
     led_Commands = new LED_Commands(led_Subsystem);
   }
@@ -83,8 +73,6 @@ public class RobotContainer {
   
   public void configureBindings() { 
   //Driver Controller 
-    //Right trigger intakes / extends -- retracts when released 
-
     //Middle down dpad aligns to april tag
     new POVButton(driverController, XBOX_Constants.DownDPad)
     .onTrue(drive_Commands.tagDrive(vision_Subsystem.getNearestAlign("middle", drive_Subsystem.poseEstimator.getEstimatedPosition())));
@@ -102,46 +90,34 @@ public class RobotContainer {
     .onTrue(new InstantCommand(() -> drive_Subsystem.driveBrake()))
     .onFalse(new InstantCommand(() -> drive_Subsystem.driveCoast()));
 
-    //Cube leds for signaling
-    new JoystickButton(driverController, XBOX_Constants.XButton)
-    .onTrue(led_Commands.cubeLEDS());
-    
-    //Cone leds for signaling
-    new JoystickButton(driverController, XBOX_Constants.YButton)
-    .onTrue(led_Commands.coneLEDS());
-
-    new JoystickButton(driverController, XBOX_Constants.BButton)
-    .onTrue(autoManager.autoFling);
-
-
-  //Assistant Controller
+  //Assistant Controller 
     //moves to start/intake position
-    new JoystickButton(assistController, XBOX_Constants.YButton)
-    .onTrue(arm_Commands.moveToStart());
+    //new JoystickButton(assistController, XBOX_Constants.BButton)
+    //.onTrue(arm_Commands.moveToParallel());
 
     //flings it 
-    new JoystickButton(assistController, XBOX_Constants.AButton)
-    .onTrue(arm_Commands.fling());
+    //new JoystickButton(assistController, XBOX_Constants.AButton)
+    //.onTrue(arm_Commands.fling());
 
+     //Cube leds for signaling
+     new JoystickButton(assistController, XBOX_Constants.XButton)
+     .onTrue(led_Commands.cubeLEDS());
+     
+     //Cone leds for signaling
+     new JoystickButton(assistController, XBOX_Constants.YButton)
+     .onTrue(led_Commands.coneLEDS());
   }  
 
-   
   public void runAuto() {
     autoManager.runAuto(shuffleboard.getAuto());
   }
 
-  public void runLEDS() {
-    led_Subsystem.pulsingCG(25, 10);
+  public void startTimers() {
+    led_Subsystem.startTimer();
   }
 
-  public void runLEDSAuto() {
-    led_Subsystem.solidCG(1);
-  }
-
-  public void runLEDSTeleOp() {
-    led_Subsystem.runLEDS();
-  }
-
+ 
+  /* 
   //required port is the joystick you are currecntly attempting to use 
   //dependent port is the joytick we're checking against, to make sure you're not breaking the robot 
   private BooleanSupplier createBooleanSupplier(Joystick controller, int requiredPort, int dependentPort) {
@@ -159,4 +135,5 @@ public class RobotContainer {
     };
     return supply;
   }
+  */
 }
