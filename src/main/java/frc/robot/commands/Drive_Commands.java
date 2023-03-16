@@ -23,40 +23,19 @@ public class Drive_Commands {
 
   public Drive_Commands (Drive_Subsystem drive) {
     this.drive = drive; 
-  } 
-
-
-  /*public class autoDrive(Pose2d targetPose){ //DriveBase_Subsystem driveBase_Subsystem, Pose2d targetPose
-    return new FunctionalCommand(
-      () -> {}, 
-      () -> drive.autoDrive(targetPose), 
-      () -> , 
-      () -> true, 
-      drive);
-  }*/
-
-  public Command tagDrive(Pose2d targetPose){
-    return new FunctionalCommand(
-      () -> {}, 
-      () -> drive.tagDrive(targetPose), 
-      drive.tagDriveEndCommands, 
-      drive.tagDriveriveIsFinished(targetPose), 
-      drive);
   }
 
   public Command balance(){
-    /*return new FunctionalCommand(
-      () -> {},
-      () -> {drive.balance;},
-      drive.balanceEndCommand,
-      drive.balanceIsFinished,
-      drive);*/
       return new FunctionalCommand(
         () -> {}, 
         () -> drive.balance(), 
         drive.balanceEndCommand, 
         drive.balanceIsFinished, 
         drive);
+  }
+
+  public Command setBrake(Boolean brake) {
+    return new InstantCommand(() -> {drive.setBrake(brake);});
   }
 
   public Command driveForward() {
