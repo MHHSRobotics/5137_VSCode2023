@@ -3,21 +3,22 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
 
 import frc.robot.constants.Punch_Constants;
 
 public class Punch_Subsystem extends SubsystemBase {
-    public static PneumaticsControlModule PCM;
+    public static PneumaticHub pH;
     public static Compressor comp;
     public static Solenoid leftSolenoid;
     public static Solenoid rightSolenoid;
     
     public Punch_Subsystem() {
-        PCM = new PneumaticsControlModule();
-        comp = PCM.makeCompressor();
-        leftSolenoid = PCM.makeSolenoid(Punch_Constants.leftPort);
-        rightSolenoid = PCM.makeSolenoid(Punch_Constants.rightPort);
+        pH = new PneumaticHub(6);
+        comp = pH.makeCompressor();
+        leftSolenoid = pH.makeSolenoid(Punch_Constants.leftPort);
+        rightSolenoid = pH.makeSolenoid(Punch_Constants.rightPort);
     }
 
     public void enableCompressor() {
