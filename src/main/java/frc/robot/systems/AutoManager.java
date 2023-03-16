@@ -31,20 +31,11 @@ public class AutoManager extends SubsystemBase {
     private  RamseteAutoBuilder autoBuilder; //Allows auto to drive a path
     
     private  ArrayList<PathPlannerTrajectory> left_mobility;
-    private  ArrayList<PathPlannerTrajectory> left_engage;
-    private  ArrayList<PathPlannerTrajectory> left_mobility_engage;
-    private  ArrayList<PathPlannerTrajectory> left_doubleScore;
-    private  ArrayList<PathPlannerTrajectory> left_doubleScore_engage;
     private  ArrayList<PathPlannerTrajectory> middle_engage;
     private  ArrayList<PathPlannerTrajectory> right_mobility;
-    private  ArrayList<PathPlannerTrajectory> right_engage;
-    private  ArrayList<PathPlannerTrajectory> right_mobility_engage;
-    private  ArrayList<PathPlannerTrajectory> right_doubleScore;
-    private  ArrayList<PathPlannerTrajectory> right_doubleScore_engage;
+    private  ArrayList<PathPlannerTrajectory> middle_mobility_engage;
 
-    
-
-    
+   
 
     public AutoManager(Drive_Subsystem drive) {
         this.drive = drive;
@@ -72,16 +63,9 @@ public class AutoManager extends SubsystemBase {
 
         //Loads created paths
         left_mobility = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("leftPos_mobility", new PathConstraints(maxVelo, maxAccel));
-        left_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("leftPos_engage", new PathConstraints(maxVelo, maxAccel));
-        left_mobility_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("leftPos_mobility_engage", new PathConstraints(maxVelo, maxAccel));
-        //left_doubleScore =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("leftPos_doubleScore", new PathConstraints(maxVelo, maxAccel));
-        //left_doubleScore_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("leftPos_doubleScore_engage", new PathConstraints(maxVelo, maxAccel));
         middle_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("middlePos_engage", new PathConstraints(maxVelo, maxAccel));
         right_mobility = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_mobility", new PathConstraints(maxVelo, maxAccel));
-        right_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_engage", new PathConstraints(maxVelo, maxAccel));
-        right_mobility_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_mobility_engage", new PathConstraints(maxVelo, maxAccel));
-        //right_doubleScore =  (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_doubleScore", new PathConstraints(maxVelo, maxAccel));
-        //right_doubleScore_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_doubleScore_engage", new PathConstraints(maxVelo, maxAccel));
+        middle_mobility_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_mobility_engage", new PathConstraints(maxVelo, maxAccel));
     }
 
     public void runAuto(AutoData autoInfo) {
@@ -109,16 +93,9 @@ public class AutoManager extends SubsystemBase {
         }
         switch (autoNumber) {
             case (1): {autoPath = left_mobility;}
-            case (2): {autoPath = left_engage;}
-            case (3): {autoPath = left_mobility_engage;}
-            case (4): {autoPath = left_doubleScore;}
-            case (5): {autoPath = left_doubleScore_engage;}
-            case (6): {autoPath = middle_engage;}
-            case (7): {autoPath = right_mobility;}
-            case (8): {autoPath = right_engage;}
-            case (9): {autoPath = right_mobility_engage;}
-            case (10): {autoPath = right_doubleScore;}
-            case (11): {autoPath = right_doubleScore_engage;}
+            case (2): {autoPath = middle_engage;}
+            case (3): {autoPath = right_mobility;}
+            case (4): {autoPath = middle_mobility_engage;}
             default: {autoPath = middle_engage;}
         }
 
