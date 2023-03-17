@@ -14,8 +14,8 @@ package frc.robot;
  */
 public final class Constants {
   //Driving
-  public final static double driveSensitivity = 3.0;
-  public final static double turnSensitivity = 1.0;
+  public final static double driveSensitivity = 2.0;
+  public final static double turnSensitivity = 5.0;
   public final static double errormargin = 0.1;
 
   //Controller Type "xbox" or "ps4"
@@ -29,8 +29,8 @@ public final class Constants {
   //XBOX Controller Ports
   //Need to test these, ports may have changed with the removal of buttons.
   //public final static int XBOX_LXStickAxisPort = 0;
-  public final static int XBOX_LYStickAxisPort = 4;
-  public final static int XBOX_RXStickAxisPort = 1; //4
+  public final static int XBOX_LYStickAxisPort = 1;
+  public final static int XBOX_RXStickAxisPort = 4; //4
   //public final static int XBOX_RYStickAxisPort = 5;
 
   //PS4 Controller Ports

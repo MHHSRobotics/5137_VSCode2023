@@ -4,9 +4,11 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -33,20 +35,26 @@ public class DriveBase_Subsystem extends SubsystemBase {
   //Controller
   Joystick controller;
 
+  SlewRateLimiter drivLimiter;
+  SlewRateLimiter turnLimiter;
+
+
   public DriveBase_Subsystem() {
     //left motors
     leftTalon = new WPI_TalonSRX(Constants.leftTalonPort);
     leftFrontVic = new WPI_VictorSPX(Constants.leftFrontVicPort);
     leftBackVic = new WPI_VictorSPX(Constants.leftBackVicPort);
     leftDrive = new MotorControllerGroup(leftTalon, leftFrontVic, leftBackVic);
-
     leftFrontVic.setInverted(true);
+    leftDrive.setInverted(true);
+
 
     //right motors
     rightTalon = new WPI_TalonSRX(Constants.rightTalonPort);
     rightFrontVic = new WPI_VictorSPX(Constants.rightFrontVicPort);
     rightBackVic = new WPI_VictorSPX(Constants.rightBackVicPort);
     rightDrive = new MotorControllerGroup(rightTalon, rightFrontVic, rightBackVic);
+
 
     //rightTalon.setInverted(true);
     //rightFrontVic.setInverted(true);
@@ -57,6 +65,17 @@ public class DriveBase_Subsystem extends SubsystemBase {
 
     //Controller
     controller = new Joystick(Constants.controllerPort);
+
+    leftTalon.configPeakCurrentLimit(30, 10);
+    leftTalon.configPeakCurrentDuration(200, 10);
+    leftTalon.configContinuousCurrentLimit(20, 10);
+
+    rightTalon.configPeakCurrentLimit(30, 10);
+    rightTalon.configPeakCurrentDuration(200, 10);
+    rightTalon.configContinuousCurrentLimit(20, 10);
+
+    drivLimiter = new SlewRateLimiter(1);
+    turnLimiter = new SlewRateLimiter(1.5);
   }
 
   @Override
@@ -71,6 +90,8 @@ public class DriveBase_Subsystem extends SubsystemBase {
     double rotate = controller.getRawAxis(Constants.XBOX_RXStickAxisPort);
     speed = adjust(speed);
     rotate = adjust(rotate);
+    speed = drivLimiter.calculate(speed);
+    rotate = turnLimiter.calculate(rotate);
     testDrive.curvatureDrive(speed/Constants.driveSensitivity, rotate/Constants.turnSensitivity, true);
   }
 
