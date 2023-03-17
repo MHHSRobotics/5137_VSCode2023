@@ -4,15 +4,14 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.PneumaticsControlModule;
 
 import frc.robot.constants.Punch_Constants;
 
 public class Punch_Subsystem extends SubsystemBase {
-    public static PneumaticHub pH;
-    public static Compressor comp;
-    public static Solenoid leftSolenoid;
-    public static Solenoid rightSolenoid;
+    private static PneumaticHub pH;
+    private static Compressor comp;
+    private static Solenoid leftSolenoid;
+    private static Solenoid rightSolenoid;
     
     public Punch_Subsystem() {
         pH = new PneumaticHub(6);

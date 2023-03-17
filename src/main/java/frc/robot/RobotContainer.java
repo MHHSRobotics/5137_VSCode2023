@@ -7,10 +7,7 @@ package frc.robot;
 import frc.robot.subsystems.*;
 import frc.robot.systems.*;
 
-
-
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -41,8 +38,6 @@ public class RobotContainer {
   //Controllers
   public static Joystick driverController;
   public static Joystick assistController;
-
-  public static int LEDpulse;
 
   public RobotContainer() {
     driverController = new Joystick(0);

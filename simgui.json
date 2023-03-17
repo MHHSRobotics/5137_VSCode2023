@@ -74,6 +74,9 @@
         "header": {
           "open": true
         }
+      },
+      "window": {
+        "visible": false
       }
     },
     "Solenoids": {
@@ -126,6 +129,13 @@
       "/SmartDashboard/Manual Arm": "String Chooser",
       "/SmartDashboard/Mobility": "String Chooser",
       "/SmartDashboard/jMoneyDrive": "DifferentialDrive"
+    },
+    "windows": {
+      "/SmartDashboard/LEDs Enabled": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {

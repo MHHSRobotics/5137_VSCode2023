@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.util.Color;
 
 import frc.robot.constants.LED_Constants;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.commands.LED_Commands;
 
 public class LED_Subsystem extends SubsystemBase {
@@ -138,16 +139,17 @@ public class LED_Subsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        
-        
-        /*if (RobotState.isDisabled()) {
-            pulsingCG(20, 25);
-        } else if (RobotState.isAutonomous()) {
-            allianceColor(20, 150);
-        } else if (RobotState.isTeleop()) {
-            runLEDS();
+        if (RobotContainer.shuffleboard.getLEDsEnabled()) {
+            if (RobotState.isDisabled()) {
+                pulsingCG(20, 25);
+            } else if (RobotState.isAutonomous()) {
+                allianceColor(20, 150);
+            } else if (RobotState.isTeleop()) {
+                runLEDS();
+            }
+            led.setData(ledBuffer);
+        } else {
+            solidColor(LED_Constants.None);
         }
-        led.setData(ledBuffer);*/
-        
     }
 }
