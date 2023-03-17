@@ -38,4 +38,20 @@ public class Punch_Subsystem extends SubsystemBase {
         leftSolenoid.set(false);
         rightSolenoid.set(false);
     }
+
+    public boolean getCompActive() {
+        if (comp.isEnabled()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean getSolenoidsActive() {
+        if (leftSolenoid.get() && rightSolenoid.get()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

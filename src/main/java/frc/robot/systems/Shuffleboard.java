@@ -2,26 +2,22 @@ package frc.robot.systems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.*;
-
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drive_Subsystem;
-import frc.robot.objects.AutoData;
 
 public class Shuffleboard extends SubsystemBase {
-    SendableChooser<String> autoColumn = new SendableChooser<>();
     SendableChooser<String> autoChoice = new SendableChooser<>();
-    SendableChooser<Boolean> autoMobility = new SendableChooser<>();
-    SendableChooser<Boolean> autoEngage = new SendableChooser<>();
+    SendableChooser<Boolean> autoScoring = new SendableChooser<>();
+    SendableChooser<Boolean> ledsEnabled = new SendableChooser<>();
 
     public Shuffleboard() {
-        configureSendableString(autoColumn, "Middle", "Left", "Middle", "Right");
-        configureSendableString(autoChoice, "None", "None", "SingleScore");
-        configureSendableBoolean(autoMobility, false);
-        configureSendableBoolean(autoEngage, false);
+        configureSendableString(autoChoice, "None", "leftMobility", "middleEngage", "rightMobility", "middleCombo");
+        configureSendableBoolean(autoScoring, false);
+        configureSendableBoolean(ledsEnabled, false);
 
-        SmartDashboard.putData("Auto Position", autoColumn);
         SmartDashboard.putData("Auto Choice", autoChoice);
-        SmartDashboard.putData("Mobility", autoMobility);
-        SmartDashboard.putData("Engage", autoEngage);
+        SmartDashboard.putData("Auto Scoring", autoScoring);
+        SmartDashboard.putData("LEDs Enabled", ledsEnabled);
         SmartDashboard.putData("jMoneyDrive", Drive_Subsystem.jMoneyDrive);
 
         update();
@@ -32,12 +28,17 @@ public class Shuffleboard extends SubsystemBase {
         update();
     }
 
-    public AutoData getAuto() {
-       return new AutoData(autoColumn.getSelected(), autoChoice.getSelected(), autoMobility.getSelected(), autoEngage.getSelected());
+    public String getAuto() {
+        if (autoScoring.getSelected()) {
+            return autoChoice.getSelected()+"@Score";
+        } else {
+            return autoChoice.getSelected()+"@None";
+        }
     }
 
     private void update() {
-        //SmartDashboard.putNumber("Arm Rotate Motor", RobotContainer.arm_Subsystem.getRotationSpeed());
+        SmartDashboard.putBoolean("Punch Solenoids", RobotContainer.punch_Subsystem.getSolenoidsActive());
+        SmartDashboard.putBoolean("Compressor", RobotContainer.punch_Subsystem.getCompActive());
     }
 
     private void configureSendableString(SendableChooser<String> chooser, String kDefault, String... kOptions) {

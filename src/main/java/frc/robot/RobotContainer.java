@@ -56,7 +56,7 @@ public class RobotContainer {
     configureSubsystems();
     configureCommands();
     shuffleboard = new Shuffleboard();
-    autoManager = new AutoManager(drive_Subsystem);
+    autoManager = new AutoManager(drive_Subsystem, punch_Commands);
   }
 
   public void configureSubsystems() {

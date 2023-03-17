@@ -12,9 +12,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.Drive_Constants;
+import frc.robot.commands.Punch_Commands;
 import frc.robot.constants.Auto_Constants;
-import frc.robot.objects.AutoData;
 import frc.robot.subsystems.Drive_Subsystem;
+import frc.robot.subsystems.Punch_Subsystem;
 
 
 public class AutoManager extends SubsystemBase {
@@ -23,7 +24,7 @@ public class AutoManager extends SubsystemBase {
     private  double maxVelo;
     private  double maxAccel;
 
-    public  SequentialCommandGroup autoFling;
+    public  SequentialCommandGroup autoPunch;
     public  SequentialCommandGroup scoreTopCube;
     public  SequentialCommandGroup intakeObject;
 
@@ -37,14 +38,14 @@ public class AutoManager extends SubsystemBase {
 
    
 
-    public AutoManager(Drive_Subsystem drive) {
+    public AutoManager(Drive_Subsystem drive, Punch_Commands punch) {
         this.drive = drive;
 
 
         maxVelo = Auto_Constants.maxVelo;
         maxAccel = Auto_Constants.maxAccel;
 
-        
+        autoPunch = new SequentialCommandGroup(punch.Punch());
 
         eventMap = new HashMap<>();
 
@@ -68,44 +69,29 @@ public class AutoManager extends SubsystemBase {
         middle_mobility_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("rightPos_mobility_engage", new PathConstraints(maxVelo, maxAccel));
     }
 
-    public void runAuto(AutoData autoInfo) {
-        String tempType;
-        int autoNumber = 0;
+    public void runAuto(String choice) {
         ArrayList<PathPlannerTrajectory> autoPath;
+        String[] info = choice.split("@");
+        String type = info[0];
+        String score = info[1];
 
-        if (autoInfo.getType().equals("SingleScore")) {
-            tempType = "None";
-        } else {
-            tempType = autoInfo.getType();
-        }
+        System.out.println(type);
+        System.out.println(score);
 
-        AutoData tempAuto = new AutoData(autoInfo.getPosition(), tempType, autoInfo.getMobility(), autoInfo.getEngage());
-
-        System.out.println(tempAuto.getPosition());
-        System.out.println(tempAuto.getType());
-        System.out.println(tempAuto.getMobility());
-        System.out.println(tempAuto.getEngage());
-
-        for (int i = 0; i < Auto_Constants.autoAmount; i++) {
-            if (tempAuto.equalTo(Auto_Constants.autoChoices[i])) {
-                autoNumber = i+1;
-            }
-        }
-        switch (autoNumber) {
-            case (1): {autoPath = left_mobility;}
-            case (2): {autoPath = middle_engage;}
-            case (3): {autoPath = right_mobility;}
-            case (4): {autoPath = middle_mobility_engage;}
+        switch (type) {
+            case ("leftMobility"): {autoPath = left_mobility;}
+            case ("middleEngage"): {autoPath = middle_engage;}
+            case ("rightMobility"): {autoPath = right_mobility;}
+            case ("middleCombo"): {autoPath = middle_mobility_engage;}
             default: {autoPath = middle_engage;}
         }
 
-        System.out.println("Auto Selected: "+autoNumber);
-
-        
-        if (autoInfo.getType() == "SingleScore")
-            eventMap.put("ScoreCone", autoFling);
-        
-        
-        autoBuilder.fullAuto(autoPath).schedule();
+        if (score.equals("Score")) {
+            eventMap.put("ScoreCone", autoPunch);
+        }
+         
+        if (type != "None") {
+            autoBuilder.fullAuto(autoPath).schedule();
+        }
     }
 }

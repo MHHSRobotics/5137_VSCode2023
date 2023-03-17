@@ -196,11 +196,9 @@ public class Drive_Subsystem extends SubsystemBase {
   //Sets the volts of each motor 
   public void setVolts(double leftVolts, double rightVolts)
   {
-    System.out.println("Desired Volts - Left: " + leftVolts + " Right: " + rightVolts);
     leftVolts *= .6;
     rightVolts *= .6;
     leftVolts -= 0.1*leftVolts;
-    System.out.println("Actual Volts - Left: " + leftVolts + " Right: " + rightVolts);
     leftDrive.setVoltage(-leftVolts);
     rightDrive.setVoltage(-rightVolts);
    // System.out.println(getWheelSpeeds());

@@ -50,6 +50,16 @@
           "open": true
         }
       },
+      "Talon FX[3]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX[4]": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon SRX[1]": {
         "header": {
           "open": true
@@ -64,9 +74,6 @@
         "header": {
           "open": true
         }
-      },
-      "window": {
-        "visible": false
       }
     },
     "Solenoids": {
@@ -74,9 +81,6 @@
         "header": {
           "open": true
         }
-      },
-      "window": {
-        "visible": true
       }
     },
     "Timing": {
@@ -115,8 +119,10 @@
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Auto Modes": "String Chooser",
       "/SmartDashboard/Auto Position": "String Chooser",
+      "/SmartDashboard/Auto Scoring": "String Chooser",
       "/SmartDashboard/Driver Controller Type": "String Chooser",
       "/SmartDashboard/Engage": "String Chooser",
+      "/SmartDashboard/LEDs Enabled": "String Chooser",
       "/SmartDashboard/Manual Arm": "String Chooser",
       "/SmartDashboard/Mobility": "String Chooser",
       "/SmartDashboard/jMoneyDrive": "DifferentialDrive"
