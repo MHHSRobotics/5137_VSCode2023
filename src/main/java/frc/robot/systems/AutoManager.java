@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.Drive_Constants;
+import frc.robot.RobotContainer;
+import frc.robot.commands.Drive_Commands;
 import frc.robot.commands.Punch_Commands;
 import frc.robot.constants.Auto_Constants;
 import frc.robot.subsystems.Drive_Subsystem;
@@ -100,6 +102,7 @@ public class AutoManager extends SubsystemBase {
             default: {autoPath = middle_engage;}
         }
 
+        eventMap.put("Balance", RobotContainer.drive_Commands.balance());
         if (score.equals("Score")) {
             eventMap.put("ScoreCone", autoPunch);
         }

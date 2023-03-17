@@ -24,6 +24,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.SPI;
@@ -192,7 +193,6 @@ public class Drive_Subsystem extends SubsystemBase {
     double rightSpeed = rightFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10;
     return new DifferentialDriveWheelSpeeds(leftSpeed, rightSpeed);
   }
-
   //Used by auto builder to run a path 
   public void setSpeeds(double leftSpeed, double rightSpeed)
   {

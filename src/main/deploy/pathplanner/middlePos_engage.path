@@ -41,7 +41,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Balance1"
+          "Balance"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",

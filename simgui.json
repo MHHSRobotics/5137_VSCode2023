@@ -133,6 +133,11 @@
       "/SmartDashboard/jMoneyDrive": "DifferentialDrive"
     },
     "windows": {
+      "/FMSInfo": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/LEDs Enabled": {
         "window": {
           "visible": true
