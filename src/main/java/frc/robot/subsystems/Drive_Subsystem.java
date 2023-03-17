@@ -115,7 +115,7 @@ public class Drive_Subsystem extends SubsystemBase {
 
     //DriveTrain
     jMoneyDrive = new DifferentialDrive(leftDrive, rightDrive);
-    jMoneyDrive.setMaxOutput(1);
+    //jMoneyDrive.setMaxOutput(1);
     
 
     //PID
@@ -216,8 +216,10 @@ public class Drive_Subsystem extends SubsystemBase {
     speed = rateLimiter.calculate(speed);
     rotate = rotateLimiter.calculate(rotate);
 
-   if (rotate < 1 && speed!=0.0){ //when driving straight 
-      rotate -= 0.4*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
+    if(controller.getRawAxis(XboxController.Axis.kRightTrigger.value) < 0.1){
+      if (rotate < 1 && speed!=0.0){ //when driving straight 
+        rotate -= 0.4*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
+      }
     }
 
     //System.out.println(getWheelSpeeds());
