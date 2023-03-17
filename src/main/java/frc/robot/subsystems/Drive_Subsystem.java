@@ -74,7 +74,7 @@ public class Drive_Subsystem extends SubsystemBase {
 
   //rate limiter
   private final SlewRateLimiter rateLimiter = new SlewRateLimiter(4); //1.2
-  private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(4); //4
+  private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(8); //4
 
 
 
@@ -160,15 +160,17 @@ public class Drive_Subsystem extends SubsystemBase {
     //Used to coast when the robot is moving / disabled -- breaks when stationary 
     if (RobotState.isEnabled()){
       //checks that we aren't using power and that speed is low so it's not an abrupt stops 
-      if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) < 0.1 && Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) < 0.1) {
-          setBrake(true);
+      if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1 && Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1) {
+          setBrake(false);
       }
+      
       else {
-        setBrake(false);      
+        setBrake(true);      
       }
+      
     }
     else{
-      setBrake(true);
+      setBrake(false);
   }
 }
 
@@ -179,10 +181,14 @@ public class Drive_Subsystem extends SubsystemBase {
       rightBackTalon.setNeutralMode(NeutralMode.Brake);
       rightFrontTalon.setNeutralMode(NeutralMode.Brake);
     }
+    else
+    {
       leftFrontTalon.setNeutralMode(NeutralMode.Coast);
       leftBackTalon.setNeutralMode(NeutralMode.Coast);
       rightBackTalon.setNeutralMode(NeutralMode.Coast);
       rightFrontTalon.setNeutralMode(NeutralMode.Coast); 
+    }
+    
   }
 
   //Returns wheel speeds of motors in meters per second
@@ -228,8 +234,8 @@ public class Drive_Subsystem extends SubsystemBase {
     rotate = rotateLimiter.calculate(rotate);
 
     if(controller.getRawAxis(XboxController.Axis.kRightTrigger.value) < 0.1){
-      if (rotate < 1 && speed!=0.0){ //when driving straight 
-        rotate -= 0.4*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
+      if (rotate < .1 && speed!=0.0){ //when driving straight 
+        rotate += 0.35*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
       }
     }
 

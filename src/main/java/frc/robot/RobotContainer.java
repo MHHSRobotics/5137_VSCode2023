@@ -67,11 +67,11 @@ public class RobotContainer {
   }
   
   public void configureBindings() {
-    /*
+    
     new JoystickButton(driverController, XBOX_Constants.AButton)
     .onTrue(drive_Commands.setBrake(true))
     .onFalse(drive_Commands.setBrake(false));
-    */
+    
 
      //Cube leds for signaling
      new JoystickButton(assistController, XBOX_Constants.XButton)
