@@ -193,7 +193,19 @@ public class Drive_Subsystem extends SubsystemBase {
     return new DifferentialDriveWheelSpeeds(leftSpeed, rightSpeed);
   }
 
+  //Used by auto builder to run a path 
+  public void setSpeeds(double leftSpeed, double rightSpeed)
+  {
+    leftSpeed *= .9; //Accounts for crooked drivebase
+    leftSpeed /= 5.0; //Max drivebase speed is likely around 5m/s, so when input 5m/s sets motor to 1.0(max)
+    rightSpeed /= 5.0; 
+    leftDrive.set(leftSpeed);
+    rightDrive.set(leftSpeed);
+    System.out.println("leftSpeed" + leftSpeed);
+    System.out.println("rightSpeed" + rightSpeed);
+  }
   //Sets the volts of each motor 
+  /* 
   public void setVolts(double leftVolts, double rightVolts)
   {
     leftVolts *= .6;
@@ -203,6 +215,7 @@ public class Drive_Subsystem extends SubsystemBase {
     rightDrive.setVoltage(-rightVolts);
    // System.out.println(getWheelSpeeds());
   }
+  */
 
   //Used by the bot to drive -- calls upon adjust method to reduce error. Is used by the DefaultDrive command to drive in TeleOp
   public void arcadeDrive(Joystick controller) {

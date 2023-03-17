@@ -74,9 +74,11 @@
         "header": {
           "open": true
         }
-      },
+      }
+    },
+    "PWM Outputs": {
       "window": {
-        "visible": false
+        "visible": true
       }
     },
     "Solenoids": {

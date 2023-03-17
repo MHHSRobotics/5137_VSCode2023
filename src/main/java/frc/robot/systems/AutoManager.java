@@ -49,6 +49,19 @@ public class AutoManager extends SubsystemBase {
 
         eventMap = new HashMap<>();
 
+
+
+        autoBuilder = new RamseteAutoBuilder(
+            drive::getPose,
+             drive::resetPose,
+              new RamseteController(),
+               Drive_Constants.trackWidth,
+                drive::setSpeeds,
+                 eventMap,
+                  true,
+                  drive);
+
+                  /* 
         autoBuilder = new RamseteAutoBuilder(
         drive::getPose, // Pose2d supplier method from drivetrain
         drive::resetPose, // Pose2d consume method used to reset odometry at the beginning of auto
@@ -62,6 +75,7 @@ public class AutoManager extends SubsystemBase {
         true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
         drive); // The drive subsystem. Used to properly set the requirements of path following commands
 
+        */
         //Loads created paths
         left_mobility = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("leftPos_mobility", new PathConstraints(maxVelo, maxAccel));
         middle_engage = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("middlePos_engage", new PathConstraints(maxVelo, maxAccel));
