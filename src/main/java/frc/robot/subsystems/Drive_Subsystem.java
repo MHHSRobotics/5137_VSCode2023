@@ -15,6 +15,7 @@ import org.photonvision.PhotonUtils;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.EnumKeySerializer;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -152,26 +153,17 @@ public class Drive_Subsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    System.out.println( " pitch " + gyro.getPitch() + " r " + gyro.getRoll() + " y " + gyro.getYaw()); //Sets the drivetraub to drive forward/backwards using PID speed
+
     // This method will be called once per scheduler run
     if (controller != null && RobotState.isTeleop()) {
       arcadeDrive(controller);
     }
-
-    //Used to coast when the robot is moving / disabled -- breaks when stationary 
-    if (RobotState.isEnabled()){
-      //checks that we aren't using power and that speed is low so it's not an abrupt stops 
-      if (Math.abs(controller.getRawAxis(XBOX_Constants.LYPort)) > 0.1 && Math.abs(controller.getRawAxis(XBOX_Constants.RXPort)) > 0.1) {
-          setBrake(false);
-      }
-      
-      else {
-        setBrake(true);      
-      }
-      
-    }
     else{
       setBrake(false);
-  }
+    }
+
+    
 }
 
   public void setBrake(Boolean brake) {
@@ -225,6 +217,7 @@ public class Drive_Subsystem extends SubsystemBase {
 
   //Used by the bot to drive -- calls upon adjust method to reduce error. Is used by the DefaultDrive command to drive in TeleOp
   public void arcadeDrive(Joystick controller) {
+   
     //Gets controller values
     double speed = controller.getRawAxis(1);
     double rotate = controller.getRawAxis(4);
@@ -233,12 +226,21 @@ public class Drive_Subsystem extends SubsystemBase {
     speed = rateLimiter.calculate(speed);
     rotate = rotateLimiter.calculate(rotate);
 
-    if(controller.getRawAxis(XboxController.Axis.kRightTrigger.value) < 0.1){
-      if (rotate < .1 && speed!=0.0){ //when driving straight 
-        rotate += 0.35*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
+      if(rotate < .1 && speed <.5)
+      {
+       rotate -= .3*speed;
       }
-    }
+      else if (rotate < .1 && speed >= 0.5){ //when driving straight 
+        rotate += 0.45*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
+      }
 
+      if (speed > 0.05 || rotate >0.05) {
+        setBrake(false);
+    }
+    
+    else {
+      setBrake(true);      
+    }
     //System.out.println(getWheelSpeeds());
     if (controller.getRawButton(XboxController.Button.kRightBumper.value)){ //Need to find the number
       jMoneyDrive.curvatureDrive(-speed/Drive_Constants.driveSensitivity, -rotate/Drive_Constants.turnSensitivity , true);
@@ -262,7 +264,8 @@ public class Drive_Subsystem extends SubsystemBase {
   public double balance()
   {
     double forwardSpeed = balanceController.calculate(gyro.getPitch(), 0); //Calculates forward speed using PID
-    jMoneyDrive.curvatureDrive(forwardSpeed, 0, false);; //Sets the drivetraub to drive forward/backwards using PID speed
+    jMoneyDrive.curvatureDrive(forwardSpeed, 0, false);
+    System.out.println("speed" + forwardSpeed + " pitch " + gyro.getPitch() + " r " + gyro.getRoll() + " y " + gyro.getYaw()); //Sets the drivetraub to drive forward/backwards using PID speed
     return forwardSpeed;
   }
   

@@ -71,7 +71,9 @@ public class RobotContainer {
     new JoystickButton(driverController, XBOX_Constants.AButton)
     .onTrue(drive_Commands.setBrake(true))
     .onFalse(drive_Commands.setBrake(false));
-    
+
+    new JoystickButton(driverController, XBOX_Constants.BButton)
+    .onTrue(drive_Commands.balance());
 
      //Cube leds for signaling
      new JoystickButton(assistController, XBOX_Constants.XButton)
