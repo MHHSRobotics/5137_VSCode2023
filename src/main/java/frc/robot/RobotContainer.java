@@ -24,7 +24,7 @@ public class RobotContainer {
   //Subsystems
   public static LED_Subsystem led_Subsystem;
   public static Drive_Subsystem drive_Subsystem;
-  public static Punch_Subsystem punch_Subsystem;
+  public static Punch_Subystem punch_Subsystem;
 
   //Other Systems
   public static Shuffleboard shuffleboard;
@@ -57,7 +57,7 @@ public class RobotContainer {
   public void configureSubsystems() {
     led_Subsystem = new LED_Subsystem();
     drive_Subsystem = new Drive_Subsystem(driverController);
-    punch_Subsystem = new Punch_Subsystem();
+    punch_Subsystem = new Punch_Subystem();
   }
 
   public void configureCommands() {

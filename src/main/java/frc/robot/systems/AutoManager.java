@@ -17,7 +17,7 @@ import frc.robot.commands.Drive_Commands;
 import frc.robot.commands.Punch_Commands;
 import frc.robot.constants.Auto_Constants;
 import frc.robot.subsystems.Drive_Subsystem;
-import frc.robot.subsystems.Punch_Subsystem;
+import frc.robot.subsystems.Punch_Subystem;
 
 
 public class AutoManager extends SubsystemBase {
