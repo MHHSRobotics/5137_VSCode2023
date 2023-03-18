@@ -128,8 +128,8 @@ public class Drive_Subsystem extends SubsystemBase {
 
     //isFinished for balance command 
     balanceIsFinished = () -> {
-      if(balanceController.calculate(gyro.getPitch(), 0) < 0.05 && Math.abs(gyro.getPitch()) < 2)
-    {
+      if(balanceController.calculate(gyro.getPitch(), 0) < 0.05 && Math.abs(gyro.getRoll()) < 2 && gyro.getRawGyroY() < 0.3)
+    { 
         return true;
     }
     else
@@ -153,7 +153,9 @@ public class Drive_Subsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println( " pitch " + gyro.getPitch() + " r " + gyro.getRoll() + " y " + gyro.getYaw()); //Sets the drivetraub to drive forward/backwards using PID speed
+    System.out.println(gyro.getRoll());
+    updatePoseEstimator();
+    //System.out.println(poseEstimator.getEstimatedPosition());
 
     // This method will be called once per scheduler run
     if (controller != null && RobotState.isTeleop()) {
@@ -195,8 +197,8 @@ public class Drive_Subsystem extends SubsystemBase {
   public void setSpeeds(double leftSpeed, double rightSpeed)
   {
     leftSpeed *= .9; //Accounts for crooked drivebase
-    leftSpeed /= 5.0; //Max drivebase speed is likely around 5m/s, so when input 5m/s sets motor to 1.0(max)
-    rightSpeed /= 5.0; 
+    leftSpeed /= 1.0; //Max drivebase speed is likely around 5m/s, so when input 5m/s sets motor to 1.0(max)
+    rightSpeed /= 1.0; 
     leftDrive.set(leftSpeed);
     rightDrive.set(leftSpeed);
     System.out.println("leftSpeed" + leftSpeed);
@@ -263,9 +265,8 @@ public class Drive_Subsystem extends SubsystemBase {
   //Automatically Balances on charge station using gyro measurements
   public double balance()
   {
-    double forwardSpeed = balanceController.calculate(gyro.getPitch(), 0); //Calculates forward speed using PID
-    jMoneyDrive.curvatureDrive(forwardSpeed, 0, false);
-    System.out.println("speed" + forwardSpeed + " pitch " + gyro.getPitch() + " r " + gyro.getRoll() + " y " + gyro.getYaw()); //Sets the drivetraub to drive forward/backwards using PID speed
+    double forwardSpeed = balanceController.calculate(gyro.getRoll(), 0); //Calculates forward speed using PID
+    jMoneyDrive.curvatureDrive(forwardSpeed, -.1*forwardSpeed, false);
     return forwardSpeed;
   }
   
@@ -284,6 +285,14 @@ public class Drive_Subsystem extends SubsystemBase {
   public void drive(double speed, double rotate) {
     jMoneyDrive.curvatureDrive(speed, rotate, true);
   }
+
+  public void updatePoseEstimator(){
+    //Make sure timer delay is added if needed, could need because of motor delays from inversion
+    double leftFrontEncoder = leftFrontTalon.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
+    double rightFrontEncoder = rightFrontTalon.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
+    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), new Rotation2d((double)gyro.getYaw()), leftFrontEncoder, rightFrontEncoder);
+     //ad gyro value
+  } 
 }
 
 

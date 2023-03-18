@@ -22,7 +22,7 @@ public final class Drive_Constants {
     public final static DifferentialDriveKinematics trackWidth = new DifferentialDriveKinematics(Units.inchesToMeters(20.25));
     public static final double initialLeftDistance = 0;
     public static final double initialRightDistance = 0;
-    public static final double distancePerPulse_TalonFX = (wheelDiameter * Math.PI) /2048.0/9.76; //2048 is the ticks per rotation for TalonFX integrated sensor 
+    public static final double distancePerPulse_TalonFX = ((wheelDiameter * Math.PI) /2048.0)/9.76; //2048 is the ticks per rotation for TalonFX integrated sensor 
                                                                                                  //9.76 because the the  gear ratio 9.76:1 on the drivebase
 
     /*
@@ -50,7 +50,7 @@ public final class Drive_Constants {
         public final static double rKI = 0; 
 
         //pid for charge station (balance)
-        public final static double bKP = 0.01;
+        public final static double bKP = 0.0075;
         public final static double bKD = 0.;
         public final static double bKI = 0.; 
 }
