@@ -220,7 +220,7 @@ public class Drive_Subsystem extends SubsystemBase {
    
     //Gets controller values
     double speed = controller.getRawAxis(1);
-    double rotate = controller.getRawAxis(0);
+    double rotate = controller.getRawAxis(4);
     if (speed > 0.05 || rotate >0.05) {
       setBrake(false);
   }
