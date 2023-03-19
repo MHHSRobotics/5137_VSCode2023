@@ -220,7 +220,7 @@ public class Drive_Subsystem extends SubsystemBase {
    
     //Gets controller values
     double speed = controller.getRawAxis(1);
-    double rotate = controller.getRawAxis(4);
+    double rotate = controller.getRawAxis(0);
     if (speed > 0.05 || rotate >0.05) {
       setBrake(false);
   }
@@ -233,12 +233,12 @@ public class Drive_Subsystem extends SubsystemBase {
     speed = rateLimiter.calculate(speed);
     //rotate = rotateLimiter.calculate(rotate);
 
-      if(rotate < .1 && speed <.5)
+      if(Math.abs(rotate) < .1 && Math.abs(speed) <.5)
       {
        rotate += .1*speed;
       }
-      else if (rotate < .1 && speed >= 0.5){ //when driving straight 
-        rotate += 0.2*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
+      else if (Math.abs(rotate) < .1 && Math.abs(speed) >= 0.5){ //when driving straight 
+        rotate += 0.1*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
       }
 
      
