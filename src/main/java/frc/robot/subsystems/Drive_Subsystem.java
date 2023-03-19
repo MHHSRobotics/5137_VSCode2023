@@ -74,8 +74,8 @@ public class Drive_Subsystem extends SubsystemBase {
   
 
   //rate limiter
-  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(4); //1.2
-  private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(8); //4
+  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(10); //1.2
+  private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(10); //4
 
 
 
@@ -128,7 +128,7 @@ public class Drive_Subsystem extends SubsystemBase {
 
     //isFinished for balance command 
     balanceIsFinished = () -> {
-      if(balanceController.calculate(gyro.getPitch(), 0) < 0.05 && Math.abs(gyro.getRoll()) < 2 && gyro.getRawGyroY() < 0.3)
+      if(balanceController.calculate(gyro.getRoll(), 0) < 0.05 && Math.abs(gyro.getRoll()) < 2 && Math.abs(gyro.getRawGyroY()) < 0.05)
     { 
         return true;
     }
@@ -153,8 +153,6 @@ public class Drive_Subsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(gyro.getRoll());
-    updatePoseEstimator();
     //System.out.println(poseEstimator.getEstimatedPosition());
 
     // This method will be called once per scheduler run
@@ -164,6 +162,7 @@ public class Drive_Subsystem extends SubsystemBase {
     else{
       setBrake(false);
     }
+    updatePoseEstimator();
 
     
 }
@@ -199,8 +198,7 @@ public class Drive_Subsystem extends SubsystemBase {
     leftSpeed *= .9; //Accounts for crooked drivebase
     leftSpeed /= 1.0; //Max drivebase speed is likely around 5m/s, so when input 5m/s sets motor to 1.0(max)
     rightSpeed /= 1.0; 
-    leftDrive.set(leftSpeed);
-    rightDrive.set(leftSpeed);
+    jMoneyDrive.tankDrive(leftSpeed, rightSpeed);
     System.out.println("leftSpeed" + leftSpeed);
     System.out.println("rightSpeed" + rightSpeed);
   }
@@ -223,35 +221,36 @@ public class Drive_Subsystem extends SubsystemBase {
     //Gets controller values
     double speed = controller.getRawAxis(1);
     double rotate = controller.getRawAxis(4);
+    if (speed > 0.05 || rotate >0.05) {
+      setBrake(false);
+  }
+  
+  else {
+    setBrake(true);      
+  }
     speed = adjust(speed);
     rotate = adjust(rotate);
     speed = rateLimiter.calculate(speed);
-    rotate = rotateLimiter.calculate(rotate);
+    //rotate = rotateLimiter.calculate(rotate);
 
       if(rotate < .1 && speed <.5)
       {
-       rotate -= .3*speed;
+       rotate += .1*speed;
       }
       else if (rotate < .1 && speed >= 0.5){ //when driving straight 
-        rotate += 0.45*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
+        rotate += 0.2*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
       }
 
-      if (speed > 0.05 || rotate >0.05) {
-        setBrake(false);
-    }
-    
-    else {
-      setBrake(true);      
-    }
+     
     //System.out.println(getWheelSpeeds());
     if (controller.getRawButton(XboxController.Button.kRightBumper.value)){ //Need to find the number
-      jMoneyDrive.curvatureDrive(-speed/Drive_Constants.driveSensitivity, -rotate/Drive_Constants.turnSensitivity , true);
+      jMoneyDrive.curvatureDrive(speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
     }
     else if(controller.getRawButton(XboxController.Button.kLeftBumper.value)){
-      jMoneyDrive.curvatureDrive(speed/(Drive_Constants.driveSensitivity*5), rotate/(Drive_Constants.turnSensitivity * 2) , true);
+      jMoneyDrive.curvatureDrive(-speed/(Drive_Constants.driveSensitivity*5), rotate/(Drive_Constants.turnSensitivity) , true);
     }
     else{
-    jMoneyDrive.curvatureDrive(speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
+    jMoneyDrive.curvatureDrive(-speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
     }
   }
 
@@ -266,7 +265,8 @@ public class Drive_Subsystem extends SubsystemBase {
   public double balance()
   {
     double forwardSpeed = balanceController.calculate(gyro.getRoll(), 0); //Calculates forward speed using PID
-    jMoneyDrive.curvatureDrive(forwardSpeed, -.1*forwardSpeed, false);
+    jMoneyDrive.curvatureDrive(forwardSpeed,  0  , false);
+    System.out.println("balance running");
     return forwardSpeed;
   }
   
@@ -279,7 +279,7 @@ public class Drive_Subsystem extends SubsystemBase {
   //Resets global pose estimator based on a position parameter, gyro and encoder have no effect - used by auto
   public void resetPose(Pose2d pose)
   {
-    poseEstimator.resetPosition(new Rotation2d(gyro.getRoll()), 0, 0, pose);
+    poseEstimator.resetPosition(new Rotation2d(gyro.getYaw()), 0, 0, pose);
   }
 
   public void drive(double speed, double rotate) {
@@ -287,9 +287,11 @@ public class Drive_Subsystem extends SubsystemBase {
   }
 
   public void updatePoseEstimator(){
+    
     //Make sure timer delay is added if needed, could need because of motor delays from inversion
     double leftFrontEncoder = leftFrontTalon.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
     double rightFrontEncoder = rightFrontTalon.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
+    System.out.println(leftFrontEncoder + " r " + rightFrontEncoder);
     poseEstimator.updateWithTime(Timer.getFPGATimestamp(), new Rotation2d((double)gyro.getYaw()), leftFrontEncoder, rightFrontEncoder);
      //ad gyro value
   } 

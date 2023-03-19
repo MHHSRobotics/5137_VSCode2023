@@ -104,7 +104,7 @@ public class AutoManager extends SubsystemBase {
 
         eventMap.put("Balance", RobotContainer.drive_Commands.balance());
         if (score.equals("Score")) {
-            //eventMap.put("ScoreCone", autoPunch);
+            eventMap.put("ScoreCone", autoPunch);
         }
          
         if (type != "None") {

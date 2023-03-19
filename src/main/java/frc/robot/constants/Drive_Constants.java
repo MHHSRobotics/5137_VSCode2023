@@ -8,7 +8,7 @@ public final class Drive_Constants {
     
     //Used to scale driving and turning robot
     public static final double driveSensitivity = 1.0;
-    public static final double turnSensitivity = 2;
+    public static final double turnSensitivity = 1;
     public final static double errormargin = 0.1; 
     
     //Motor ports for taloms
@@ -50,7 +50,7 @@ public final class Drive_Constants {
         public final static double rKI = 0; 
 
         //pid for charge station (balance)
-        public final static double bKP = 0.0075;
+        public final static double bKP = 0.015;
         public final static double bKD = 0.;
         public final static double bKI = 0.; 
 }

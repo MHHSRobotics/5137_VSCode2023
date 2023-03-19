@@ -139,7 +139,7 @@ public class LED_Subsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (RobotContainer.shuffleboard.getLEDsEnabled()) {
+        if (/*RobotContainer.shuffleboard.getLEDsEnabled()*/ true) {
             if (RobotState.isDisabled()) {
                 pulsingCG(20, 25);
             } else if (RobotState.isAutonomous()) {
