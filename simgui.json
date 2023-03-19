@@ -125,7 +125,7 @@
       "/SmartDashboard/jMoneyDrive": "DifferentialDrive"
     },
     "windows": {
-      "/FMSInfo": {
+      "/SmartDashboard/Auto Choice": {
         "window": {
           "visible": true
         }

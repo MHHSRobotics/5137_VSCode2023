@@ -11,7 +11,7 @@ public class Shuffleboard extends SubsystemBase {
     private static SendableChooser<Boolean> ledsEnabled = new SendableChooser<>();
 
     public Shuffleboard() {
-        configureSendableString(autoChoice, "None", "leftMobility", "middleEngage", "rightMobility", "middleCombo");
+        configureSendableString(autoChoice, "None", "leftMobility", "middleEngage", "rightMobility", "middleCombo" , "TimedMobility");
         configureSendableBoolean(autoScoring, false);
         configureSendableBoolean(ledsEnabled, false);
 

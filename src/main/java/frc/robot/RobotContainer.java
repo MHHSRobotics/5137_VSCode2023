@@ -88,7 +88,14 @@ public class RobotContainer {
   }  
 
   public void runAuto() {
-    autoManager.runAuto(shuffleboard.getAuto());
+    if(shuffleboard.getAuto().equals("TimedMobility"))
+    {
+    autoManager.timedAuto.schedule();
+    }
+    else
+    {
+      autoManager.runAuto(shuffleboard.getAuto());
+    }
   }
 
   public void startTimers() {

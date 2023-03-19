@@ -3,6 +3,8 @@ package frc.robot.systems;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.sound.midi.Sequence;
+
 import com.pathplanner.lib.*;
 import com.pathplanner.lib.auto.RamseteAutoBuilder;
 
@@ -37,6 +39,8 @@ public class AutoManager extends SubsystemBase {
     private  ArrayList<PathPlannerTrajectory> middle_engage;
     private  ArrayList<PathPlannerTrajectory> right_mobility;
     private  ArrayList<PathPlannerTrajectory> middle_mobility_engage;
+
+    public SequentialCommandGroup timedAuto = new SequentialCommandGroup(RobotContainer.punch_Commands.Punch(), RobotContainer.drive_Commands.timedDrive(1));
 
    
 
@@ -103,6 +107,8 @@ public class AutoManager extends SubsystemBase {
         }
 
         eventMap.put("Balance", RobotContainer.drive_Commands.balance());
+        eventMap.put("Brake", RobotContainer.drive_Commands.setBrake(true));
+
         if (score.equals("Score")) {
             eventMap.put("ScoreCone", autoPunch);
         }

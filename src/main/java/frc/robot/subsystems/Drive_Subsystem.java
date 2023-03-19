@@ -153,6 +153,7 @@ public class Drive_Subsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    System.out.println(poseEstimator.getEstimatedPosition() + "\n" + getWheelSpeeds() );
     //System.out.println(poseEstimator.getEstimatedPosition());
 
     // This method will be called once per scheduler run
@@ -188,19 +189,22 @@ public class Drive_Subsystem extends SubsystemBase {
   public DifferentialDriveWheelSpeeds getWheelSpeeds()
   {
     //Speed = sensor count per 100 ms * distance per count * 10 (converts 100 ms to s) 
-    double leftSpeed = leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10 ; 
+    double leftSpeed = leftFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10*1.2 ; 
     double rightSpeed = rightFrontTalon.getSelectedSensorVelocity()*Drive_Constants.distancePerPulse_TalonFX*10;
+   
+
     return new DifferentialDriveWheelSpeeds(leftSpeed, rightSpeed);
   }
   //Used by auto builder to run a path 
   public void setSpeeds(double leftSpeed, double rightSpeed)
   {
-    leftSpeed *= .9; //Accounts for crooked drivebase
-    leftSpeed /= 1.0; //Max drivebase speed is likely around 5m/s, so when input 5m/s sets motor to 1.0(max)
-    rightSpeed /= 1.0; 
-    jMoneyDrive.tankDrive(leftSpeed, rightSpeed);
     System.out.println("leftSpeed" + leftSpeed);
     System.out.println("rightSpeed" + rightSpeed);
+    leftSpeed *= .75; //Accounts for crooked drivebase
+    leftSpeed *= 2; //Max drivebase speed is likely around 5m/s, so when input 5m/s sets motor to 1.0(max)
+    rightSpeed *= 2; 
+    jMoneyDrive.tankDrive(leftSpeed, rightSpeed);
+  
   }
   //Sets the volts of each motor 
   /* 
@@ -265,8 +269,7 @@ public class Drive_Subsystem extends SubsystemBase {
   public double balance()
   {
     double forwardSpeed = -balanceController.calculate(gyro.getRoll(), 0); //Calculates forward speed using PID
-    jMoneyDrive.curvatureDrive(forwardSpeed,  0  , false);
-    System.out.println("balance running");
+    jMoneyDrive.curvatureDrive(forwardSpeed,  forwardSpeed*.15  , false);
     return forwardSpeed;
   }
   
@@ -279,7 +282,10 @@ public class Drive_Subsystem extends SubsystemBase {
   //Resets global pose estimator based on a position parameter, gyro and encoder have no effect - used by auto
   public void resetPose(Pose2d pose)
   {
-    poseEstimator.resetPosition(new Rotation2d(gyro.getYaw()), 0, 0, pose);
+   // leftFrontTalon.setSelectedSensorPosition(0);
+    //rightFrontTalon.setSelectedSensorPosition(0);
+    gyro.reset();
+    poseEstimator.resetPosition(new Rotation2d(0), 0, 0, pose);
   }
 
   public void drive(double speed, double rotate) {
@@ -289,10 +295,11 @@ public class Drive_Subsystem extends SubsystemBase {
   public void updatePoseEstimator(){
     
     //Make sure timer delay is added if needed, could need because of motor delays from inversion
-    double leftFrontEncoder = leftFrontTalon.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
+    double leftFrontEncoder = -leftFrontTalon.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX*.83;
     double rightFrontEncoder = rightFrontTalon.getSelectedSensorPosition() * Drive_Constants.distancePerPulse_TalonFX;
-    System.out.println(leftFrontEncoder + " r " + rightFrontEncoder);
-    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), new Rotation2d((double)gyro.getYaw()), leftFrontEncoder, rightFrontEncoder);
+   // System.out.println("gyro" + gyro.getYaw());
+    //System.out.println("left encoder" + leftFrontEncoder + " r " + rightFrontEncoder);
+    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), new Rotation2d(), leftFrontEncoder, rightFrontEncoder);
      //ad gyro value
   } 
 }

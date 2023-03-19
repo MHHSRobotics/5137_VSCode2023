@@ -26,12 +26,12 @@
     },
     {
       "anchorPoint": {
-        "x": 3.9123423516477103,
-        "y": 2.8038299267836218
+        "x": 3.5458086512418685,
+        "y": 2.788420977151199
       },
       "prevControl": {
-        "x": 3.4202655565674704,
-        "y": 2.805067607373132
+        "x": 3.0537318561616287,
+        "y": 2.789658657740709
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -41,9 +41,10 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Balance"
+          "Balance",
+          "Brake"
         ],
-        "executionBehavior": "parallel",
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
