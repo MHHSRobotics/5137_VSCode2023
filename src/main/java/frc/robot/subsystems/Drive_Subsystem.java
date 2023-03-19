@@ -86,12 +86,12 @@ public class Drive_Subsystem extends SubsystemBase {
     leftFrontTalon = new WPI_TalonFX(Drive_Constants.leftFrontTalonPort);
     leftBackTalon = new WPI_TalonFX(Drive_Constants.leftBackTalonPort);
     leftDrive = new MotorControllerGroup(leftFrontTalon, leftBackTalon);
+    leftDrive.setInverted(true);
 
     //right motors
     rightFrontTalon = new WPI_TalonFX(Drive_Constants.rightFrontPort);
     rightBackTalon = new WPI_TalonFX(Drive_Constants.rightBackPort);
     rightDrive = new MotorControllerGroup(rightFrontTalon, rightBackTalon);
-    rightDrive.setInverted(true);
 
     
     this.controller = m_controller;
@@ -116,7 +116,7 @@ public class Drive_Subsystem extends SubsystemBase {
     rightFrontTalon.setSelectedSensorPosition(0); 
 
     //DriveTrain
-    jMoneyDrive = new DifferentialDrive(leftDrive, rightDrive);
+    jMoneyDrive = new DifferentialDrive(rightDrive, leftDrive);
     //jMoneyDrive.setMaxOutput(1);
     
 
@@ -244,13 +244,13 @@ public class Drive_Subsystem extends SubsystemBase {
      
     //System.out.println(getWheelSpeeds());
     if (controller.getRawButton(XboxController.Button.kRightBumper.value)){ //Need to find the number
-      jMoneyDrive.curvatureDrive(speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
+      jMoneyDrive.curvatureDrive(-speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
     }
     else if(controller.getRawButton(XboxController.Button.kLeftBumper.value)){
-      jMoneyDrive.curvatureDrive(-speed/(Drive_Constants.driveSensitivity*5), rotate/(Drive_Constants.turnSensitivity) , true);
+      jMoneyDrive.curvatureDrive(speed/(Drive_Constants.driveSensitivity*5), rotate/(Drive_Constants.turnSensitivity) , true);
     }
     else{
-    jMoneyDrive.curvatureDrive(-speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
+    jMoneyDrive.curvatureDrive(speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
     }
   }
 
@@ -264,7 +264,7 @@ public class Drive_Subsystem extends SubsystemBase {
   //Automatically Balances on charge station using gyro measurements
   public double balance()
   {
-    double forwardSpeed = balanceController.calculate(gyro.getRoll(), 0); //Calculates forward speed using PID
+    double forwardSpeed = -balanceController.calculate(gyro.getRoll(), 0); //Calculates forward speed using PID
     jMoneyDrive.curvatureDrive(forwardSpeed,  0  , false);
     System.out.println("balance running");
     return forwardSpeed;
