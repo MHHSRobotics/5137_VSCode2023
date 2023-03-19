@@ -70,8 +70,8 @@ public class Drive_Subsystem extends SubsystemBase {
   public Consumer<Boolean> balanceEndCommand;
   public Consumer<Boolean> tagDriveEndCommands;  
 
-  //Paths
-  
+  //Timer
+  private Timer timer = new Timer();
 
   //rate limiter
   private final SlewRateLimiter rateLimiter = new SlewRateLimiter(10); //1.2
@@ -153,6 +153,7 @@ public class Drive_Subsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
     System.out.println(poseEstimator.getEstimatedPosition() + "\n" + getWheelSpeeds() );
     //System.out.println(poseEstimator.getEstimatedPosition());
 
@@ -161,7 +162,18 @@ public class Drive_Subsystem extends SubsystemBase {
       arcadeDrive(controller);
     }
     else{
-      setBrake(false);
+      if(RobotState.isDisabled())
+      {
+        if(timer.get() <= 0.0)
+        {
+          timer.reset();
+          timer.start();
+        }
+        if(timer.hasElapsed(5))
+        {
+         setBrake(false);
+        }
+      }
     }
     updatePoseEstimator();
 
