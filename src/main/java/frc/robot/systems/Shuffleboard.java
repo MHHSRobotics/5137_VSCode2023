@@ -13,7 +13,7 @@ public class Shuffleboard extends SubsystemBase {
     public Shuffleboard() {
         configureSendableString(autoChoice, "None", "leftMobility", "middleEngage", "rightMobility", "middleCombo" , "TimedMobility");
         configureSendableBoolean(autoScoring, false);
-        configureSendableBoolean(ledsEnabled, false);
+        configureSendableBoolean(ledsEnabled, true);
 
         SmartDashboard.putData("Auto Choice", autoChoice);
         SmartDashboard.putData("Auto Scoring", autoScoring);
