@@ -23,7 +23,13 @@ public class Punch_Commands {
             },
 
             () -> {
-                punch.punch();
+                punch.punchLeft();
+                try {
+                    Thread.sleep(13, 500000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                punch.punchRight();
             },
 
             new Consumer<Boolean>() {
@@ -36,7 +42,7 @@ public class Punch_Commands {
             new BooleanSupplier() {
                 @Override
                 public boolean getAsBoolean() {
-                    if (time.hasElapsed(2)) {
+                    if (time.hasElapsed(1)) {
                         return true;
                     } else {
                         return false;

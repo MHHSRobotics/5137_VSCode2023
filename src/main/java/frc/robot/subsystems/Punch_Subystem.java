@@ -30,9 +30,15 @@ public class Punch_Subystem extends SubsystemBase {
         comp.disable();
     }
 
-    public void punch() {
-        leftSolenoid.set(true);
-        rightSolenoid.set(true);
+    
+
+    public void punchLeft()
+    {
+    leftSolenoid.set(true);
+    }
+    public void punchRight()
+    {
+    rightSolenoid.set(true);
     }
 
     public void retract() {
