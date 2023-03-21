@@ -88,9 +88,20 @@ public class RobotContainer {
   }  
 
   public void runAuto() {
-    if(shuffleboard.getAuto().equals("TimedMobility"))
+    if(Shuffleboard.autoChoice.getSelected().equals("TimedMobility"))
     {
-    autoManager.timedAuto.schedule();
+      
+    autoManager.timedMobility.schedule();
+    }
+    else if(Shuffleboard.autoChoice.getSelected().equals("TimedEngage"))
+    {
+      autoManager.timedEngage.schedule();
+
+    }
+    else if(Shuffleboard.autoChoice.getSelected().equals("TimedMobilityEngage"))
+    {
+      autoManager.timedMobilityEngage.schedule();
+
     }
     else
     {

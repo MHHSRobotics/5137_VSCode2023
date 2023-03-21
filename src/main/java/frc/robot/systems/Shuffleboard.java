@@ -6,12 +6,12 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drive_Subsystem;
 
 public class Shuffleboard extends SubsystemBase {
-    private static SendableChooser<String> autoChoice = new SendableChooser<>();
-    private static SendableChooser<Boolean> autoScoring = new SendableChooser<>();
-    private static SendableChooser<Boolean> ledsEnabled = new SendableChooser<>();
+    public static SendableChooser<String> autoChoice = new SendableChooser<>();
+    public static SendableChooser<Boolean> autoScoring = new SendableChooser<>();
+    public static SendableChooser<Boolean> ledsEnabled = new SendableChooser<>();
 
     public Shuffleboard() {
-        configureSendableString(autoChoice, "None", "leftMobility", "middleEngage", "rightMobility", "middleCombo" , "TimedMobility");
+        configureSendableString(autoChoice, "None", "leftMobility", "middleEngage", "rightMobility", "middleCombo" , "TimedMobility", "TimedEngage", "TimedMobilityEngage");
         configureSendableBoolean(autoScoring, false);
         configureSendableBoolean(ledsEnabled, true);
 

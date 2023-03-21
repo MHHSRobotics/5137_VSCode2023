@@ -160,18 +160,20 @@ public class Drive_Subsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     if (controller != null && RobotState.isTeleop()) {
       arcadeDrive(controller);
+      timer.reset();
     }
     else{
-      if(RobotState.isDisabled())
+      if(RobotState.isDisabled()) 
       {
         if(timer.get() <= 0.0)
         {
+          setBrake(true);
           timer.reset();
           timer.start();
         }
-        if(timer.hasElapsed(5))
+        else if(timer.hasElapsed(5))
         {
-         setBrake(false);
+          setBrake(false);
         }
       }
     }
@@ -210,12 +212,15 @@ public class Drive_Subsystem extends SubsystemBase {
   //Used by auto builder to run a path 
   public void setSpeeds(double leftSpeed, double rightSpeed)
   {
+    leftSpeed*= .85;
+    jMoneyDrive.curvatureDrive(leftSpeed, leftSpeed*.1, false);
+    //jMoneyDrive.tankDrive(leftSpeed, rightSpeed);
+
     System.out.println("leftSpeed" + leftSpeed);
     System.out.println("rightSpeed" + rightSpeed);
     leftSpeed *= .75; //Accounts for crooked drivebase
     leftSpeed *= 2; //Max drivebase speed is likely around 5m/s, so when input 5m/s sets motor to 1.0(max)
     rightSpeed *= 2; 
-    jMoneyDrive.tankDrive(leftSpeed, rightSpeed);
   
   }
   //Sets the volts of each motor 
@@ -281,7 +286,7 @@ public class Drive_Subsystem extends SubsystemBase {
   public double balance()
   {
     double forwardSpeed = -balanceController.calculate(gyro.getRoll(), 0); //Calculates forward speed using PID
-    jMoneyDrive.curvatureDrive(forwardSpeed,  forwardSpeed*.15  , false);
+    jMoneyDrive.curvatureDrive(forwardSpeed,  forwardSpeed*0.05  , false);
     return forwardSpeed;
   }
   

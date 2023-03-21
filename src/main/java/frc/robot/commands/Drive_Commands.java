@@ -32,10 +32,10 @@ public class Drive_Commands {
     timer.reset();
   }
 
-  public Command timedDrive(double seconds){
+  public Command timedDrive(double seconds, double direction){
     return new FunctionalCommand(
       () -> {timer.reset(); timer.start();}, 
-      () -> drive.setSpeeds(1, 1), 
+      () -> drive.setSpeeds(direction*1, direction*1), 
       new Consumer<Boolean>(){
         @Override
         public void accept(Boolean finished) {   
@@ -45,7 +45,7 @@ public class Drive_Commands {
       new BooleanSupplier() {
         @Override
         public boolean getAsBoolean() {
-            if (timer.hasElapsed(seconds)) {
+            if (timer.get() > seconds) {
                 return true;
             } else {
                 return false;

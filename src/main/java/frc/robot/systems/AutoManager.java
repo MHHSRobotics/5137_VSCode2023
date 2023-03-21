@@ -40,9 +40,12 @@ public class AutoManager extends SubsystemBase {
     private  ArrayList<PathPlannerTrajectory> right_mobility;
     private  ArrayList<PathPlannerTrajectory> middle_mobility_engage;
 
-    public SequentialCommandGroup timedAuto = new SequentialCommandGroup(RobotContainer.punch_Commands.Punch(), RobotContainer.drive_Commands.timedDrive(1));
+    public SequentialCommandGroup timedMobility = new SequentialCommandGroup(RobotContainer.punch_Commands.Punch(), RobotContainer.drive_Commands.timedDrive(1.85, 1));
 
-   
+    public SequentialCommandGroup timedEngage = new SequentialCommandGroup(RobotContainer.punch_Commands.Punch(), RobotContainer.drive_Commands.timedDrive(1.05, 1), RobotContainer.drive_Commands.balance(), RobotContainer.drive_Commands.setBrake(true));
+
+    public SequentialCommandGroup timedMobilityEngage = new SequentialCommandGroup(RobotContainer.punch_Commands.Punch(), RobotContainer.drive_Commands.timedDrive(1.05, 1),RobotContainer.drive_Commands.timedDrive(2.4, .4),RobotContainer.drive_Commands.timedDrive(1.4, -1), RobotContainer.drive_Commands.balance(), RobotContainer.drive_Commands.setBrake(true));
+
 
     public AutoManager(Drive_Subsystem drive, Punch_Commands punch) {
         this.drive = drive;
