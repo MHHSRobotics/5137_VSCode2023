@@ -44,7 +44,7 @@ public class AutoManager extends SubsystemBase {
 
     public SequentialCommandGroup timedEngage = new SequentialCommandGroup(RobotContainer.punch_Commands.Punch(), RobotContainer.drive_Commands.timedDrive(1.05, 1), RobotContainer.drive_Commands.balance(), RobotContainer.drive_Commands.setBrake(true));
 
-    public SequentialCommandGroup timedMobilityEngage = new SequentialCommandGroup(RobotContainer.punch_Commands.Punch(), RobotContainer.drive_Commands.timedDrive(1.05, 1),RobotContainer.drive_Commands.timedDrive(3.0, .4),RobotContainer.drive_Commands.timedDrive(1.96, -.6), RobotContainer.drive_Commands.balance(), RobotContainer.drive_Commands.setBrake(true)); //2.4 and .4, 1..4 and .1
+    public SequentialCommandGroup timedMobilityEngage = new SequentialCommandGroup(RobotContainer.punch_Commands.Punch(), RobotContainer.drive_Commands.timedDrive(1.05, 1),RobotContainer.drive_Commands.timedDrive(2.8, .4),RobotContainer.drive_Commands.timedDrive(1.96, -1), RobotContainer.drive_Commands.balance(), RobotContainer.drive_Commands.setBrake(true)); //2.4 and .4, 1..4 and .1
 
 
     public AutoManager(Drive_Subsystem drive, Punch_Commands punch) {
