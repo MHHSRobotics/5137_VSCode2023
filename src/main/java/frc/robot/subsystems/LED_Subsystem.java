@@ -115,6 +115,8 @@ public class LED_Subsystem extends SubsystemBase {
             solidColor(LED_Constants.Yellow);
         } else if (type.equals("Cube")) {
             solidColor(LED_Constants.Purple);
+        } else if (type.equals("Pink")) {
+            solidColor(LED_Constants.Pink);
         }
     }
 
@@ -139,7 +141,7 @@ public class LED_Subsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (/*RobotContainer.shuffleboard.getLEDsEnabled()*/ true) {
+        if (RobotContainer.shuffleboard.getLEDsEnabled()) {
             if (RobotState.isDisabled()) {
                 pulsingCG(20, 25);
             } else if (RobotState.isAutonomous()) {

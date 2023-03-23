@@ -153,8 +153,8 @@ public class Drive_Subsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    System.out.println(gyro.getRoll());
     
-    System.out.println(poseEstimator.getEstimatedPosition() + "\n" + getWheelSpeeds() );
     //System.out.println(poseEstimator.getEstimatedPosition());
 
     // This method will be called once per scheduler run

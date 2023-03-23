@@ -85,6 +85,9 @@ public class RobotContainer {
 
      new JoystickButton(assistController, XBOX_Constants.AButton)
      .onTrue(punch_Commands.Punch());
+
+     new JoystickButton(assistController, XBOX_Constants.BButton)
+     .onTrue(led_Commands.hotPink());
   }  
 
   public void runAuto() {
