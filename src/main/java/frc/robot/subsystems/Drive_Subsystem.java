@@ -213,7 +213,7 @@ public class Drive_Subsystem extends SubsystemBase {
   public void setSpeeds(double leftSpeed, double rightSpeed)
   {
     leftSpeed*= .85;
-    jMoneyDrive.curvatureDrive(leftSpeed, leftSpeed*.1, false);
+    jMoneyDrive.curvatureDrive(leftSpeed, leftSpeed*.2, false);
     //jMoneyDrive.tankDrive(leftSpeed, rightSpeed);
 
     System.out.println("leftSpeed" + leftSpeed);

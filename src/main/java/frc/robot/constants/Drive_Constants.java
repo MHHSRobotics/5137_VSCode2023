@@ -50,7 +50,7 @@ public final class Drive_Constants {
         public final static double rKI = 0; 
 
         //pid for charge station (balance)
-        public final static double bKP = 0.0175;
+        public final static double bKP = 0.0165;
         public final static double bKD = 0.;
         public final static double bKI = 0.; 
 }
