@@ -74,7 +74,7 @@ public class Drive_Subsystem extends SubsystemBase {
   private Timer timer = new Timer();
 
   //rate limiter
-  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(10); //1.2
+  private final SlewRateLimiter rateLimiter = new SlewRateLimiter(13); //1.2
   private final SlewRateLimiter rotateLimiter = new SlewRateLimiter(10); //4
 
 
@@ -128,7 +128,7 @@ public class Drive_Subsystem extends SubsystemBase {
 
     //isFinished for balance command 
     balanceIsFinished = () -> {
-      if(balanceController.calculate(gyro.getRoll(), 0) < 0.05 && Math.abs(gyro.getRoll()) < 2 && Math.abs(gyro.getRawGyroY()) < 0.05)
+      if(balanceController.calculate(gyro.getRoll(), 0) < 0.05 && Math.abs(gyro.getRoll()) < 2 && Math.abs(gyro.getRawGyroY()) < 0.03)
     { 
         return true;
     }
@@ -153,7 +153,8 @@ public class Drive_Subsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(gyro.getRoll());
+    //System.out.println(gyro.getRoll());
+    System.out.println(" lb " + leftBackTalon.getSupplyCurrent() +" lf "+ leftFrontTalon.getSupplyCurrent() + " rb " + rightBackTalon.getSupplyCurrent() + " rf " + rightFrontTalon.getSupplyCurrent());
     
     //System.out.println(poseEstimator.getEstimatedPosition());
 
@@ -256,10 +257,10 @@ public class Drive_Subsystem extends SubsystemBase {
 
       if(Math.abs(rotate) < .1 && Math.abs(speed) <.5)
       {
-       rotate += .1*speed;
+      rotate += .1*speed; //before both were 0.1*speed
       }
       else if (Math.abs(rotate) < .1 && Math.abs(speed) >= 0.5){ //when driving straight 
-        rotate += 0.1*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
+       rotate += 0.1*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
       }
 
      
@@ -271,7 +272,7 @@ public class Drive_Subsystem extends SubsystemBase {
       jMoneyDrive.curvatureDrive(speed/(Drive_Constants.driveSensitivity*5), rotate/(Drive_Constants.turnSensitivity) , true);
     }
     else{
-    jMoneyDrive.curvatureDrive(speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
+    jMoneyDrive.curvatureDrive(speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity  , true);
     }
   }
 
