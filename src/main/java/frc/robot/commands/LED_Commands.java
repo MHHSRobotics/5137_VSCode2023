@@ -23,6 +23,12 @@ public class LED_Commands {
         });
     }
 
+    public Command emote() {
+        return new InstantCommand(() -> {
+            leds.signal("Green");
+        });
+    }
+
     public Command hotPink() {
         return new InstantCommand(() -> {
             leds.signal("Pink");

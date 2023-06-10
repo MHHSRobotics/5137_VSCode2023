@@ -3,10 +3,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
 import edu.wpi.first.wpilibj.util.Color;
 
@@ -83,7 +82,7 @@ public class LED_Subsystem extends SubsystemBase {
     }
 
     public void allianceColor(double speed, double spacing) {
-        if (DriverStation.getAlliance().equals(Alliance.Blue)) {
+        if (RobotContainer.shuffleboard.getTeam().equals("Blue")) {
             pulsingColor(speed, spacing, LED_Constants.Blue);
         } else {
             pulsingColor(speed, spacing, LED_Constants.Red);
@@ -117,21 +116,23 @@ public class LED_Subsystem extends SubsystemBase {
             solidColor(LED_Constants.Purple);
         } else if (type.equals("Pink")) {
             solidColor(LED_Constants.Pink);
+        } else if (type.equals("Green")) {
+            solidColor(LED_Constants.Green);
         }
     }
 
     public void runLEDS() {
-        if (time.hasElapsed(105)) {
-            if (type == "None") {
-                endGame();
-            }   
-        } else {
-            if (type == "None" && stage == "None") {
+        //if (time.hasElapsed(105)) {
+            //if (type == "None") {
+                //endGame();
+            //}   
+        //} else {
+            if (type == "None" /*&& stage == "None"*/) {
                 allianceColor(20, 25);
-            } else if (!(stage == "None")) {
-                stopLight();
+            //} else if (!(stage == "None")) {
+                //stopLight();
             }
-        }
+        //}
     }
 
     public void startTimer() {

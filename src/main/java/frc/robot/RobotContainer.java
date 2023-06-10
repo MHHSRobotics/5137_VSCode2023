@@ -51,7 +51,7 @@ public class RobotContainer {
     configureSubsystems();
     configureCommands();
     shuffleboard = new Shuffleboard();
-    autoManager = new AutoManager(drive_Subsystem, punch_Commands);
+    //autoManager = new AutoManager(drive_Subsystem, punch_Commands);
   }
 
   public void configureSubsystems() {
@@ -84,13 +84,15 @@ public class RobotContainer {
      .onTrue(led_Commands.coneLEDS());
 
      new JoystickButton(assistController, XBOX_Constants.AButton)
-     .onTrue(punch_Commands.Punch());
+     .onTrue(punch_Commands.Punch())
+     .onTrue(led_Commands.emote())
+     .onFalse(led_Commands.emote());
 
      new JoystickButton(assistController, XBOX_Constants.BButton)
      .onTrue(led_Commands.hotPink());
   }  
 
-  public void runAuto() {
+  /**public void runAuto() {
     if(Shuffleboard.autoChoice.getSelected().equals("TimedMobility"))
     {
       
@@ -110,7 +112,7 @@ public class RobotContainer {
     {
       autoManager.runAuto(shuffleboard.getAuto());
     }
-  }
+  }**/
 
   public void startTimers() {
     led_Subsystem.startTimer();

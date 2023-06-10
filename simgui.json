@@ -125,15 +125,22 @@
       "/SmartDashboard/LEDs Enabled": "String Chooser",
       "/SmartDashboard/Manual Arm": "String Chooser",
       "/SmartDashboard/Mobility": "String Chooser",
+      "/SmartDashboard/SendableChooser[0]": "String Chooser",
+      "/SmartDashboard/SendableChooser[1]": "String Chooser",
       "/SmartDashboard/jMoneyDrive": "DifferentialDrive"
     },
     "windows": {
-      "/SmartDashboard/Auto Choice": {
+      "/SmartDashboard/LEDs Enabled": {
         "window": {
           "visible": true
         }
       },
-      "/SmartDashboard/LEDs Enabled": {
+      "/SmartDashboard/SendableChooser[0]": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/SendableChooser[1]": {
         "window": {
           "visible": true
         }
