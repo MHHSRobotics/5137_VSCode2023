@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import frc.robot.commands.*;
-import frc.robot.constants.Controller_Constants.*;
+import frc.robot.constants.Controller_Constants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -51,7 +51,7 @@ public class RobotContainer {
     configureSubsystems();
     configureCommands();
     shuffleboard = new Shuffleboard();
-    autoManager = new AutoManager(drive_Subsystem, punch_Commands);
+    //autoManager = new AutoManager(drive_Subsystem, punch_Commands);
   }
 
   public void configureSubsystems() {
@@ -68,28 +68,42 @@ public class RobotContainer {
   
   public void configureBindings() {
     
-    new JoystickButton(driverController, XBOX_Constants.AButton)
+    
+    new JoystickButton(driverController, Controller_Constants.CircleButton)
     .onTrue(drive_Commands.setBrake(true))
     .onFalse(drive_Commands.setBrake(false));
 
-    new JoystickButton(driverController, XBOX_Constants.BButton)
-    .onTrue(drive_Commands.balance());
+    /*
+    new JoystickButton(driverController, Controller_Constants.CircleButton)
+    .onTrue(drive_Commands.balance());*/
 
      //Cube leds for signaling
-     new JoystickButton(assistController, XBOX_Constants.XButton)
+     new JoystickButton(driverController, Controller_Constants.SquareButton)
      .onTrue(led_Commands.cubeLEDS());
      
      //Cone leds for signaling
-     new JoystickButton(assistController, XBOX_Constants.YButton)
+     new JoystickButton(driverController, Controller_Constants.TriangleButton)
      .onTrue(led_Commands.coneLEDS());
 
-     new JoystickButton(assistController, XBOX_Constants.AButton)
-     .onTrue(punch_Commands.Punch());
+     new JoystickButton(driverController, Controller_Constants.CrossButton)
+     .onTrue(punch_Commands.Punch())
+     .onTrue(led_Commands.emote())
+     .onFalse(led_Commands.emote());
 
-     new JoystickButton(assistController, XBOX_Constants.BButton)
+     /*
+     new JoystickButton(driverController, Controller_Constants.CircleButton)
      .onTrue(led_Commands.hotPink());
+
+     new JoystickButton(driverController, Controller_Constants.LBPort)
+     .onTrue(led_Commands.rally())
+     .onFalse(led_Commands.rally());
+
+     new JoystickButton(driverController, Controller_Constants.RBPort)
+     .onTrue(led_Commands.gold())
+     .onFalse(led_Commands.gold());*/
   }  
 
+  /**
   public void runAuto() {
     if(Shuffleboard.autoChoice.getSelected().equals("TimedMobility"))
     {
@@ -110,7 +124,7 @@ public class RobotContainer {
     {
       autoManager.runAuto(shuffleboard.getAuto());
     }
-  }
+  }*/
 
   public void startTimers() {
     led_Subsystem.startTimer();

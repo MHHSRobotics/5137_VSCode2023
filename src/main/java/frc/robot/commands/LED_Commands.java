@@ -28,4 +28,22 @@ public class LED_Commands {
             leds.signal("Pink");
         });
     }
+
+    public Command emote() {
+        return new InstantCommand(() -> {
+            leds.signal("Green");
+        });
+    }
+
+    public Command rally() {
+        return new InstantCommand(() -> {
+            leds.signal("Alliance");
+        });
+    }
+
+    public Command gold() {
+        return new InstantCommand(() -> {
+            leds.signal("Gold");
+        });
+    }
 }

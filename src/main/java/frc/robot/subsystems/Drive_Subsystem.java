@@ -18,6 +18,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.EnumKeySerializer;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.hal.ThreadsJNI;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
@@ -36,7 +37,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.Drive_Constants;
-import frc.robot.constants.Controller_Constants.XBOX_Constants;
+import frc.robot.constants.Controller_Constants;
 
 public class Drive_Subsystem extends SubsystemBase {
   //left motors
@@ -242,7 +243,7 @@ public class Drive_Subsystem extends SubsystemBase {
    
     //Gets controller values
     double speed = controller.getRawAxis(1);
-    double rotate = controller.getRawAxis(4);
+    double rotate = -controller.getRawAxis(4);
     if (speed > 0.05 || rotate >0.05) {
       setBrake(false);
   }
@@ -254,18 +255,31 @@ public class Drive_Subsystem extends SubsystemBase {
     rotate = adjust(rotate);
     speed = rateLimiter.calculate(speed);
     //rotate = rotateLimiter.calculate(rotate);
+    double speedLeft;
+    double speedRight;
+    if (rotate > 0) {
+      speedLeft = speed+Math.abs(rotate*0.5);
+      speedRight = speed-Math.abs(rotate*0.5);
+    } else if (rotate < 0) {
+      speedLeft = speed-Math.abs(rotate*0.5);
+      speedRight = speed+Math.abs(rotate*0.5);
+    } else {
+      speedLeft = speed;
+      speedRight = speed;
+    }
 
+    /*
       if(Math.abs(rotate) < .1 && Math.abs(speed) <.5)
       {
       rotate += .1*speed; //before both were 0.1*speed
       }
       else if (Math.abs(rotate) < .1 && Math.abs(speed) >= 0.5){ //when driving straight 
        rotate += 0.1*speed;  //to fix the driveabse veering off to left  (soft fix for physcial problem)
-      }
+      }*/
 
      
     //System.out.println(getWheelSpeeds());
-    if (controller.getRawButton(XboxController.Button.kRightBumper.value)){ //Need to find the number
+    /*if (controller.getRawButton(XboxController.Button.kRightBumper.value)){ //Need to find the number
       jMoneyDrive.curvatureDrive(-speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity , true);
     }
     else if(controller.getRawButton(XboxController.Button.kLeftBumper.value)){
@@ -273,7 +287,8 @@ public class Drive_Subsystem extends SubsystemBase {
     }
     else{
     jMoneyDrive.curvatureDrive(speed/Drive_Constants.driveSensitivity, rotate/Drive_Constants.turnSensitivity  , true);
-    }
+    }*/
+    jMoneyDrive.tankDrive(speedLeft, speedRight);
   }
 
   //Also not required but stops drifiting and gurantees max speed

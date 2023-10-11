@@ -6,17 +6,11 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drive_Subsystem;
 
 public class Shuffleboard extends SubsystemBase {
-    public static SendableChooser<String> autoChoice = new SendableChooser<>();
-    public static SendableChooser<Boolean> autoScoring = new SendableChooser<>();
     public static SendableChooser<Boolean> ledsEnabled = new SendableChooser<>();
 
     public Shuffleboard() {
-        configureSendableString(autoChoice, "None", "leftMobility", "middleEngage", "rightMobility", "middleCombo" , "TimedMobility", "TimedEngage", "TimedMobilityEngage");
-        configureSendableBoolean(autoScoring, false);
         configureSendableBoolean(ledsEnabled, true);
 
-        SmartDashboard.putData("Auto Choice", autoChoice);
-        SmartDashboard.putData("Auto Scoring", autoScoring);
         SmartDashboard.putData("LEDs Enabled", ledsEnabled);
         SmartDashboard.putData("jMoneyDrive", Drive_Subsystem.jMoneyDrive);
 
@@ -28,13 +22,14 @@ public class Shuffleboard extends SubsystemBase {
         update();
     }
 
+    /**
     public String getAuto() {
         if (autoScoring.getSelected()) {
             return autoChoice.getSelected()+"@Score";
         } else {
             return autoChoice.getSelected()+"@None";
         }
-    }
+    }*/
 
     public Boolean getLEDsEnabled() {
         return ledsEnabled.getSelected();
